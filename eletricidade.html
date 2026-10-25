@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="Quiz de eletricidade com dez circuitos para resolver: resistência equivalente, corrente elétrica e diferença de potencial, com resolução comentada.">
+<title>Quiz de Eletricidade · A Tal da Física</title>
+<link rel="stylesheet" href="estilo.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Literata:ital,opsz,wght@0,7..72,400;0,7..72,600;1,7..72,400&family=JetBrains+Mono:wght@400;600&display=swap">
+</head>
+<body>
+<header class="top">
+  <div class="wrap">
+    <a class="brand" href="index.html">
+      <svg width="28" height="28" viewBox="0 0 28 28" aria-hidden="true">
+        <path d="M3 24 Q14 -6 25 24" fill="none" stroke="var(--ink)" stroke-width="2" stroke-dasharray="3 3"/>
+        <circle cx="14" cy="9" r="3.5" fill="var(--accent)"/>
+      </svg>
+      A Tal da Física
+    </a>
+    <nav class="links" aria-label="Seções">
+      <a href="index.html#trilhas">Trilhas</a>
+      <a href="index.html#licao">Lição</a>
+      <a href="laboratorio.html">Laboratório</a>
+      <a href="quiz.html">Quiz</a>
+      <a href="enem.html">ENEM</a>
+      <a href="eletricidade.html" aria-current="page">Eletricidade</a>
+      <a href="index.html#constantes">Constantes</a>
+    </nav>
+  </div>
+</header>
+
+<main id="inicio">
+  <section style="padding-top: 48px;">
+    <div class="wrap">
+      <div class="section-head">
+        <p class="label">Quiz de eletricidade · Circuitos</p>
+        <h2>Resolva o circuito</h2>
+        <p>Dez circuitos para treinar resistência equivalente, corrente e ddp. Pegue papel e lápis, faça a conta e marque a alternativa. Pode pular e voltar quando quiser pelos números do painel.</p>
+      </div>
+
+      <div class="exam">
+        <article class="exam-card" id="card" aria-live="polite"></article>
+
+        <aside class="side" aria-label="Seu desempenho">
+          <span class="label">Seu desempenho</span>
+          <div class="score-big" id="scoreBox"><span id="score">0</span><small> / 10 acertos</small></div>
+          <div class="steps" id="steps" role="group" aria-label="Ir para a questão"></div>
+          <p class="side-status mono" id="status"></p>
+          <div class="topics" id="topics"></div>
+          <button class="btn ghost" type="button" id="finish" hidden>Encerrar e ver resultado</button>
+        </aside>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <span>A Tal da Física · material de estudo gratuito</span>
+    <span class="mono">λ<sub>Na</sub> = 589 nm, a cor do nosso destaque</span>
+  </div>
+</footer>
+
+<canvas id="confetti" aria-hidden="true"></canvas>
+
+<script>
+(function () {
+  /* ---------- desenho dos circuitos (SVG) ---------- */
+  const pts = p => p.map(q => q.join(",")).join(" ");
+  const W = (...p) => `<polyline class="wire" points="${pts(p)}"/>`;
+  const N = (x, y) => `<circle class="node" cx="${x}" cy="${y}" r="4.5"/>`;
+  const T = (x, y, label, dx = -18) => `<circle class="term" cx="${x}" cy="${y}" r="6"/><text class="lbl" x="${x + dx}" y="${y + 5}" text-anchor="middle">${label}</text>`;
+  const TXT = (x, y, s, cls = "val", anchor = "middle") => `<text class="${cls}" x="${x}" y="${y}" text-anchor="${anchor}">${s}</text>`;
+  // resistor entre dois pontos alinhados; o zigue-zague ocupa 44 px no meio do trecho
+  function R(x1, y1, x2, y2, label, opt = {}) {
+    const vert = x1 === x2, len = vert ? y2 - y1 : x2 - x1, z = 44, a = (len - z) / 2;
+    const at = (d, off) => vert ? [x1 + off, y1 + d] : [x1 + d, y1 + off];
+    const zz = [at(a, 0)];
+    for (let k = 1; k <= 6; k++) zz.push(at(a + z * (k - 0.5) / 6, k % 2 ? -8 : 8));
+    zz.push(at(a + z, 0));
+    const lx = opt.lx ?? (vert ? x1 + 16 : (x1 + x2) / 2), ly = opt.ly ?? (vert ? (y1 + y2) / 2 + 5 : y1 - 15);
+    return W([x1, y1], at(a, 0)) + `<polyline class="res" points="${pts(zz)}"/>` + W(at(a + z, 0), [x2, y2]) +
+      TXT(lx, ly, label, "val", opt.anchor ?? (vert ? "start" : "middle"));
+  }
+  // bateria: placa longa é o polo positivo; vertical = placas horizontais
+  function B(x, y, label, vert = true) {
+    return vert
+      ? `<line class="wire" x1="${x - 18}" y1="${y - 8}" x2="${x + 18}" y2="${y - 8}"/><line class="plate" x1="${x - 9}" y1="${y + 8}" x2="${x + 9}" y2="${y + 8}"/>` +
+        TXT(x - 26, y + 5, label, "val", "end") + TXT(x + 26, y - 6, "+", "lbl", "start")
+      : `<line class="wire" x1="${x - 8}" y1="${y - 18}" x2="${x - 8}" y2="${y + 18}"/><line class="plate" x1="${x + 8}" y1="${y - 9}" x2="${x + 8}" y2="${y + 9}"/>` +
+        TXT(x, y + 40, label) + TXT(x - 20, y - 22, "+", "lbl");
+  }
+  const G = (x, y) => W([x, y], [x, y + 8]) + `<line class="wire" x1="${x - 14}" y1="${y + 8}" x2="${x + 14}" y2="${y + 8}"/><line class="wire" x1="${x - 9}" y1="${y + 14}" x2="${x + 9}" y2="${y + 14}"/><line class="wire" x1="${x - 4}" y1="${y + 20}" x2="${x + 4}" y2="${y + 20}"/>`;
+  // padL abre espaço à esquerda para a etiqueta da bateria
+  const svg = (w, h, inner, label, padL = 0) => `<svg viewBox="${-padL} 0 ${w + padL} ${h}" class="circ" role="img" aria-label="${label}">${inner}</svg>`;
+
+  // fonte + resistor em série + dois resistores em paralelo (questões 5 e 6)
+  const loop = (V, rs, r1, r2, mark) => svg(480, 230,
+    W([60, 50], [60, 102]) + B(60, 110, V) + W([60, 118], [60, 190], [400, 190]) +
+    R(60, 50, 260, 50, rs) + W([260, 50], [400, 50]) +
+    R(260, 50, 260, 190, r1) + R(400, 50, 400, 190, r2) +
+    N(260, 50) + N(260, 190) + (mark || ""),
+    `Fonte de ${V} com ${rs} em série e ${r1} em paralelo com ${r2}`, 30);
+
+  const TOPICS = ["Resistência equivalente", "Corrente elétrica", "Diferença de potencial"];
+  const Q = [
+    { g: 0, t: "Resistência equivalente",
+      q: "Qual é a resistência equivalente entre os terminais A e B?",
+      fig: svg(520, 180,
+        T(30, 100, "A") + W([30, 100], [60, 100]) + R(60, 100, 180, 100, "4 Ω") +
+        W([180, 50], [180, 150]) + R(180, 50, 360, 50, "6 Ω") + R(180, 150, 360, 150, "12 Ω") +
+        W([360, 50], [360, 150]) + W([360, 100], [490, 100]) + N(180, 100) + N(360, 100) + T(490, 100, "B", 18),
+        "4 ohms em série com 6 ohms em paralelo com 12 ohms"),
+      o: ["8 Ω", "22 Ω", "6 Ω", "4 Ω"], a: 0,
+      e: "Primeiro o paralelo: 6 · 12 / (6 + 12) = 72/18 = 4 Ω. Depois a série com o de 4 Ω: R<sub>eq</sub> = 4 + 4 = 8 Ω. Somar tudo (22 Ω) só vale quando os resistores estão todos em série." },
+    { g: 0, t: "Resistência equivalente",
+      q: "Neste circuito em escada, qual é a resistência equivalente entre A e B?",
+      fig: svg(440, 240,
+        T(30, 60, "A") + R(30, 60, 190, 60, "4 Ω") + R(190, 60, 350, 60, "3 Ω") +
+        R(190, 60, 190, 200, "18 Ω") + R(350, 60, 350, 200, "6 Ω") +
+        W([350, 200], [30, 200]) + N(190, 60) + N(190, 200) + T(30, 200, "B"),
+        "Escada de resistores: 4, 3, 18 e 6 ohms"),
+      o: ["31 Ω", "13 Ω", "10 Ω", "6 Ω"], a: 2,
+      e: "Comece pela ponta mais distante de A e B: 3 Ω e 6 Ω estão em série, 3 + 6 = 9 Ω. Esses 9 Ω ficam em paralelo com 18 Ω: 9 · 18 / 27 = 6 Ω. Por fim, a série com 4 Ω: R<sub>eq</sub> = 4 + 6 = 10 Ω." },
+    { g: 0, t: "Ponte de Wheatstone",
+      q: "Qual é a resistência equivalente entre A e B? Repare na relação entre os resistores de cima e os de baixo.",
+      fig: svg(520, 240,
+        T(30, 130, "A") + W([30, 130], [80, 130]) + W([80, 50], [80, 210]) +
+        R(80, 50, 260, 50, "4 Ω") + R(260, 50, 440, 50, "8 Ω") +
+        R(80, 210, 260, 210, "2 Ω", { ly: 234 }) + R(260, 210, 440, 210, "4 Ω", { ly: 234 }) +
+        R(260, 50, 260, 210, "10 Ω") + W([440, 50], [440, 210]) + W([440, 130], [490, 130]) +
+        N(80, 130) + N(260, 50) + N(260, 210) + N(440, 130) + T(490, 130, "B", 18),
+        "Ponte de resistores 4, 8, 2 e 4 ohms com 10 ohms no meio"),
+      o: ["2,4 Ω", "4 Ω", "6 Ω", "14 Ω"], a: 1,
+      e: "A ponte está equilibrada: 4/8 = 2/4, ou seja, 4 · 4 = 8 · 2. Os dois pontos do meio ficam no mesmo potencial e o resistor de 10 Ω não conduz, então pode ser retirado. Sobram (4 + 8) = 12 Ω em paralelo com (2 + 4) = 6 Ω: 12 · 6 / 18 = 4 Ω." },
+    { g: 0, t: "Curto-circuito",
+      q: "Um fio sem resistência foi ligado em paralelo com o resistor de 4 Ω. Qual é a resistência equivalente entre A e B?",
+      fig: svg(520, 210,
+        T(30, 110, "A") + W([30, 110], [80, 110]) + W([80, 70], [80, 170]) +
+        R(80, 70, 240, 70, "6 Ω") + R(240, 70, 420, 70, "4 Ω", { ly: 95 }) + W([240, 70], [240, 30], [420, 30], [420, 70]) +
+        TXT(330, 22, "fio", "lbl") + W([420, 70], [440, 70], [440, 170]) +
+        R(80, 170, 440, 170, "12 Ω") + W([440, 110], [490, 110]) +
+        N(80, 110) + N(240, 70) + N(420, 70) + N(440, 110) + T(490, 110, "B", 18),
+        "6 ohms em série com 4 ohms em curto, tudo em paralelo com 12 ohms"),
+      o: ["5,45 Ω", "10 Ω", "4 Ω", "22 Ω"], a: 2,
+      e: "A corrente prefere o fio, que não tem resistência: o resistor de 4 Ω fica em curto e sai da conta. O ramo de cima vale só 6 Ω, em paralelo com 12 Ω: 6 · 12 / 18 = 4 Ω. Quem esquece o curto chega em 5,45 Ω." },
+    { g: 1, t: "Corrente elétrica",
+      q: "Qual é a intensidade da corrente fornecida pela bateria?",
+      fig: loop("12 V", "2 Ω", "6 Ω", "3 Ω"),
+      o: ["1,1 A", "3 A", "6 A", "1,5 A"], a: 1,
+      e: "Paralelo: 6 · 3 / 9 = 2 Ω. Com o de 2 Ω em série, R<sub>eq</sub> = 4 Ω. Pela lei de Ohm, i = U/R = 12/4 = 3 A." },
+    { g: 1, t: "Divisor de corrente",
+      q: "Qual é a corrente que passa pelo resistor de 12 Ω?",
+      fig: loop("24 V", "4 Ω", "12 Ω", "6 Ω", TXT(300, 150, "i = ?", "ask", "start")),
+      o: ["2 A", "3 A", "0,5 A", "1 A"], a: 3,
+      e: "Paralelo: 12 · 6 / 18 = 4 Ω, e R<sub>eq</sub> = 4 + 4 = 8 Ω. Corrente total: 24/8 = 3 A. A ddp no paralelo é 3 · 4 = 12 V, então no resistor de 12 Ω passa 12/12 = 1 A. Os outros 2 A vão pelo de 6 Ω: o menor resistor leva a maior corrente." },
+    { g: 1, t: "Ponte de Wheatstone",
+      q: "Qual é a corrente no resistor de 5 Ω, no meio da ponte?",
+      fig: svg(520, 285,
+        W([80, 40], [80, 180]) + R(80, 40, 260, 40, "6 Ω") + R(260, 40, 440, 40, "12 Ω") +
+        R(80, 180, 260, 180, "4 Ω", { ly: 204 }) + R(260, 180, 440, 180, "8 Ω", { ly: 204 }) +
+        R(260, 40, 260, 180, "5 Ω") + TXT(276, 134, "i = ?", "ask", "start") + W([440, 40], [440, 180]) +
+        W([80, 110], [30, 110], [30, 235], [252, 235]) + B(260, 235, "18 V", false) + W([268, 235], [490, 235], [490, 110], [440, 110]) +
+        N(80, 110) + N(260, 40) + N(260, 180) + N(440, 110),
+        "Ponte com 6, 12, 4 e 8 ohms, 5 ohms no meio e fonte de 18 volts"),
+      o: ["3,6 A", "0 A", "1 A", "2,5 A"], a: 1,
+      e: "Os produtos cruzados são iguais: 6 · 8 = 12 · 4 = 48. A ponte está equilibrada, os dois lados do resistor de 5 Ω ficam no mesmo potencial e por ele não passa corrente. A alternativa D, 2,5 A, é a corrente total da bateria: 18 V / 7,2 Ω." },
+    { g: 2, t: "Divisor de tensão",
+      q: "Qual é o potencial do nó V em relação à terra?",
+      fig: svg(480, 230,
+        T(60, 70, "12 V", -36) + R(60, 70, 220, 70, "4 kΩ") + TXT(220, 50, "V", "ask") +
+        R(220, 70, 220, 190, "6 kΩ") + W([220, 70], [380, 70]) + R(380, 70, 380, 190, "12 kΩ") +
+        G(220, 190) + G(380, 190) + N(220, 70),
+        "12 volts, 4 quilo-ohms até o nó V, que vai à terra por 6 e 12 quilo-ohms"),
+      o: ["7,2 V", "9 V", "6 V", "4 V"], a: 2,
+      e: "Os resistores de 6 kΩ e 12 kΩ estão em paralelo entre V e a terra: 6 · 12 / 18 = 4 kΩ. Ficam 4 kΩ em cima e 4 kΩ embaixo, então a tensão se divide ao meio: V = 12 · 4 / (4 + 4) = 6 V. Quem esquece o resistor de 12 kΩ chega em 7,2 V." },
+    { g: 2, t: "Diferença de potencial",
+      q: "Qual é a ddp entre os terminais do resistor de 3 Ω?",
+      fig: svg(480, 225,
+        W([60, 50], [60, 102]) + B(60, 110, "30 V") + W([60, 118], [60, 190], [420, 190]) +
+        R(60, 50, 200, 50, "2 Ω") + R(200, 50, 340, 50, "3 Ω") + TXT(270, 82, "U = ?", "ask") +
+        W([340, 50], [420, 50]) + R(420, 50, 420, 190, "5 Ω") + N(200, 50) + N(340, 50),
+        "Fonte de 30 volts com 2, 3 e 5 ohms em série", 30),
+      o: ["3 V", "10 V", "15 V", "9 V"], a: 3,
+      e: "Em série a corrente é a mesma em todos: R<sub>eq</sub> = 2 + 3 + 5 = 10 Ω e i = 30/10 = 3 A. No resistor de 3 Ω: U = R · i = 3 · 3 = 9 V. Conferindo: 6 V + 9 V + 15 V = 30 V." },
+    { g: 2, t: "Diferença de potencial",
+      q: "A bateria alimenta dois ramos em paralelo. Qual é a ddp entre os pontos X e Y?",
+      fig: svg(480, 240,
+        W([60, 40], [60, 112]) + B(60, 120, "12 V") + W([60, 128], [60, 200], [400, 200]) + W([60, 40], [400, 40]) +
+        R(220, 40, 220, 120, "4 Ω") + R(220, 120, 220, 200, "2 Ω") +
+        R(400, 40, 400, 120, "3 Ω") + R(400, 120, 400, 200, "3 Ω") +
+        `<line class="probe" x1="220" y1="120" x2="400" y2="120"/>` + TXT(310, 112, "U = ?", "ask") +
+        TXT(206, 125, "X", "lbl", "end") + TXT(414, 127, "Y", "lbl", "start") +
+        N(220, 40) + N(220, 200) + N(220, 120) + N(400, 120),
+        "Dois ramos em paralelo numa fonte de 12 volts: 4 e 2 ohms com o ponto X, 3 e 3 ohms com o ponto Y", 30),
+      o: ["0 V", "2 V", "4 V", "10 V"], a: 1,
+      e: "Cada ramo recebe os 12 V da bateria. Tomando o fio de baixo como 0 V: no ramo de X, a corrente é 12/6 = 2 A e X está 2 · 2 = 4 V acima do fio de baixo. No ramo de Y, a corrente é 12/6 = 2 A e Y está 2 · 3 = 6 V acima. U<sub>XY</sub> = 6 − 4 = 2 V." }
+  ];
+  const CHEERS = [
+    "Mandou bem! Circuito resolvido.",
+    "Acertou! A lei de Ohm está em dia.",
+    "Isso aí! Nada de curto no seu raciocínio.",
+    "Na mosca! Você não caiu na pegadinha.",
+    "Excelente! A corrente está do seu lado.",
+    "Perfeito! Conta certinha do começo ao fim."
+  ];
+  window.SIMULADO = { topics: TOPICS, questions: Q, cheers: CHEERS };
+})();
+</script>
+<script src="simulado.js"></script>
+</body>
+</html>

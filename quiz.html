@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="Quiz de física com oito questões de mecânica, ondas, óptica, eletricidade e calor, com explicação de cada resposta.">
+<title>Quiz · A Tal da Física</title>
+<link rel="stylesheet" href="estilo.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Literata:ital,opsz,wght@0,7..72,400;0,7..72,600;1,7..72,400&family=JetBrains+Mono:wght@400;600&display=swap">
+</head>
+<body>
+<header class="top">
+  <div class="wrap">
+    <a class="brand" href="index.html">
+      <svg width="28" height="28" viewBox="0 0 28 28" aria-hidden="true">
+        <path d="M3 24 Q14 -6 25 24" fill="none" stroke="var(--ink)" stroke-width="2" stroke-dasharray="3 3"/>
+        <circle cx="14" cy="9" r="3.5" fill="var(--accent)"/>
+      </svg>
+      A Tal da Física
+    </a>
+    <nav class="links" aria-label="Seções">
+      <a href="index.html#trilhas">Trilhas</a>
+      <a href="index.html#licao">Lição</a>
+      <a href="laboratorio.html">Laboratório</a>
+      <a href="quiz.html" aria-current="page">Quiz</a>
+      <a href="enem.html">ENEM</a>
+      <a href="eletricidade.html">Eletricidade</a>
+      <a href="index.html#constantes">Constantes</a>
+    </nav>
+  </div>
+</header>
+
+<main id="inicio">
+  <section id="quiz" style="padding-top: 48px;">
+    <div class="wrap">
+      <div class="section-head">
+        <p class="label">Quiz rápido</p>
+        <h2>Oito perguntas para conferir</h2>
+        <p>Clique na alternativa. A explicação aparece logo abaixo, certa ou errada.</p>
+      </div>
+      <div class="quiz" id="quizGrid"></div>
+      <div class="score">
+        <span id="scoreText">0 de 8 respondidas</span>
+        <button class="btn ghost" type="button" id="reset">Recomeçar</button>
+      </div>
+    </div>
+  </section>
+
+  <section style="padding-top: 0;">
+    <div class="wrap">
+      <a class="btn ghost" href="index.html">Voltar para o início</a>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <span>A Tal da Física · material de estudo gratuito</span>
+    <span class="mono">λ<sub>Na</sub> = 589 nm, a cor do nosso destaque</span>
+  </div>
+</footer>
+
+<script>
+(function () {
+  /* ---------- Quiz ---------- */
+  const Q = [
+    { q: "Um carro passa de 0 a 72 km/h em 10 s. Qual a aceleração média?",
+      o: ["7,2 m/s²", "2 m/s²", "20 m/s²", "0,5 m/s²"], a: 1,
+      e: "72 km/h = 20 m/s. Então a = Δv/Δt = 20/10 = 2 m/s². Lembre de dividir km/h por 3,6." },
+    { q: "Se o comprimento de um pêndulo simples for quadruplicado, o período:",
+      o: ["quadruplica", "fica igual", "dobra", "cai pela metade"], a: 2,
+      e: "T = 2π√(L/g). Com 4L, a raiz fica √4 = 2, então o período dobra. Teste no pêndulo do laboratório." },
+    { q: "Uma onda sonora tem frequência de 440 Hz e se propaga a 340 m/s. Qual o comprimento de onda?",
+      o: ["0,77 m", "1,29 m", "149 600 m", "100 m"], a: 0,
+      e: "λ = v/f = 340/440 ≈ 0,77 m. Essa é a nota lá usada para afinar instrumentos." },
+    { q: "Qual ângulo de lançamento dá o maior alcance, sem resistência do ar?",
+      o: ["30°", "60°", "90°", "45°"], a: 3,
+      e: "A = v₀²·sen 2θ/g é máximo quando sen 2θ = 1, ou seja, 2θ = 90° e θ = 45°. 30° e 60° dão o mesmo alcance." },
+    { q: "Um raio de luz passa do ar para a água. O que acontece com ele?",
+      o: ["Afasta-se da normal", "Aproxima-se da normal", "Não muda de direção", "Sofre reflexão total"], a: 1,
+      e: "A água tem índice maior que o ar (1,33 contra 1,00). Ao entrar num meio mais refringente, a luz fica mais lenta e se aproxima da normal. Confira na bancada de refração do laboratório." },
+    { q: "Dois resistores de 6 Ω são ligados em paralelo. Qual a resistência equivalente?",
+      o: ["12 Ω", "6 Ω", "3 Ω", "1,5 Ω"], a: 2,
+      e: "Req = (6·6)/(6+6) = 36/12 = 3 Ω. Com resistores iguais em paralelo, basta dividir o valor pelo número deles." },
+    { q: "Qual a energia cinética de um bloco de 5 kg a 4 m/s?",
+      o: ["10 J", "20 J", "40 J", "80 J"], a: 2,
+      e: "Ec = ½·m·v² = ½·5·16 = 40 J. Cuidado para não esquecer de elevar a velocidade ao quadrado." },
+    { q: "Quanto calor é preciso para aquecer 200 g de água de 20 °C a 70 °C? (c = 1 cal/g·°C)",
+      o: ["1 000 cal", "10 000 cal", "14 000 cal", "4 000 cal"], a: 1,
+      e: "Q = m·c·ΔT = 200·1·50 = 10 000 cal, cerca de 41,8 kJ." }
+  ];
+  const grid = document.getElementById("quizGrid"), scoreText = document.getElementById("scoreText");
+  let answered = 0, right = 0;
+  function renderQuiz() {
+    answered = 0; right = 0; grid.innerHTML = "";
+    Q.forEach((item, qi) => {
+      const box = document.createElement("article"); box.className = "q";
+      box.innerHTML = `<span class="label">Questão ${qi + 1}</span><p>${item.q}</p><div class="opts"></div><p class="fb" hidden></p>`;
+      const opts = box.querySelector(".opts"), fb = box.querySelector(".fb");
+      item.o.forEach((txt, oi) => {
+        const b = document.createElement("button"); b.type = "button"; b.className = "opt"; b.id = `q${qi}o${oi}`;
+        b.textContent = String.fromCharCode(97 + oi) + ") " + txt;
+        b.addEventListener("click", () => {
+          opts.querySelectorAll("button").forEach((x, xi) => { x.disabled = true; if (xi === item.a) x.classList.add("right"); });
+          if (oi !== item.a) b.classList.add("wrong"); else right++;
+          answered++;
+          fb.hidden = false;
+          fb.textContent = (oi === item.a ? "Certo. " : "Não foi dessa vez. ") + item.e;
+          scoreText.textContent = answered === Q.length ? `Você acertou ${right} de ${Q.length}` : `${answered} de ${Q.length} respondidas · ${right} certas`;
+        });
+        opts.appendChild(b);
+      });
+      grid.appendChild(box);
+    });
+    scoreText.textContent = `0 de ${Q.length} respondidas`;
+  }
+  document.getElementById("reset").addEventListener("click", renderQuiz);
+  renderQuiz();
+})();
+</script>
+</body>
+</html>

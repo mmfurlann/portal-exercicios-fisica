@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="Simulado de física no estilo ENEM: dez questões de cinemática, impulso e quantidade de movimento, circuitos e ondulatória, com resolução comentada.">
+<title>Simulado ENEM · A Tal da Física</title>
+<link rel="stylesheet" href="estilo.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Literata:ital,opsz,wght@0,7..72,400;0,7..72,600;1,7..72,400&family=JetBrains+Mono:wght@400;600&display=swap">
+</head>
+<body>
+<header class="top">
+  <div class="wrap">
+    <a class="brand" href="index.html">
+      <svg width="28" height="28" viewBox="0 0 28 28" aria-hidden="true">
+        <path d="M3 24 Q14 -6 25 24" fill="none" stroke="var(--ink)" stroke-width="2" stroke-dasharray="3 3"/>
+        <circle cx="14" cy="9" r="3.5" fill="var(--accent)"/>
+      </svg>
+      A Tal da Física
+    </a>
+    <nav class="links" aria-label="Seções">
+      <a href="index.html#trilhas">Trilhas</a>
+      <a href="index.html#licao">Lição</a>
+      <a href="laboratorio.html">Laboratório</a>
+      <a href="quiz.html">Quiz</a>
+      <a href="enem.html" aria-current="page">ENEM</a>
+      <a href="eletricidade.html">Eletricidade</a>
+      <a href="index.html#constantes">Constantes</a>
+    </nav>
+  </div>
+</header>
+
+<main id="inicio">
+  <section style="padding-top: 48px;">
+    <div class="wrap">
+      <div class="section-head">
+        <p class="label">Simulado ENEM · Ciências da Natureza</p>
+        <h2>Dez questões dos temas que mais caem</h2>
+        <p>Circuitos, cinemática, impulso e quantidade de movimento e ondulatória aparecem na prova ano após ano. As questões são inéditas e seguem o estilo do ENEM: situação do dia a dia e cinco alternativas. Pode pular e voltar quando quiser: os números do painel levam a qualquer questão.</p>
+      </div>
+
+      <div class="exam">
+        <article class="exam-card" id="card" aria-live="polite"></article>
+
+        <aside class="side" aria-label="Seu desempenho">
+          <span class="label">Seu desempenho</span>
+          <div class="score-big" id="scoreBox"><span id="score">0</span><small> / 10 acertos</small></div>
+          <div class="steps" id="steps" role="group" aria-label="Ir para a questão"></div>
+          <p class="side-status mono" id="status"></p>
+          <div class="topics" id="topics"></div>
+          <button class="btn ghost" type="button" id="finish" hidden>Encerrar e ver resultado</button>
+        </aside>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <span>A Tal da Física · material de estudo gratuito</span>
+    <span class="mono">λ<sub>Na</sub> = 589 nm, a cor do nosso destaque</span>
+  </div>
+</footer>
+
+<canvas id="confetti" aria-hidden="true"></canvas>
+
+<script>
+(function () {
+  const TOPICS = ["Cinemática", "Impulso e quantidade de movimento", "Circuitos", "Ondulatória"];
+  // g: índice em TOPICS · t: etiqueta da questão · a: índice da alternativa certa
+  const Q = [
+    { g: 0, t: "Cinemática",
+      q: "Uma família viaja de carro entre duas cidades distantes 300 km. Percorre os primeiros 200 km em 2 h, para 30 min em um posto e faz os 100 km restantes em 1 h 30 min. A velocidade média na viagem completa foi de:",
+      o: ["66,7 km/h", "75 km/h", "83,3 km/h", "85,7 km/h", "100 km/h"], a: 1,
+      e: "A velocidade média usa o tempo total, incluindo a parada: Δt = 2 + 0,5 + 1,5 = 4 h. Então v<sub>m</sub> = 300 km / 4 h = 75 km/h. A alternativa D esquece a parada, e a C faz a média das velocidades, um erro clássico." },
+    { g: 0, t: "Cinemática",
+      q: "Campanhas de trânsito alertam para o tempo de reação do motorista. Um carro trafega a 72 km/h quando o motorista vê um obstáculo. Ele leva 0,5 s para pisar no freio, e o carro então desacelera a 5 m/s² até parar. A distância percorrida desde que o motorista vê o obstáculo até o carro parar é:",
+      o: ["10 m", "30 m", "40 m", "50 m", "80 m"], a: 3,
+      e: "72 km/h = 20 m/s. Durante a reação, o carro anda com velocidade constante: 20 · 0,5 = 10 m. Na frenagem, por Torricelli: d = v²/(2a) = 400/10 = 40 m. Total: 10 + 40 = 50 m." },
+    { g: 1, t: "Impulso",
+      q: "Airbags e para-choques que se deformam reduzem as lesões em colisões. Do ponto de vista da Física, esses dispositivos funcionam porque:",
+      o: ["diminuem a variação da quantidade de movimento do passageiro.", "diminuem o impulso total recebido pelo passageiro.", "aumentam o tempo de interação, reduzindo a força média sobre o passageiro.", "aumentam a massa efetiva do passageiro durante o choque.", "transformam toda a energia cinética em energia potencial elástica."], a: 2,
+      e: "O passageiro vai parar de qualquer forma, então a variação da quantidade de movimento, e portanto o impulso, é a mesma. Como I = F·Δt, aumentar o tempo de contato diminui a força média." },
+    { g: 1, t: "Quantidade de movimento",
+      q: "Em um pátio ferroviário, um vagão de 20 toneladas a 3 m/s colide com outro vagão de 10 toneladas, inicialmente parado, e os dois seguem engatados. Desprezando os atritos, a velocidade do conjunto logo após o engate é:",
+      o: ["1,0 m/s", "1,5 m/s", "2,0 m/s", "3,0 m/s", "6,0 m/s"], a: 2,
+      e: "A quantidade de movimento do sistema se conserva: 20 · 3 = (20 + 10) · v, logo v = 60/30 = 2,0 m/s." },
+    { g: 1, t: "Impulso",
+      q: "Uma bola de vôlei de 0,4 kg chega à mão de um jogador a 10 m/s e volta, na mesma direção e em sentido oposto, a 15 m/s. O contato dura 0,05 s. A intensidade da força média que a mão aplica na bola é:",
+      o: ["40 N", "80 N", "120 N", "200 N", "500 N"], a: 3,
+      e: "Como a bola inverte o sentido, as velocidades se somam: Δv = 15 − (−10) = 25 m/s. Então Δp = 0,4 · 25 = 10 N·s e F = Δp/Δt = 10/0,05 = 200 N. A alternativa A aparece quando se subtraem as velocidades." },
+    { g: 2, t: "Circuitos",
+      q: "Um chuveiro elétrico ligado em 220 V tem as posições verão e inverno. Na posição inverno a água sai mais quente porque a chave seleciona um resistor de:",
+      o: ["maior resistência, o que aumenta a corrente.", "maior resistência, o que diminui a potência.", "menor resistência, o que aumenta a corrente e a potência.", "menor resistência, o que diminui a tensão.", "mesma resistência, mas submetido a uma tensão maior."], a: 2,
+      e: "Com a tensão fixa em 220 V, a potência é P = U²/R. Uma resistência menor deixa passar mais corrente (i = U/R) e dissipa mais potência, aquecendo mais a água." },
+    { g: 2, t: "Circuitos",
+      q: "Numa casa com 4 moradores, cada um toma um banho diário de 15 min em um chuveiro de 5 500 W. Com a tarifa de R$ 0,80 por kWh, o custo mensal (30 dias) desses banhos é de aproximadamente:",
+      o: ["R$ 33,00", "R$ 66,00", "R$ 132,00", "R$ 165,00", "R$ 528,00"], a: 2,
+      e: "Tempo diário de uso: 4 · 15 min = 1 h. Energia no mês: 5,5 kW · 1 h · 30 = 165 kWh. Custo: 165 · 0,80 = R$ 132,00. A alternativa D é a energia em kWh, não o valor em reais." },
+    { g: 2, t: "Circuitos",
+      q: "Em uma residência, as lâmpadas são ligadas em paralelo na rede de 127 V. Se uma delas queimar, as demais:",
+      o: ["apagam, porque o circuito é interrompido.", "continuam acesas com o mesmo brilho, porque cada uma segue submetida a 127 V.", "ficam mais fortes, porque recebem a corrente da lâmpada queimada.", "ficam mais fracas, porque a resistência equivalente aumenta.", "piscam até que a lâmpada seja trocada."], a: 1,
+      e: "Em paralelo, cada lâmpada tem o próprio caminho até a rede e recebe a tensão total. Quando uma queima, só o ramo dela se abre, e as outras continuam com 127 V e a mesma potência. A alternativa A descreve uma ligação em série." },
+    { g: 3, t: "Ondulatória",
+      q: "Uma estação de rádio FM transmite na frequência de 100 MHz. Sabendo que as ondas de rádio se propagam a 3 · 10⁸ m/s, o comprimento de onda dessa transmissão é:",
+      o: ["0,3 m", "3 m", "30 m", "300 m", "3 000 m"], a: 1,
+      e: "λ = v/f = 3 · 10⁸ / 1 · 10⁸ = 3 m. Lembre que o prefixo mega (M) vale 10⁶, então 100 MHz = 10⁸ Hz." },
+    { g: 3, t: "Ondulatória",
+      q: "Um navio usa um sonar para medir a profundidade do mar. O pulso de ultrassom emitido retorna ao navio 0,8 s depois. Se o som se propaga na água a 1 500 m/s, a profundidade do local é:",
+      o: ["300 m", "600 m", "1 200 m", "1 875 m", "2 400 m"], a: 1,
+      e: "O pulso vai até o fundo e volta, então percorre o dobro da profundidade: 2h = 1 500 · 0,8 = 1 200 m, logo h = 600 m. A alternativa C esquece a ida e a volta." }
+  ];
+  const CHEERS = [
+    "Mandou bem! Essa cai muito no ENEM.",
+    "Acertou! Raciocínio de quem estuda.",
+    "Isso aí! Mais um ponto rumo à aprovação.",
+    "Na mosca! Você não caiu na pegadinha.",
+    "Excelente! Continue nesse ritmo.",
+    "Perfeito! A banca não te pega nessa."
+  ];
+  window.SIMULADO = { topics: TOPICS, questions: Q, cheers: CHEERS };
+})();
+</script>
+<script src="simulado.js"></script>
+</body>
+</html>

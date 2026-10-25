@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="Laboratório virtual de física: dez experimentos interativos de mecânica, óptica, ondulatória, termodinâmica e eletricidade.">
+<title>Laboratório · A Tal da Física</title>
+<link rel="stylesheet" href="estilo.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Literata:ital,opsz,wght@0,7..72,400;0,7..72,600;1,7..72,400&family=JetBrains+Mono:wght@400;600&display=swap">
+</head>
+<body>
+<header class="top">
+  <div class="wrap">
+    <a class="brand" href="index.html">
+      <svg width="28" height="28" viewBox="0 0 28 28" aria-hidden="true">
+        <path d="M3 24 Q14 -6 25 24" fill="none" stroke="var(--ink)" stroke-width="2" stroke-dasharray="3 3"/>
+        <circle cx="14" cy="9" r="3.5" fill="var(--accent)"/>
+      </svg>
+      A Tal da Física
+    </a>
+    <nav class="links" aria-label="Seções">
+      <a href="index.html#trilhas">Trilhas</a>
+      <a href="index.html#licao">Lição</a>
+      <a href="laboratorio.html" aria-current="page">Laboratório</a>
+      <a href="quiz.html">Quiz</a>
+      <a href="enem.html">ENEM</a>
+      <a href="eletricidade.html">Eletricidade</a>
+      <a href="index.html#constantes">Constantes</a>
+    </nav>
+  </div>
+</header>
+
+<main id="inicio">
+  <section style="padding-block: 48px 24px;">
+    <div class="wrap">
+      <div class="section-head">
+        <p class="label">Laboratório virtual</p>
+        <h2>Dez bancadas em cinco áreas</h2>
+        <p>Cada experimento tem a ideia principal ao lado e os números calculados na hora. Mexa nos controles, faça a conta no papel e confira.</p>
+      </div>
+      <nav class="area-nav" aria-label="Áreas do laboratório">
+        <a href="#mecanica"><span class="sym mono">F</span>Mecânica <small>4 bancadas</small></a>
+        <a href="#optica"><span class="sym mono">n</span>Óptica <small>3 bancadas</small></a>
+        <a href="#ondas"><span class="sym mono">λ</span>Ondulatória <small>Doppler e ondas estacionárias</small></a>
+        <a href="#termo"><span class="sym mono">Q</span>Termodinâmica <small>1 bancada</small></a>
+        <a href="#eletricidade"><span class="sym mono">i</span>Eletricidade <small>1 bancada</small></a>
+      </nav>
+    </div>
+  </section>
+
+  <!-- ===================== MECÂNICA ===================== -->
+  <section class="area" id="mecanica">
+    <div class="wrap">
+      <div class="area-head">
+        <span class="area-sym mono">F</span>
+        <div><p class="label">Área 1</p><h2>Mecânica</h2></div>
+      </div>
+      <div class="lab">
+        <div class="lab-item">
+          <div class="prose">
+            <h3>Lançamento oblíquo</h3>
+            <p>Na horizontal o movimento é uniforme; na vertical, a gravidade freia a subida e acelera a descida. A combinação dos dois desenha uma parábola.</p>
+            <p class="eq">x = v₀·cos θ·t<br>y = v₀·sen θ·t − ½·g·t²<br>A = v₀²·sen 2θ / g</p>
+            <ul class="tips">
+              <li>Compare 30° e 60°: o alcance é o mesmo, a altura não.</li>
+              <li>Na Lua, com a mesma velocidade, a bola vai seis vezes mais longe.</li>
+            </ul>
+          </div>
+          <div class="bench" aria-label="Simulador de lançamento oblíquo">
+            <div class="bench-head">
+              <span class="label">Lançamento oblíquo</span>
+              <button class="btn" id="launch" type="button">Lançar ▸</button>
+            </div>
+            <canvas id="proj" width="960" height="540" role="img" aria-label="Trajetória parabólica do projétil"></canvas>
+            <div class="controls">
+              <div class="ctrl">
+                <label for="v0">Velocidade inicial <output id="v0o">20 m/s</output></label>
+                <input type="range" id="v0" min="5" max="40" step="1" value="20">
+              </div>
+              <div class="ctrl">
+                <label for="ang">Ângulo <output id="ango">45°</output></label>
+                <input type="range" id="ang" min="5" max="85" step="1" value="45">
+              </div>
+              <div class="ctrl">
+                <label for="grav">Gravidade</label>
+                <select id="grav">
+                  <option value="9.81">Terra · 9,81 m/s²</option>
+                  <option value="1.62">Lua · 1,62 m/s²</option>
+                  <option value="3.71">Marte · 3,71 m/s²</option>
+                  <option value="24.79">Júpiter · 24,79 m/s²</option>
+                </select>
+              </div>
+            </div>
+            <div class="readout" aria-live="polite">
+              <div><span class="label">Alcance</span><span class="v" id="rR">—</span></div>
+              <div><span class="label">Altura máx.</span><span class="v" id="rH">—</span></div>
+              <div><span class="label">Tempo de voo</span><span class="v" id="rT">—</span></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="lab-item">
+          <div class="prose">
+            <h3>Pêndulo simples</h3>
+            <p>Para oscilações pequenas, o período só depende do comprimento do fio e da gravidade. A massa e a amplitude não entram na conta.</p>
+            <p class="eq">T = 2π·√(L/g)</p>
+            <ul class="tips">
+              <li>Quadruplique o comprimento e o período dobra.</li>
+              <li>Na Lua o mesmo pêndulo balança quase 2,5 vezes mais devagar.</li>
+            </ul>
+          </div>
+          <div class="bench" aria-label="Simulador de pêndulo simples">
+            <div class="bench-head">
+              <span class="label">Pêndulo simples</span>
+              <span class="mono" id="pT" style="font-weight: 600;">T = —</span>
+            </div>
+            <canvas id="pend" width="960" height="540" role="img" aria-label="Pêndulo oscilando"></canvas>
+            <div class="controls two">
+              <div class="ctrl">
+                <label for="len">Comprimento <output id="leno">1,00 m</output></label>
+                <input type="range" id="len" min="0.2" max="2.5" step="0.05" value="1">
+              </div>
+              <div class="ctrl">
+                <label for="pg">Gravidade</label>
+                <select id="pg">
+                  <option value="9.81">Terra · 9,81</option>
+                  <option value="1.62">Lua · 1,62</option>
+                  <option value="3.71">Marte · 3,71</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="lab-item">
+          <div class="prose">
+            <h3>Plano inclinado com atrito</h3>
+            <p>O peso se divide em duas partes: uma empurra o bloco rampa abaixo (P·sen θ) e a outra aperta o bloco contra a rampa (P·cos θ), que responde com a normal. O atrito se opõe ao deslizamento e tem como limite μ·N.</p>
+            <p class="eq">a = g·(sen θ − μ·cos θ)<br>desliza quando tg θ &gt; μ</p>
+            <ul class="tips">
+              <li>Mude a massa: as forças mudam, a aceleração não.</li>
+              <li>Com μ = 0,3, o bloco começa a descer em 16,7°.</li>
+              <li>Aqui o atrito estático e o cinético usam o mesmo μ, para simplificar.</li>
+            </ul>
+          </div>
+          <div class="bench" aria-label="Simulador de plano inclinado">
+            <div class="bench-head">
+              <span class="label">Plano inclinado</span>
+              <button class="btn" id="irel" type="button">Soltar bloco ▸</button>
+            </div>
+            <canvas id="incl" width="960" height="540" role="img" aria-label="Bloco sobre uma rampa com as forças desenhadas"></canvas>
+            <div class="controls">
+              <div class="ctrl">
+                <label for="ia">Inclinação <output id="iao">30°</output></label>
+                <input type="range" id="ia" min="5" max="60" step="1" value="30">
+              </div>
+              <div class="ctrl">
+                <label for="imu">Coef. de atrito μ <output id="imuo">0,30</output></label>
+                <input type="range" id="imu" min="0" max="1" step="0.05" value="0.3">
+              </div>
+              <div class="ctrl">
+                <label for="im">Massa <output id="imo">5 kg</output></label>
+                <input type="range" id="im" min="1" max="20" step="1" value="5">
+              </div>
+            </div>
+            <div class="readout" aria-live="polite">
+              <div><span class="label">Aceleração</span><span class="v" id="iA">—</span></div>
+              <div><span class="label">Atrito</span><span class="v" id="iF">—</span></div>
+              <div><span class="label">Normal</span><span class="v" id="iN">—</span></div>
+            </div>
+            <p class="bench-note mono" id="iNote"></p>
+          </div>
+        </div>
+
+        <div class="lab-item">
+          <div class="prose">
+            <h3>Colisões e quantidade de movimento</h3>
+            <p>Em qualquer choque sem forças externas, a quantidade de movimento total se conserva. A energia cinética só se conserva no choque perfeitamente elástico. O coeficiente de restituição <span class="mono">e</span> diz o quanto os corpos se afastam depois, comparado com o quanto se aproximavam antes.</p>
+            <p class="eq">m₁·v₁ + m₂·v₂ = m₁·v₁' + m₂·v₂'<br>e = (v₂' − v₁') / (v₁ − v₂)</p>
+            <ul class="tips">
+              <li>Massas iguais e e = 1: os carrinhos trocam de velocidade.</li>
+              <li>Com e = 0 eles seguem grudados e a perda de energia é máxima.</li>
+              <li>Velocidade negativa significa movimento para a esquerda.</li>
+            </ul>
+          </div>
+          <div class="bench" aria-label="Simulador de colisões">
+            <div class="bench-head">
+              <span class="label">Colisões</span>
+              <button class="btn" id="kgo" type="button">Colidir ▸</button>
+            </div>
+            <canvas id="coll" width="960" height="400" role="img" aria-label="Dois carrinhos em um trilho" style="aspect-ratio: 12 / 5;"></canvas>
+            <div class="controls">
+              <div class="ctrl">
+                <label for="km1">Massa 1 <output id="km1o">2,0 kg</output></label>
+                <input type="range" id="km1" min="1" max="10" step="0.5" value="2">
+              </div>
+              <div class="ctrl">
+                <label for="kv1">Velocidade 1 <output id="kv1o">4,0 m/s</output></label>
+                <input type="range" id="kv1" min="0" max="10" step="0.5" value="4">
+              </div>
+              <div class="ctrl">
+                <label for="ke">Restituição e <output id="keo">1,0</output></label>
+                <input type="range" id="ke" min="0" max="1" step="0.1" value="1">
+              </div>
+              <div class="ctrl">
+                <label for="km2">Massa 2 <output id="km2o">3,0 kg</output></label>
+                <input type="range" id="km2" min="1" max="10" step="0.5" value="3">
+              </div>
+              <div class="ctrl">
+                <label for="kv2">Velocidade 2 <output id="kv2o">−2,0 m/s</output></label>
+                <input type="range" id="kv2" min="-10" max="10" step="0.5" value="-2">
+              </div>
+            </div>
+            <div class="readout" aria-live="polite">
+              <div><span class="label">Velocidades depois</span><span class="v" id="kV">—</span></div>
+              <div><span class="label">Q total</span><span class="v" id="kQ">—</span></div>
+              <div><span class="label">Energia cinética</span><span class="v" id="kE">—</span></div>
+            </div>
+            <p class="bench-note mono" id="kNote"></p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== ÓPTICA ===================== -->
+  <section class="area" id="optica">
+    <div class="wrap">
+      <div class="area-head">
+        <span class="area-sym mono">n</span>
+        <div><p class="label">Área 2</p><h2>Óptica</h2></div>
+      </div>
+      <div class="lab">
+        <div class="lab-item">
+          <div class="prose">
+            <h3>Refração e a lei de Snell</h3>
+            <p>Quando a luz muda de meio, sua velocidade muda e o raio se desvia. O índice de refração <span class="mono">n = c/v</span> diz quantas vezes a luz fica mais lenta naquele meio do que no vácuo.</p>
+            <p class="eq">n₁·sen θ₁ = n₂·sen θ₂</p>
+            <ul class="tips">
+              <li>Do ar para a água, veja o raio se aproximar da normal.</li>
+              <li>Da água para o ar, passe de 48,8° e observe a reflexão total.</li>
+              <li>No diamante o ângulo limite é de só 24,4°. Por isso ele brilha tanto.</li>
+            </ul>
+          </div>
+          <div class="bench" aria-label="Simulador de refração">
+            <div class="bench-head"><span class="label">Refração</span></div>
+            <canvas id="refr" width="960" height="600" role="img" aria-label="Raio de luz mudando de meio" style="aspect-ratio: 8 / 5;"></canvas>
+            <div class="controls">
+              <div class="ctrl">
+                <label for="inc">Ângulo de incidência <output id="inco">40°</output></label>
+                <input type="range" id="inc" min="0" max="89" step="1" value="40">
+              </div>
+              <div class="ctrl">
+                <label for="n1">Meio 1 (de cima)</label>
+                <select id="n1">
+                  <option value="1.00" selected>Ar · n = 1,00</option>
+                  <option value="1.33">Água · n = 1,33</option>
+                  <option value="1.50">Vidro · n = 1,50</option>
+                  <option value="2.42">Diamante · n = 2,42</option>
+                </select>
+              </div>
+              <div class="ctrl">
+                <label for="n2">Meio 2 (de baixo)</label>
+                <select id="n2">
+                  <option value="1.00">Ar · n = 1,00</option>
+                  <option value="1.33" selected>Água · n = 1,33</option>
+                  <option value="1.50">Vidro · n = 1,50</option>
+                  <option value="2.42">Diamante · n = 2,42</option>
+                </select>
+              </div>
+            </div>
+            <div class="readout" aria-live="polite">
+              <div><span class="label">Ângulo refratado</span><span class="v" id="rT2">—</span></div>
+              <div><span class="label">Ângulo limite</span><span class="v" id="rC">—</span></div>
+              <div><span class="label">Velocidade no meio 2</span><span class="v" id="rV">—</span></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="lab-item">
+          <div class="prose">
+            <h3>Lentes esféricas</h3>
+            <p>Três raios bastam para achar a imagem: o que chega paralelo ao eixo e sai pelo foco, o que passa pelo centro óptico sem desviar e o que passa pelo foco e sai paralelo. A equação de Gauss dá a mesma resposta em números.</p>
+            <p class="eq">1/f = 1/p + 1/p'<br>A = −p'/p</p>
+            <ul class="tips">
+              <li>Na convergente, coloque o objeto entre o foco e a lente: a imagem vira virtual e maior, como numa lupa.</li>
+              <li>Exatamente no 2F, a imagem tem o mesmo tamanho do objeto.</li>
+              <li>A divergente sempre forma imagem virtual, direita e menor.</li>
+            </ul>
+          </div>
+          <div class="bench" aria-label="Simulador de lentes">
+            <div class="bench-head"><span class="label">Lentes</span></div>
+            <canvas id="lens" width="960" height="500" role="img" aria-label="Objeto, lente e raios principais formando a imagem" style="aspect-ratio: 48 / 25;"></canvas>
+            <div class="controls">
+              <div class="ctrl">
+                <label for="lt">Tipo de lente</label>
+                <select id="lt">
+                  <option value="c">Convergente</option>
+                  <option value="d">Divergente</option>
+                </select>
+              </div>
+              <div class="ctrl">
+                <label for="lf">Distância focal <output id="lfo">+10 cm</output></label>
+                <input type="range" id="lf" min="4" max="16" step="1" value="10">
+              </div>
+              <div class="ctrl">
+                <label for="lp">Distância do objeto <output id="lpo">25 cm</output></label>
+                <input type="range" id="lp" min="2" max="38" step="1" value="25">
+              </div>
+            </div>
+            <div class="readout" aria-live="polite">
+              <div><span class="label">Posição da imagem p'</span><span class="v" id="lP">—</span></div>
+              <div><span class="label">Aumento A</span><span class="v" id="lA">—</span></div>
+              <div><span class="label">Imagem</span><span class="v small" id="lN">—</span></div>
+            </div>
+            <p class="bench-note mono" id="lNote"></p>
+          </div>
+        </div>
+
+        <div class="lab-item">
+          <div class="prose">
+            <h3>Espelhos esféricos</h3>
+            <p>Os espelhos seguem a mesma equação de Gauss das lentes. No côncavo o foco fica na frente do espelho; no convexo, atrás. O raio que bate no vértice volta simétrico em relação ao eixo.</p>
+            <p class="eq">1/f = 1/p + 1/p'<br>f = R/2</p>
+            <ul class="tips">
+              <li>Côncavo com o objeto além do centro C: imagem real, invertida e menor.</li>
+              <li>Côncavo com o objeto perto do vértice: imagem virtual e maior, como no espelho de maquiagem.</li>
+              <li>O convexo dá imagem virtual e menor e amplia o campo de visão, por isso é usado em retrovisores e saídas de garagem.</li>
+            </ul>
+          </div>
+          <div class="bench" aria-label="Simulador de espelhos esféricos">
+            <div class="bench-head"><span class="label">Espelhos esféricos</span></div>
+            <canvas id="mir" width="960" height="500" role="img" aria-label="Objeto diante de um espelho esférico e raios refletidos" style="aspect-ratio: 48 / 25;"></canvas>
+            <div class="controls">
+              <div class="ctrl">
+                <label for="mt">Tipo de espelho</label>
+                <select id="mt">
+                  <option value="c">Côncavo</option>
+                  <option value="d">Convexo</option>
+                </select>
+              </div>
+              <div class="ctrl">
+                <label for="mf">Distância focal <output id="mfo">+10 cm</output></label>
+                <input type="range" id="mf" min="4" max="16" step="1" value="10">
+              </div>
+              <div class="ctrl">
+                <label for="mp">Distância do objeto <output id="mpo">30 cm</output></label>
+                <input type="range" id="mp" min="2" max="55" step="1" value="30">
+              </div>
+            </div>
+            <div class="readout" aria-live="polite">
+              <div><span class="label">Posição da imagem p'</span><span class="v" id="mP">—</span></div>
+              <div><span class="label">Aumento A</span><span class="v" id="mA">—</span></div>
+              <div><span class="label">Imagem</span><span class="v small" id="mN">—</span></div>
+            </div>
+            <p class="bench-note mono" id="mNote"></p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== ONDULATÓRIA ===================== -->
+  <section class="area" id="ondas">
+    <div class="wrap">
+      <div class="area-head">
+        <span class="area-sym mono">λ</span>
+        <div><p class="label">Área 3</p><h2>Ondulatória</h2></div>
+      </div>
+      <div class="lab">
+        <div class="lab-item">
+          <div class="prose">
+            <h3>Efeito Doppler e ondas estacionárias</h3>
+            <p>Quando a fonte de som se move, as frentes de onda ficam espremidas à frente dela e espaçadas atrás. Quem está à frente ouve um som mais agudo; quem ficou para trás, mais grave. É por isso que a sirene da ambulância muda de tom quando ela passa.</p>
+            <p class="eq">f' = f·v/(v ∓ v<sub>fonte</sub>)<br>v = λ·f</p>
+            <ul class="tips">
+              <li>Comece com a fonte parada: círculos com o mesmo centro e o mesmo tom para todos.</li>
+              <li>Passe de 340 m/s e veja as frentes se empilharem num cone, a onda de choque.</li>
+              <li>No seletor, troque para <strong>onda estacionária</strong>: uma corda presa nas pontas só vibra em certas frequências, com nós parados e ventres que oscilam.</li>
+            </ul>
+          </div>
+          <div class="bench" aria-label="Simulador de fenômenos ondulatórios">
+            <div class="bench-head"><span class="label">Efeito Doppler · Ondas</span></div>
+            <canvas id="wave" width="960" height="540" role="img" aria-label="Ambulância em movimento emitindo frentes de onda sonora entre dois observadores"></canvas>
+            <div class="controls two">
+              <div class="ctrl">
+                <label for="wm">Fenômeno</label>
+                <select id="wm">
+                  <option value="dop">Efeito Doppler</option>
+                  <option value="est">Onda estacionária</option>
+                </select>
+              </div>
+              <div class="ctrl" data-wmode="est" hidden>
+                <label for="wn">Harmônico <output id="wno">3º harmônico</output></label>
+                <input type="range" id="wn" min="1" max="6" step="1" value="3">
+              </div>
+              <div class="ctrl" data-wmode="dop">
+                <label for="wv">Velocidade da fonte <output id="wvo">120 m/s</output></label>
+                <input type="range" id="wv" min="0" max="450" step="10" value="120">
+              </div>
+            </div>
+            <div class="readout" aria-live="polite">
+              <div><span class="label" id="w1l">—</span><span class="v" id="w1">—</span></div>
+              <div><span class="label" id="w2l">—</span><span class="v" id="w2">—</span></div>
+              <div><span class="label" id="w3l">—</span><span class="v" id="w3">—</span></div>
+            </div>
+            <p class="bench-note mono" id="wNote"></p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== TERMODINÂMICA ===================== -->
+  <section class="area" id="termo">
+    <div class="wrap">
+      <div class="area-head">
+        <span class="area-sym mono">Q</span>
+        <div><p class="label">Área 4</p><h2>Termodinâmica</h2></div>
+      </div>
+      <div class="lab">
+        <div class="lab-item">
+          <div class="prose">
+            <h3>Ciclo de Carnot</h3>
+            <p>A máquina térmica ideal: duas isotermas e duas adiabáticas. O gás recebe calor da fonte quente, transforma parte dele em trabalho e cede o resto à fonte fria. No diagrama p × V, o trabalho por ciclo é a área dentro da curva.</p>
+            <p class="eq">η = 1 − T<sub>f</sub>/T<sub>q</sub><br>W = Q<sub>q</sub> − Q<sub>f</sub></p>
+            <ul class="tips">
+              <li>O rendimento só depende das temperaturas, sempre em kelvin.</li>
+              <li>Aproxime T<sub>f</sub> de T<sub>q</sub>: a área encolhe e o trabalho quase some.</li>
+              <li>Mesmo a máquina ideal nunca chega a 100 %: isso exigiria T<sub>f</sub> = 0 K.</li>
+            </ul>
+          </div>
+          <div class="bench" aria-label="Simulador do ciclo de Carnot">
+            <div class="bench-head"><span class="label">Ciclo de Carnot · 1 mol de gás ideal</span></div>
+            <canvas id="carnot" width="960" height="540" role="img" aria-label="Diagrama pressão por volume do ciclo de Carnot"></canvas>
+            <div class="controls">
+              <div class="ctrl">
+                <label for="tq">Fonte quente <output id="tqo">600 K</output></label>
+                <input type="range" id="tq" min="400" max="900" step="10" value="600">
+              </div>
+              <div class="ctrl">
+                <label for="tf">Fonte fria <output id="tfo">300 K</output></label>
+                <input type="range" id="tf" min="200" max="600" step="10" value="300">
+              </div>
+              <div class="ctrl">
+                <label for="tr">Expansão isotérmica V₂/V₁ <output id="tro">2,0</output></label>
+                <input type="range" id="tr" min="1.5" max="4" step="0.1" value="2">
+              </div>
+            </div>
+            <div class="readout" aria-live="polite">
+              <div><span class="label">Rendimento</span><span class="v" id="tE">—</span></div>
+              <div><span class="label">Calor recebido</span><span class="v" id="tQ">—</span></div>
+              <div><span class="label">Trabalho por ciclo</span><span class="v" id="tW">—</span></div>
+            </div>
+            <p class="bench-note mono" id="tNote"></p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== ELETRICIDADE ===================== -->
+  <section class="area" id="eletricidade">
+    <div class="wrap">
+      <div class="area-head">
+        <span class="area-sym mono">i</span>
+        <div><p class="label">Área 5</p><h2>Eletricidade</h2></div>
+      </div>
+      <div class="lab">
+        <div class="lab-item">
+          <div class="prose">
+            <h3>Circuitos e a lei de Ohm</h3>
+            <p>A tensão empurra as cargas, a resistência se opõe ao movimento e a corrente é o resultado dessa disputa.</p>
+            <p class="eq">U = R·i<br>Série: R<sub>eq</sub> = R₁ + R₂<br>Paralelo: R<sub>eq</sub> = R₁·R₂ / (R₁ + R₂)</p>
+            <ul class="tips">
+              <li>Com os mesmos valores, troque de série para paralelo e compare a corrente.</li>
+              <li>As bolinhas seguem o sentido convencional da corrente, e a velocidade delas acompanha o valor de i.</li>
+              <li>Quer treinar? O <a href="eletricidade.html">quiz de eletricidade</a> tem dez circuitos para resolver.</li>
+            </ul>
+          </div>
+          <div class="bench" aria-label="Simulador de circuito elétrico">
+            <div class="bench-head"><span class="label">Circuito resistivo</span></div>
+            <canvas id="circ" width="600" height="380" role="img" aria-label="Circuito com bateria e dois resistores" style="aspect-ratio: 30 / 19;"></canvas>
+            <div class="controls two">
+              <div class="ctrl">
+                <label for="cu">Tensão <output id="cuo">9,0 V</output></label>
+                <input type="range" id="cu" min="1.5" max="12" step="0.5" value="9">
+              </div>
+              <div class="ctrl">
+                <label for="mode">Ligação</label>
+                <select id="mode">
+                  <option value="s">Em série</option>
+                  <option value="p">Em paralelo</option>
+                </select>
+              </div>
+              <div class="ctrl">
+                <label for="r1">R₁ <output id="r1o">10 Ω</output></label>
+                <input type="range" id="r1" min="1" max="100" step="1" value="10">
+              </div>
+              <div class="ctrl">
+                <label for="r2">R₂ <output id="r2o">20 Ω</output></label>
+                <input type="range" id="r2" min="1" max="100" step="1" value="20">
+              </div>
+            </div>
+            <div class="readout" aria-live="polite">
+              <div><span class="label">R equivalente</span><span class="v" id="cReq">—</span></div>
+              <div><span class="label">Corrente total</span><span class="v" id="cI">—</span></div>
+              <div><span class="label">Potência</span><span class="v" id="cP">—</span></div>
+            </div>
+            <p class="bench-note mono" id="cNote"></p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <span>A Tal da Física · material de estudo gratuito</span>
+    <span class="mono">λ<sub>Na</sub> = 589 nm, a cor do nosso destaque</span>
+  </div>
+</footer>
+
+<script src="bancadas.js"></script>
+</body>
+</html>
