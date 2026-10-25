@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="Gráficos da física em que a área sob a curva representa uma grandeza: deslocamento, variação de velocidade, trabalho, energia, impulso, carga elétrica e trabalho do gás.">
+<title>Gráficos e Áreas · A Tal da Física</title>
+<link rel="stylesheet" href="estilo.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Literata:ital,opsz,wght@0,7..72,400;0,7..72,600;1,7..72,400&family=JetBrains+Mono:wght@400;600&display=swap">
+</head>
+<body>
+<header class="top">
+  <div class="wrap">
+    <a class="brand" href="index.html">
+      <svg width="28" height="28" viewBox="0 0 28 28" aria-hidden="true">
+        <path d="M3 24 Q14 -6 25 24" fill="none" stroke="var(--ink)" stroke-width="2" stroke-dasharray="3 3"/>
+        <circle cx="14" cy="9" r="3.5" fill="var(--accent)"/>
+      </svg>
+      A Tal da Física
+    </a>
+    <nav class="links" aria-label="Seções">
+      <a href="index.html#trilhas">Trilhas</a>
+      <a href="index.html#licao">Lição</a>
+      <a href="laboratorio.html">Laboratório</a>
+      <a href="graficos.html" aria-current="page">Gráficos</a>
+      <a href="quiz.html">Quiz</a>
+      <a href="enem.html">ENEM</a>
+      <a href="eletricidade.html">Eletricidade</a>
+      <a href="index.html#constantes">Constantes</a>
+    </nav>
+  </div>
+</header>
+
+<main id="inicio">
+  <section style="padding-block: 48px 32px;">
+    <div class="wrap">
+      <div class="section-head">
+        <p class="label">Gráficos e áreas</p>
+        <h2>A área sob a curva também é física</h2>
+        <p>Em muitos gráficos, a área entre a curva e o eixo horizontal mede uma grandeza física. Para descobrir qual, multiplique as unidades dos dois eixos.</p>
+      </div>
+
+      <div class="rule-box">
+        <p class="label">Regra de ouro</p>
+        <p class="rule-eq mono">unidade da área = (unidade do eixo y) × (unidade do eixo x)</p>
+        <p>Exemplo: no gráfico v × t, a área tem unidade (m/s)·s = m, ou seja, é um deslocamento. Área acima do eixo conta como positiva; abaixo do eixo, como negativa.</p>
+      </div>
+
+      <div class="table-wrap" style="margin-top: 24px;">
+        <table>
+          <thead><tr><th>Gráfico</th><th>A área representa</th><th>Fórmula</th><th>Unidade</th></tr></thead>
+          <tbody>
+            <tr><td class="sym"><a href="#vt">v × t</a></td><td>Deslocamento</td><td class="mono">Δs = área</td><td class="mono">m</td></tr>
+            <tr><td class="sym"><a href="#at">a × t</a></td><td>Variação de velocidade</td><td class="mono">Δv = área</td><td class="mono">m/s</td></tr>
+            <tr><td class="sym"><a href="#fd">F × d</a></td><td>Trabalho de uma força</td><td class="mono">W = área</td><td class="mono">J</td></tr>
+            <tr><td class="sym"><a href="#el">F<sub>el</sub> × x</a></td><td>Energia potencial elástica</td><td class="mono">Eₚ = k·x²/2</td><td class="mono">J</td></tr>
+            <tr><td class="sym"><a href="#ft">F × t</a></td><td>Impulso</td><td class="mono">I = Δp = área</td><td class="mono">N·s</td></tr>
+            <tr><td class="sym"><a href="#it">i × t</a></td><td>Carga elétrica</td><td class="mono">Q = área</td><td class="mono">C</td></tr>
+            <tr><td class="sym"><a href="#pv">p × V</a></td><td>Trabalho da força de pressão</td><td class="mono">W = p·ΔV = área</td><td class="mono">J</td></tr>
+            <tr><td class="sym"><a href="#pt">P × t</a></td><td>Energia</td><td class="mono">E = P·Δt = área</td><td class="mono">J ou kWh</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <section style="padding-top: 8px;">
+    <div class="wrap graph-grid">
+
+      <article class="gcard" id="vt">
+        <div class="gcard-head">
+          <div><span class="axes mono">v × t</span><h3>Área = deslocamento</h3></div>
+          <span class="unit mono">(m/s)·s = m</span>
+        </div>
+        <p class="gtext">Num movimento com aceleração constante o gráfico é uma reta e a área é um trapézio. Deixe a velocidade ficar negativa e veja o móvel voltar: a área abaixo do eixo desconta do deslocamento.</p>
+        <canvas id="g-vt" width="720" height="440" role="img" aria-label="Gráfico de velocidade por tempo com a área sombreada"></canvas>
+        <div class="controls">
+          <div class="ctrl"><label for="vt-v0">v₀ <output id="vt-v0o">5 m/s</output></label><input type="range" id="vt-v0" min="-10" max="20" step="1" value="5"></div>
+          <div class="ctrl"><label for="vt-a">Aceleração <output id="vt-ao">2,0 m/s²</output></label><input type="range" id="vt-a" min="-4" max="4" step="0.5" value="2"></div>
+          <div class="ctrl"><label for="vt-t">Tempo <output id="vt-to">6 s</output></label><input type="range" id="vt-t" min="1" max="10" step="1" value="6"></div>
+        </div>
+        <div class="gres" id="g-vt-res" aria-live="polite"></div>
+      </article>
+
+      <article class="gcard" id="at">
+        <div class="gcard-head">
+          <div><span class="axes mono">a × t</span><h3>Área = variação de velocidade</h3></div>
+          <span class="unit mono">(m/s²)·s = m/s</span>
+        </div>
+        <p class="gtext">Um carro acelera e depois freia. Cada fase vira um retângulo: o de cima soma velocidade, o de baixo tira.</p>
+        <canvas id="g-at" width="720" height="440" role="img" aria-label="Gráfico de aceleração por tempo em duas fases"></canvas>
+        <div class="controls">
+          <div class="ctrl"><label for="at-a1">a₁ (fase 1) <output id="at-a1o">3,0 m/s²</output></label><input type="range" id="at-a1" min="-5" max="5" step="0.5" value="3"></div>
+          <div class="ctrl"><label for="at-a2">a₂ (fase 2) <output id="at-a2o">−2,0 m/s²</output></label><input type="range" id="at-a2" min="-5" max="5" step="0.5" value="-2"></div>
+          <div class="ctrl"><label for="at-T">Duração de cada fase <output id="at-To">3 s</output></label><input type="range" id="at-T" min="1" max="6" step="1" value="3"></div>
+        </div>
+        <div class="gres" id="g-at-res" aria-live="polite"></div>
+      </article>
+
+      <article class="gcard" id="fd">
+        <div class="gcard-head">
+          <div><span class="axes mono">F × d</span><h3>Área = trabalho</h3></div>
+          <span class="unit mono">N·m = J</span>
+        </div>
+        <p class="gtext">Quando a força varia ao longo do caminho, a conta W = F·d não serve mais, mas a área continua valendo. Aqui a força fica constante e depois cai até zero.</p>
+        <canvas id="g-fd" width="720" height="440" role="img" aria-label="Gráfico de força por deslocamento"></canvas>
+        <div class="controls">
+          <div class="ctrl"><label for="fd-F">Força <output id="fd-Fo">50 N</output></label><input type="range" id="fd-F" min="10" max="100" step="5" value="50"></div>
+          <div class="ctrl"><label for="fd-d1">Trecho constante <output id="fd-d1o">4 m</output></label><input type="range" id="fd-d1" min="0" max="10" step="1" value="4"></div>
+          <div class="ctrl"><label for="fd-d2">Trecho em queda <output id="fd-d2o">3 m</output></label><input type="range" id="fd-d2" min="0" max="10" step="1" value="3"></div>
+        </div>
+        <div class="gres" id="g-fd-res" aria-live="polite"></div>
+      </article>
+
+      <article class="gcard" id="el">
+        <div class="gcard-head">
+          <div><span class="axes mono">F<sub>el</sub> × x</span><h3>Área = energia elástica</h3></div>
+          <span class="unit mono">N·m = J</span>
+        </div>
+        <p class="gtext">Na mola, a força cresce junto com a deformação (lei de Hooke, F = k·x). O gráfico é uma reta que sai da origem e a área é um triângulo.</p>
+        <canvas id="g-el" width="720" height="440" role="img" aria-label="Gráfico de força elástica por deformação"></canvas>
+        <div class="controls two">
+          <div class="ctrl"><label for="el-k">Constante k <output id="el-ko">200 N/m</output></label><input type="range" id="el-k" min="10" max="400" step="10" value="200"></div>
+          <div class="ctrl"><label for="el-x">Deformação x <output id="el-xo">0,20 m</output></label><input type="range" id="el-x" min="0.05" max="0.5" step="0.05" value="0.2"></div>
+        </div>
+        <div class="gres" id="g-el-res" aria-live="polite"></div>
+      </article>
+
+      <article class="gcard" id="ft">
+        <div class="gcard-head">
+          <div><span class="axes mono">F × t</span><h3>Área = impulso</h3></div>
+          <span class="unit mono">N·s = kg·m/s</span>
+        </div>
+        <p class="gtext">No chute, a força sobe e desce em poucos milésimos de segundo. A área do pulso é o impulso, igual à variação da quantidade de movimento da bola.</p>
+        <canvas id="g-ft" width="720" height="440" role="img" aria-label="Gráfico de força por tempo em forma de pulso"></canvas>
+        <div class="controls">
+          <div class="ctrl"><label for="ft-F">Força máxima <output id="ft-Fo">1.200 N</output></label><input type="range" id="ft-F" min="100" max="3000" step="100" value="1200"></div>
+          <div class="ctrl"><label for="ft-dt">Tempo de contato <output id="ft-dto">40 ms</output></label><input type="range" id="ft-dt" min="5" max="100" step="5" value="40"></div>
+          <div class="ctrl"><label for="ft-m">Massa da bola <output id="ft-mo">0,45 kg</output></label><input type="range" id="ft-m" min="0.1" max="1" step="0.05" value="0.45"></div>
+        </div>
+        <div class="gres" id="g-ft-res" aria-live="polite"></div>
+      </article>
+
+      <article class="gcard" id="it">
+        <div class="gcard-head">
+          <div><span class="axes mono">i × t</span><h3>Área = carga elétrica</h3></div>
+          <span class="unit mono">A·s = C</span>
+        </div>
+        <p class="gtext">Corrente é carga por tempo (i = Q/Δt). Então carga é corrente vezes tempo: a área. Aqui a corrente fica constante e depois cai até zero, como na descarga de um capacitor simplificada.</p>
+        <canvas id="g-it" width="720" height="440" role="img" aria-label="Gráfico de corrente por tempo"></canvas>
+        <div class="controls">
+          <div class="ctrl"><label for="it-i">Corrente <output id="it-io">2,0 A</output></label><input type="range" id="it-i" min="0.5" max="5" step="0.5" value="2"></div>
+          <div class="ctrl"><label for="it-t1">Trecho constante <output id="it-t1o">5 s</output></label><input type="range" id="it-t1" min="0" max="10" step="1" value="5"></div>
+          <div class="ctrl"><label for="it-t2">Trecho em queda <output id="it-t2o">4 s</output></label><input type="range" id="it-t2" min="0" max="10" step="1" value="4"></div>
+        </div>
+        <div class="gres" id="g-it-res" aria-live="polite"></div>
+      </article>
+
+      <article class="gcard" id="pv">
+        <div class="gcard-head">
+          <div><span class="axes mono">p × V</span><h3>Área = trabalho do gás</h3></div>
+          <span class="unit mono">kPa·L = J</span>
+        </div>
+        <p class="gtext">Ao se expandir, o gás empurra o pistão e realiza trabalho. A área sob a curva entre o volume inicial e o final mede esse trabalho; na compressão ele é negativo. Com as duas pressões iguais, a transformação é isobárica.</p>
+        <canvas id="g-pv" width="720" height="440" role="img" aria-label="Gráfico de pressão por volume de uma transformação gasosa"></canvas>
+        <div class="controls two">
+          <div class="ctrl"><label for="pv-p1">Pressão inicial <output id="pv-p1o">200 kPa</output></label><input type="range" id="pv-p1" min="50" max="400" step="10" value="200"></div>
+          <div class="ctrl"><label for="pv-p2">Pressão final <output id="pv-p2o">200 kPa</output></label><input type="range" id="pv-p2" min="50" max="400" step="10" value="200"></div>
+          <div class="ctrl"><label for="pv-V1">Volume inicial <output id="pv-V1o">5 L</output></label><input type="range" id="pv-V1" min="1" max="20" step="1" value="5"></div>
+          <div class="ctrl"><label for="pv-V2">Volume final <output id="pv-V2o">15 L</output></label><input type="range" id="pv-V2" min="1" max="20" step="1" value="15"></div>
+        </div>
+        <div class="gres" id="g-pv-res" aria-live="polite"></div>
+      </article>
+
+      <article class="gcard" id="pt">
+        <div class="gcard-head">
+          <div><span class="axes mono">P × t</span><h3>Área = energia</h3></div>
+          <span class="unit mono">W·s = J</span>
+        </div>
+        <p class="gtext">Potência é energia por tempo, então a área do gráfico de potência é a energia consumida. É assim que a conta de luz é calculada, em quilowatt-hora.</p>
+        <canvas id="g-pt" width="720" height="440" role="img" aria-label="Gráfico de potência por tempo"></canvas>
+        <div class="controls two">
+          <div class="ctrl"><label for="pt-P">Potência <output id="pt-Po">5.500 W</output></label><input type="range" id="pt-P" min="100" max="6000" step="100" value="5500"></div>
+          <div class="ctrl"><label for="pt-t">Tempo de uso <output id="pt-to">15 min</output></label><input type="range" id="pt-t" min="1" max="60" step="1" value="15"></div>
+        </div>
+        <div class="gres" id="g-pt-res" aria-live="polite"></div>
+      </article>
+
+    </div>
+  </section>
+
+  <section style="padding-top: 0;">
+    <div class="wrap">
+      <div class="rule-box">
+        <p class="label">E a inclinação?</p>
+        <p>A área não é a única informação escondida no gráfico. A inclinação da curva também é uma grandeza: em <span class="mono">s × t</span> é a velocidade, em <span class="mono">v × t</span> é a aceleração e em <span class="mono">Q × t</span> é a corrente. Unidade da inclinação = (unidade do eixo y) ÷ (unidade do eixo x).</p>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <span>A Tal da Física · material de estudo gratuito</span>
+    <span class="mono">λ<sub>Na</sub> = 589 nm, a cor do nosso destaque</span>
+  </div>
+</footer>
+
+<script src="graficos.js"></script>
+</body>
+</html>

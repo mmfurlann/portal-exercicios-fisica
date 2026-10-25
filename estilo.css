@@ -330,3 +330,24 @@ nav.links a[aria-current="page"] { color: var(--ink); text-decoration: underline
   .area-nav small { display: none; }
   .area-sym { width: 52px; height: 52px; font-size: 1.5rem; }
 }
+
+/* Gráficos e áreas */
+.rule-box { background: var(--card); border: 1px solid var(--grid); border-left: 4px solid var(--accent); border-radius: 8px; padding: 18px 20px; display: grid; gap: 8px; max-width: 900px; }
+.rule-eq { font-size: 1.05rem; color: var(--accent-ink); }
+td.sym a { color: var(--accent-ink); text-decoration: none; }
+td.sym a:hover { text-decoration: underline; }
+.graph-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; }
+.gcard {
+  background: var(--card); border: 1px solid var(--grid); border-radius: 10px; overflow: hidden;
+  display: grid; grid-template-rows: auto auto auto auto 1fr; scroll-margin-top: 80px; min-width: 0;
+}
+.gcard-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; padding: 18px 20px 6px; flex-wrap: wrap; }
+.gcard-head .axes { font-size: 1.5rem; font-weight: 600; color: var(--accent-ink); display: block; line-height: 1.2; }
+.gcard-head h3 { margin-top: 4px; }
+.gcard-head .unit { font-size: .82rem; color: var(--ink-soft); border: 1px solid var(--grid); border-radius: 99px; padding: 3px 10px; white-space: nowrap; }
+.gtext { padding: 0 20px 14px; color: var(--ink-soft); font-size: .97rem; }
+.gcard canvas { display: block; width: 100%; height: auto; aspect-ratio: 18 / 11; border-block: 1px dashed var(--grid); }
+.gres { display: grid; gap: 6px; padding: 14px 20px 18px; border-top: 1px solid var(--grid); font-family: var(--mono); font-size: .86rem; color: var(--ink-soft); align-content: start; }
+.gres .big { font-size: 1.35rem; font-weight: 600; color: var(--ink); }
+@media (max-width: 1000px) { .graph-grid { grid-template-columns: minmax(0, 1fr); } }
+.rule-box p .mono { white-space: nowrap; }
