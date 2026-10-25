@@ -1,75 +1,891 @@
-
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Portal de Exercícios de Física</title>
-  <meta name="description" content="Listas de exercícios de Física para estudar, praticar e ensinar.">
-  <style>
-    body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-      background: #f3f6fb;
-      color: #17243a;
-    }
-    header {
-      background: #142b4a;
-      color: white;
-      padding: 42px 20px;
-      text-align: center;
-    }
-    main {
-      max-width: 850px;
-      margin: 30px auto;
-      padding: 0 18px;
-    }
-    .card {
-      background: white;
-      padding: 24px;
-      margin-bottom: 16px;
-      border-radius: 12px;
-      box-shadow: 0 3px 12px #152b4a12;
-    }
-    h2 { color: #176b87; }
-    footer {
-      text-align: center;
-      padding: 24px;
-      color: #5b6575;
-    }
-  </style>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="Física em Movimento: trilhas de estudo, simulações interativas, quiz e constantes físicas para o ensino médio e o ENEM.">
+<title>Física em Movimento</title>
+<style>
+/* Base que antes vinha do ambiente de publicação */
+:root { color-scheme: light; padding-top: env(safe-area-inset-top, 0px); padding-bottom: env(safe-area-inset-bottom, 0px); }
+body { margin: 0; }
+img { max-width: 100%; }
+[hidden] { display: none !important; }
+</style>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Literata:ital,opsz,wght@0,7..72,400;0,7..72,600;1,7..72,400&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+/* Layout: caderno de laboratório em papel milimetrado; simulações vivas no lugar de ilustrações, acento na cor da lâmpada de sódio (589 nm) */
+:root {
+  --paper: #f3f6f8;
+  --paper-2: #e6edf2;
+  --grid: #d3dee6;
+  --ink: #14273a;
+  --ink-soft: #4a5f73;
+  --accent: #d9711c;
+  --accent-ink: #9c4a07;
+  --blue: #2b62a3;
+  --ok: #2f7a4b;
+  --bad: #b23a32;
+  --card: #ffffff;
+  --display: "Bricolage Grotesque", "Avenir Next", "Segoe UI", sans-serif;
+  --body: "Literata", Georgia, "Times New Roman", serif;
+  --mono: "JetBrains Mono", ui-monospace, "SF Mono", Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper: #0f1a24; --paper-2: #15232f; --grid: #1f3140; --ink: #e4ecf2; --ink-soft: #9db0c0;
+    --accent: #f0913f; --accent-ink: #f6b277; --blue: #7fb0e8; --ok: #6cc391; --bad: #ef8379; --card: #132130;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --paper: #0f1a24; --paper-2: #15232f; --grid: #1f3140; --ink: #e4ecf2; --ink-soft: #9db0c0;
+  --accent: #f0913f; --accent-ink: #f6b277; --blue: #7fb0e8; --ok: #6cc391; --bad: #ef8379; --card: #132130;
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+body {
+  background-color: var(--paper);
+  background-image:
+    linear-gradient(var(--grid) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+  background-size: 24px 24px;
+  color: var(--ink);
+  font-family: var(--body);
+  font-size: 1.0625rem;
+  line-height: 1.65;
+}
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 10; background: var(--paper); }
+.wrap {
+  max-width: 1120px; margin: 0 auto;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+}
+h1, h2, h3 { font-family: var(--display); line-height: 1.1; text-wrap: balance; margin: 0; }
+h2 { font-size: clamp(1.75rem, 3.5vw, 2.5rem); font-weight: 800; letter-spacing: -0.01em; }
+h3 { font-size: 1.2rem; font-weight: 700; }
+p { margin: 0; }
+a { color: var(--blue); }
+:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; border-radius: 4px; }
+.mono { font-family: var(--mono); font-variant-numeric: tabular-nums; }
+.label {
+  font-family: var(--mono); font-size: 0.75rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-soft);
+}
+
+/* Cabeçalho */
+header.top {
+  position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5;
+  background: color-mix(in srgb, var(--paper) 92%, transparent);
+  backdrop-filter: blur(6px);
+  border-bottom: 1px solid var(--grid);
+}
+header.top .wrap { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding-block: 12px; flex-wrap: wrap; }
+.brand { font-family: var(--display); font-weight: 800; font-size: 1.2rem; display: flex; align-items: center; gap: 10px; color: var(--ink); text-decoration: none; }
+.brand svg { flex: none; }
+nav.links { display: flex; gap: 18px; flex-wrap: wrap; font-family: var(--display); font-weight: 500; font-size: 0.95rem; }
+nav.links a { color: var(--ink-soft); text-decoration: none; }
+nav.links a:hover { color: var(--ink); }
+
+section { padding-block: 64px; }
+.section-head { display: grid; gap: 10px; margin-bottom: 32px; max-width: 62ch; }
+.section-head p { color: var(--ink-soft); }
+
+/* Hero */
+.hero { padding-block: 48px 64px; }
+.hero-grid { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: 40px; align-items: start; }
+.hero h1 { font-size: clamp(2.4rem, 5.4vw, 4.2rem); font-weight: 800; letter-spacing: -0.025em; }
+.hero h1 em { font-style: normal; color: var(--accent); }
+.hero .lede { margin-top: 20px; font-size: 1.15rem; max-width: 46ch; }
+.hero .eq-strip { margin-top: 28px; display: grid; gap: 8px; }
+.eq { font-family: var(--mono); font-size: 0.95rem; color: var(--ink); }
+.eq b { color: var(--accent-ink); font-weight: 600; }
+.cta-row { margin-top: 28px; display: flex; gap: 12px; flex-wrap: wrap; }
+.btn {
+  font-family: var(--display); font-weight: 700; font-size: 1rem;
+  border: 2px solid var(--ink); background: var(--ink); color: var(--paper);
+  padding: 10px 18px; border-radius: 6px; cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; gap: 8px;
+}
+.btn.ghost { background: transparent; color: var(--ink); }
+.btn:hover { transform: translateY(-1px); }
+.btn.accent { background: var(--accent); border-color: var(--accent); color: #1a0d02; }
+
+/* Bancada (simulação) */
+.bench {
+  background: var(--card); border: 1px solid var(--grid); border-radius: 10px;
+  box-shadow: 0 1px 0 var(--grid), 0 12px 30px -18px rgba(20, 39, 58, 0.35);
+  overflow: hidden;
+}
+.bench-head { display: flex; justify-content: space-between; align-items: center; padding: 12px 16px; border-bottom: 1px dashed var(--grid); gap: 12px; flex-wrap: wrap; }
+.bench canvas { display: block; width: 100%; height: auto; aspect-ratio: 16 / 9; max-width: 100%; }
+.controls { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; padding: 16px; border-top: 1px dashed var(--grid); }
+.ctrl { display: grid; gap: 4px; min-width: 0; }
+.ctrl label { display: flex; justify-content: space-between; gap: 8px; font-family: var(--mono); font-size: 0.8rem; color: var(--ink-soft); }
+.ctrl output { color: var(--ink); font-weight: 600; }
+input[type="range"] { width: 100%; accent-color: var(--accent); }
+select { font: inherit; font-family: var(--mono); font-size: 0.85rem; padding: 6px 8px; border-radius: 6px; border: 1px solid var(--grid); background: var(--paper); color: var(--ink); width: 100%; }
+.readout { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); border-top: 1px solid var(--grid); }
+.readout div { padding: 12px 16px; display: grid; gap: 2px; }
+.readout div + div { border-left: 1px solid var(--grid); }
+.readout .v { font-family: var(--mono); font-size: 1.25rem; font-weight: 600; font-variant-numeric: tabular-nums; }
+
+/* Trilhas */
+.tracks { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+.track {
+  background: var(--card); border: 1px solid var(--grid); border-radius: 8px; padding: 20px;
+  display: grid; grid-template-rows: auto auto 1fr auto; gap: 10px; min-width: 0;
+}
+.track .top-line { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; }
+.track .sym { font-family: var(--mono); font-size: 1.6rem; color: var(--accent-ink); font-weight: 600; }
+.track p { color: var(--ink-soft); font-size: 0.98rem; }
+.track .key { font-family: var(--mono); font-size: 0.9rem; background: var(--paper-2); padding: 8px 10px; border-radius: 6px; overflow-x: auto; white-space: nowrap; }
+.track ul { margin: 0; padding-left: 18px; font-size: 0.95rem; }
+.pill { font-family: var(--mono); font-size: 0.72rem; padding: 2px 8px; border-radius: 99px; border: 1px solid currentColor; white-space: nowrap; }
+.pill.b { color: var(--ok); } .pill.i { color: var(--blue); } .pill.a { color: var(--bad); }
+
+/* Lição */
+.lesson { display: grid; grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); gap: 40px; align-items: start; }
+.prose { display: grid; gap: 18px; max-width: 65ch; }
+.prose h3 { margin-top: 8px; }
+.law { display: grid; grid-template-columns: 3.2rem minmax(0, 1fr); gap: 14px; align-items: start; }
+.law .n { font-family: var(--display); font-weight: 800; font-size: 2rem; color: var(--accent); line-height: 1; }
+.worked {
+  background: var(--card); border: 1px solid var(--grid); border-left: 4px solid var(--blue); border-radius: 6px; padding: 20px; display: grid; gap: 10px;
+}
+.worked ol { margin: 0; padding-left: 20px; display: grid; gap: 6px; }
+.pend-box { display: grid; gap: 0; }
+.pend-box canvas { aspect-ratio: 4 / 5; }
+.pend-box .controls { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+
+/* Laboratório */
+.lab { display: grid; gap: 56px; }
+.lab-item { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: 40px; align-items: start; }
+.lab-item .prose { gap: 14px; }
+.tips { margin: 0; padding-left: 20px; display: grid; gap: 6px; color: var(--ink-soft); font-size: 0.98rem; }
+.controls.two { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.bench-note { padding: 10px 16px; border-top: 1px solid var(--grid); font-size: 0.85rem; color: var(--ink-soft); }
+
+/* Quiz */
+.quiz { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+.q { background: var(--card); border: 1px solid var(--grid); border-radius: 8px; padding: 20px; display: grid; gap: 12px; align-content: start; min-width: 0; }
+.q .opts { display: grid; gap: 8px; }
+.q button.opt {
+  font: inherit; font-size: 0.98rem; text-align: left; padding: 10px 12px; border-radius: 6px;
+  border: 1px solid var(--grid); background: var(--paper); color: var(--ink); cursor: pointer;
+}
+.q button.opt:hover:not(:disabled) { border-color: var(--ink-soft); }
+.q button.opt:disabled { cursor: default; }
+.q button.opt.right { border-color: var(--ok); background: color-mix(in srgb, var(--ok) 14%, var(--paper)); }
+.q button.opt.wrong { border-color: var(--bad); background: color-mix(in srgb, var(--bad) 12%, var(--paper)); }
+.q .fb { font-size: 0.95rem; color: var(--ink-soft); }
+.score { margin-top: 20px; display: flex; gap: 16px; align-items: center; flex-wrap: wrap; font-family: var(--display); font-weight: 700; }
+
+/* Constantes */
+.table-wrap { overflow-x: auto; background: var(--card); border: 1px solid var(--grid); border-radius: 8px; }
+table { width: 100%; border-collapse: collapse; min-width: 560px; }
+th, td { text-align: left; padding: 12px 16px; border-bottom: 1px solid var(--grid); }
+th { font-family: var(--mono); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--ink-soft); font-weight: 400; }
+td.sym { font-family: var(--mono); color: var(--accent-ink); font-weight: 600; }
+td.val { font-family: var(--mono); font-variant-numeric: tabular-nums; }
+tr:last-child td { border-bottom: 0; }
+
+footer { border-top: 1px solid var(--grid); background: var(--paper); }
+footer .wrap { padding-block: 28px 40px; display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; color: var(--ink-soft); font-size: 0.92rem; }
+
+@media (max-width: 900px) {
+  .hero-grid, .lesson, .lab-item { grid-template-columns: minmax(0, 1fr); }
+  .tracks { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 620px) {
+  section { padding-block: 44px; }
+  .tracks, .quiz { grid-template-columns: minmax(0, 1fr); }
+  .controls { grid-template-columns: minmax(0, 1fr); }
+  .readout .v { font-size: 1.05rem; }
+  .readout div { padding: 10px; }
+  nav.links { gap: 12px; font-size: 0.88rem; }
+}
+</style>
 </head>
 <body>
-  <header>
-    <h1>Portal de Exercícios de Física</h1>
-    <p>Compreender. Praticar. Aprender.</p>
-  </header>
 
-  <main>
-    <section class="card">
-      <h2>Mecânica</h2>
-      <p>Movimento, velocidade, aceleração e leis de Newton.</p>
-      <p>Em breve: listas de exercícios para consulta e download.</p>
-    </section>
+<header class="top">
+  <div class="wrap">
+    <a class="brand" href="#inicio">
+      <svg width="28" height="28" viewBox="0 0 28 28" aria-hidden="true">
+        <path d="M3 24 Q14 -6 25 24" fill="none" stroke="var(--ink)" stroke-width="2" stroke-dasharray="3 3"/>
+        <circle cx="14" cy="9" r="3.5" fill="var(--accent)"/>
+      </svg>
+      Física em Movimento
+    </a>
+    <nav class="links" aria-label="Seções">
+      <a href="#trilhas">Trilhas</a>
+      <a href="#licao">Lição</a>
+      <a href="#laboratorio">Laboratório</a>
+      <a href="#quiz">Quiz</a>
+      <a href="#constantes">Constantes</a>
+    </nav>
+  </div>
+</header>
 
-    <section class="card">
-      <h2>Eletricidade</h2>
-      <p>Circuitos elétricos, resistência, potência e energia.</p>
-    </section>
+<main id="inicio">
+  <section class="hero">
+    <div class="wrap hero-grid">
+      <div>
+        <p class="label">Ensino médio · vestibular · ENEM</p>
+        <h1 style="margin-top:12px">Aprenda física <em>mexendo</em> nas equações.</h1>
+        <p class="lede">Cada conceito vem com uma simulação que você controla. Mude o ângulo, troque de planeta, encurte o fio do pêndulo e veja a fórmula ganhar forma na tela.</p>
+        <div class="eq-strip" aria-label="Equações do lançamento oblíquo">
+          <span class="eq">x(t) = <b>v₀</b>·cos θ·t</span>
+          <span class="eq">y(t) = <b>v₀</b>·sen θ·t − ½·<b>g</b>·t²</span>
+          <span class="eq">A = <b>v₀</b>²·sen 2θ / <b>g</b></span>
+        </div>
+        <div class="cta-row">
+          <a class="btn accent" href="#trilhas">Escolher uma trilha</a>
+          <a class="btn ghost" href="#quiz">Testar o que sei</a>
+        </div>
+      </div>
 
-    <section class="card">
-      <h2>Óptica e Ondulatória</h2>
-      <p>Espelhos, lentes, ondas e fenômenos ópticos.</p>
-    </section>
+      <div class="bench" aria-label="Simulador de lançamento oblíquo">
+        <div class="bench-head">
+          <span class="label">Bancada 1 · Lançamento oblíquo</span>
+          <button class="btn" id="launch" type="button">Lançar ▸</button>
+        </div>
+        <canvas id="proj" width="960" height="540" role="img" aria-label="Trajetória parabólica do projétil"></canvas>
+        <div class="controls">
+          <div class="ctrl">
+            <label for="v0">Velocidade inicial <output id="v0o">20 m/s</output></label>
+            <input type="range" id="v0" min="5" max="40" step="1" value="20">
+          </div>
+          <div class="ctrl">
+            <label for="ang">Ângulo <output id="ango">45°</output></label>
+            <input type="range" id="ang" min="5" max="85" step="1" value="45">
+          </div>
+          <div class="ctrl">
+            <label for="grav">Gravidade</label>
+            <select id="grav">
+              <option value="9.81">Terra · 9,81 m/s²</option>
+              <option value="1.62">Lua · 1,62 m/s²</option>
+              <option value="3.71">Marte · 3,71 m/s²</option>
+              <option value="24.79">Júpiter · 24,79 m/s²</option>
+            </select>
+          </div>
+        </div>
+        <div class="readout" aria-live="polite">
+          <div><span class="label">Alcance</span><span class="v" id="rR">—</span></div>
+          <div><span class="label">Altura máx.</span><span class="v" id="rH">—</span></div>
+          <div><span class="label">Tempo de voo</span><span class="v" id="rT">—</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
 
-    <section class="card">
-      <h2>Termologia e Física Moderna</h2>
-      <p>Calor, temperatura, radioatividade e outros temas.</p>
-    </section>
-  </main>
+  <section id="trilhas">
+    <div class="wrap">
+      <div class="section-head">
+        <p class="label">Trilhas de estudo</p>
+        <h2>Seis áreas, do movimento ao átomo</h2>
+        <p>Cada trilha segue a ordem em que os conteúdos costumam aparecer no ensino médio. Comece pela mecânica se for sua primeira vez.</p>
+      </div>
+      <div class="tracks">
+        <article class="track">
+          <div class="top-line"><span class="sym">F⃗</span><span class="pill b">básico</span></div>
+          <h3>Mecânica</h3>
+          <ul><li>Cinemática e MRUV</li><li>Leis de Newton</li><li>Trabalho e energia</li><li>Gravitação</li></ul>
+          <div class="key">F = m·a · E<sub>c</sub> = ½mv²</div>
+        </article>
+        <article class="track">
+          <div class="top-line"><span class="sym">Q</span><span class="pill i">intermediário</span></div>
+          <h3>Termologia</h3>
+          <ul><li>Escalas termométricas</li><li>Calorimetria</li><li>Gases ideais</li><li>Leis da termodinâmica</li></ul>
+          <div class="key">Q = m·c·ΔT · pV = nRT</div>
+        </article>
+        <article class="track">
+          <div class="top-line"><span class="sym">λ</span><span class="pill i">intermediário</span></div>
+          <h3>Ondulatória</h3>
+          <ul><li>Período e frequência</li><li>Som e efeito Doppler</li><li>Interferência</li><li>MHS e pêndulo</li></ul>
+          <div class="key">v = λ·f · T = 2π√(L/g)</div>
+        </article>
+        <article class="track">
+          <div class="top-line"><span class="sym">n</span><span class="pill b">básico</span></div>
+          <h3>Óptica</h3>
+          <ul><li>Reflexão e espelhos</li><li>Refração e Snell</li><li>Lentes delgadas</li><li>Olho humano</li></ul>
+          <div class="key">n₁·sen θ₁ = n₂·sen θ₂</div>
+        </article>
+        <article class="track">
+          <div class="top-line"><span class="sym">E⃗</span><span class="pill a">avançado</span></div>
+          <h3>Eletromagnetismo</h3>
+          <ul><li>Lei de Coulomb</li><li>Circuitos e Ohm</li><li>Campo magnético</li><li>Indução de Faraday</li></ul>
+          <div class="key">U = R·i · F = k·|q₁q₂|/d²</div>
+        </article>
+        <article class="track">
+          <div class="top-line"><span class="sym">ħ</span><span class="pill a">avançado</span></div>
+          <h3>Física moderna</h3>
+          <ul><li>Relatividade restrita</li><li>Efeito fotoelétrico</li><li>Modelo de Bohr</li><li>Radioatividade</li></ul>
+          <div class="key">E = h·f · E = m·c²</div>
+        </article>
+      </div>
+    </div>
+  </section>
 
-  <footer>
-    Portal de Exercícios de Física
-  </footer>
+  <section id="licao" style="background: var(--paper); border-block: 1px solid var(--grid);">
+    <div class="wrap">
+      <div class="section-head">
+        <p class="label">Lição em destaque · Mecânica</p>
+        <h2>As três leis de Newton</h2>
+      </div>
+      <div class="lesson">
+        <div class="prose">
+          <div class="law">
+            <span class="n">1ª</span>
+            <div><h3>Inércia</h3><p>Um corpo mantém seu estado de repouso ou de movimento retilíneo uniforme enquanto a força resultante sobre ele for nula. É por isso que você é jogado para a frente quando o ônibus freia.</p></div>
+          </div>
+          <div class="law">
+            <span class="n">2ª</span>
+            <div><h3>Princípio fundamental</h3><p>A força resultante é igual à massa vezes a aceleração: <span class="mono">F<sub>R</sub> = m·a</span>. Dobrar a força dobra a aceleração; dobrar a massa a reduz pela metade.</p></div>
+          </div>
+          <div class="law">
+            <span class="n">3ª</span>
+            <div><h3>Ação e reação</h3><p>Toda ação tem uma reação de mesma intensidade, mesma direção e sentido oposto, aplicada no <em>outro</em> corpo. O foguete empurra os gases para baixo e os gases empurram o foguete para cima.</p></div>
+          </div>
+
+          <div class="worked">
+            <p class="label">Exercício resolvido</p>
+            <p>Um carrinho de 2 kg é puxado por uma força horizontal de 10 N. O atrito com o chão vale 4 N. Qual a aceleração?</p>
+            <ol>
+              <li>Força resultante: <span class="mono">F<sub>R</sub> = 10 − 4 = 6 N</span></li>
+              <li>Segunda lei: <span class="mono">a = F<sub>R</sub> / m = 6 / 2</span></li>
+              <li>Resposta: <span class="mono"><strong>a = 3 m/s²</strong></span></li>
+            </ol>
+          </div>
+        </div>
+
+        <div class="bench pend-box" aria-label="Simulador de pêndulo simples">
+          <div class="bench-head">
+            <span class="label">Bancada 2 · Pêndulo simples</span>
+            <span class="mono" id="pT" style="font-weight:600">T = —</span>
+          </div>
+          <canvas id="pend" width="480" height="600" role="img" aria-label="Pêndulo oscilando"></canvas>
+          <div class="controls">
+            <div class="ctrl">
+              <label for="len">Comprimento <output id="leno">1,00 m</output></label>
+              <input type="range" id="len" min="0.2" max="2.5" step="0.05" value="1">
+            </div>
+            <div class="ctrl">
+              <label for="pg">Gravidade</label>
+              <select id="pg">
+                <option value="9.81">Terra · 9,81</option>
+                <option value="1.62">Lua · 1,62</option>
+                <option value="3.71">Marte · 3,71</option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="laboratorio">
+    <div class="wrap">
+      <div class="section-head">
+        <p class="label">Laboratório · Óptica e eletricidade</p>
+        <h2>Mais duas bancadas para experimentar</h2>
+        <p>Leia a ideia principal, mexa nos controles e confira se o resultado bate com a conta feita no papel.</p>
+      </div>
+      <div class="lab">
+        <div class="lab-item">
+          <div class="prose">
+            <h3>Refração e a lei de Snell</h3>
+            <p>Quando a luz muda de meio, sua velocidade muda e o raio se desvia. O índice de refração <span class="mono">n = c/v</span> diz quantas vezes a luz fica mais lenta naquele meio do que no vácuo.</p>
+            <p class="eq">n₁·sen θ₁ = n₂·sen θ₂</p>
+            <p>Se a luz vai de um meio mais refringente para um menos refringente, existe um ângulo limite. Acima dele nenhuma luz atravessa: é a reflexão total, o princípio da fibra óptica.</p>
+            <ul class="tips">
+              <li>Do ar para a água, veja o raio se aproximar da normal.</li>
+              <li>Da água para o ar, passe de 48,8° e observe a reflexão total.</li>
+              <li>No diamante o ângulo limite é de só 24,4°. Por isso ele brilha tanto.</li>
+            </ul>
+          </div>
+          <div class="bench" aria-label="Simulador de refração">
+            <div class="bench-head"><span class="label">Bancada 3 · Refração</span></div>
+            <canvas id="refr" width="960" height="600" role="img" aria-label="Raio de luz mudando de meio" style="aspect-ratio: 8 / 5;"></canvas>
+            <div class="controls">
+              <div class="ctrl">
+                <label for="inc">Ângulo de incidência <output id="inco">40°</output></label>
+                <input type="range" id="inc" min="0" max="89" step="1" value="40">
+              </div>
+              <div class="ctrl">
+                <label for="n1">Meio 1 (de cima)</label>
+                <select id="n1">
+                  <option value="1.00" selected>Ar · n = 1,00</option>
+                  <option value="1.33">Água · n = 1,33</option>
+                  <option value="1.50">Vidro · n = 1,50</option>
+                  <option value="2.42">Diamante · n = 2,42</option>
+                </select>
+              </div>
+              <div class="ctrl">
+                <label for="n2">Meio 2 (de baixo)</label>
+                <select id="n2">
+                  <option value="1.00">Ar · n = 1,00</option>
+                  <option value="1.33" selected>Água · n = 1,33</option>
+                  <option value="1.50">Vidro · n = 1,50</option>
+                  <option value="2.42">Diamante · n = 2,42</option>
+                </select>
+              </div>
+            </div>
+            <div class="readout" aria-live="polite">
+              <div><span class="label">Ângulo refratado</span><span class="v" id="rT2">—</span></div>
+              <div><span class="label">Ângulo limite</span><span class="v" id="rC">—</span></div>
+              <div><span class="label">Velocidade no meio 2</span><span class="v" id="rV">—</span></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="lab-item">
+          <div class="prose">
+            <h3>Circuitos e a lei de Ohm</h3>
+            <p>A tensão empurra as cargas, a resistência se opõe ao movimento e a corrente é o resultado dessa disputa.</p>
+            <p class="eq">U = R·i</p>
+            <p>Em série, a corrente é a mesma em todos os resistores e as resistências se somam. Em paralelo, a tensão é a mesma em cada ramo e a resistência equivalente fica menor que a menor delas.</p>
+            <p class="eq">Série: R<sub>eq</sub> = R₁ + R₂<br>Paralelo: R<sub>eq</sub> = R₁·R₂ / (R₁ + R₂)</p>
+            <ul class="tips">
+              <li>Com os mesmos valores, troque de série para paralelo e compare a corrente.</li>
+              <li>As bolinhas seguem o sentido convencional da corrente, e a velocidade delas acompanha o valor de i.</li>
+              <li>A potência dissipada é P = U·i.</li>
+            </ul>
+          </div>
+          <div class="bench" aria-label="Simulador de circuito elétrico">
+            <div class="bench-head"><span class="label">Bancada 4 · Circuito resistivo</span></div>
+            <canvas id="circ" width="600" height="380" role="img" aria-label="Circuito com bateria e dois resistores" style="aspect-ratio: 30 / 19;"></canvas>
+            <div class="controls two">
+              <div class="ctrl">
+                <label for="cu">Tensão <output id="cuo">9,0 V</output></label>
+                <input type="range" id="cu" min="1.5" max="12" step="0.5" value="9">
+              </div>
+              <div class="ctrl">
+                <label for="mode">Ligação</label>
+                <select id="mode">
+                  <option value="s">Em série</option>
+                  <option value="p">Em paralelo</option>
+                </select>
+              </div>
+              <div class="ctrl">
+                <label for="r1">R₁ <output id="r1o">10 Ω</output></label>
+                <input type="range" id="r1" min="1" max="100" step="1" value="10">
+              </div>
+              <div class="ctrl">
+                <label for="r2">R₂ <output id="r2o">20 Ω</output></label>
+                <input type="range" id="r2" min="1" max="100" step="1" value="20">
+              </div>
+            </div>
+            <div class="readout" aria-live="polite">
+              <div><span class="label">R equivalente</span><span class="v" id="cReq">—</span></div>
+              <div><span class="label">Corrente total</span><span class="v" id="cI">—</span></div>
+              <div><span class="label">Potência</span><span class="v" id="cP">—</span></div>
+            </div>
+            <p class="bench-note mono" id="cNote"></p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="quiz">
+    <div class="wrap">
+      <div class="section-head">
+        <p class="label">Quiz rápido</p>
+        <h2>Oito perguntas para conferir</h2>
+        <p>Clique na alternativa. A explicação aparece logo abaixo, certa ou errada.</p>
+      </div>
+      <div class="quiz" id="quizGrid"></div>
+      <div class="score">
+        <span id="scoreText">0 de 8 respondidas</span>
+        <button class="btn ghost" type="button" id="reset">Recomeçar</button>
+      </div>
+    </div>
+  </section>
+
+  <section id="constantes" style="padding-top: 0;">
+    <div class="wrap">
+      <div class="section-head">
+        <p class="label">Consulta</p>
+        <h2>Constantes que caem na prova</h2>
+        <p>Valores no Sistema Internacional. Em provas, use o arredondamento que o enunciado indicar.</p>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Símbolo</th><th>Grandeza</th><th>Valor</th><th>Unidade</th></tr></thead>
+          <tbody>
+            <tr><td class="sym">c</td><td>Velocidade da luz no vácuo</td><td class="val">299 792 458</td><td class="mono">m/s</td></tr>
+            <tr><td class="sym">g</td><td>Aceleração da gravidade (padrão)</td><td class="val">9,806 65</td><td class="mono">m/s²</td></tr>
+            <tr><td class="sym">G</td><td>Constante gravitacional</td><td class="val">6,674 × 10⁻¹¹</td><td class="mono">N·m²/kg²</td></tr>
+            <tr><td class="sym">h</td><td>Constante de Planck</td><td class="val">6,626 × 10⁻³⁴</td><td class="mono">J·s</td></tr>
+            <tr><td class="sym">e</td><td>Carga elementar</td><td class="val">1,602 × 10⁻¹⁹</td><td class="mono">C</td></tr>
+            <tr><td class="sym">k</td><td>Constante eletrostática</td><td class="val">8,988 × 10⁹</td><td class="mono">N·m²/C²</td></tr>
+            <tr><td class="sym">R</td><td>Constante dos gases</td><td class="val">8,314</td><td class="mono">J/(mol·K)</td></tr>
+            <tr><td class="sym">N<sub>A</sub></td><td>Número de Avogadro</td><td class="val">6,022 × 10²³</td><td class="mono">mol⁻¹</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <span>Física em Movimento · material de estudo gratuito</span>
+    <span class="mono">λ<sub>Na</sub> = 589 nm, a cor do nosso destaque</span>
+  </div>
+</footer>
+
+<script>
+(function () {
+  const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const fmt = (n, d = 1) => n.toLocaleString("pt-BR", { minimumFractionDigits: d, maximumFractionDigits: d });
+  let C = {};
+  function readColors() {
+    const s = getComputedStyle(document.documentElement);
+    ["paper", "grid", "ink", "ink-soft", "accent", "blue", "card"].forEach(k => C[k] = s.getPropertyValue("--" + k).trim());
+  }
+  readColors();
+
+  /* ---------- Bancada 1: lançamento oblíquo ---------- */
+  const cv = document.getElementById("proj"), ctx = cv.getContext("2d");
+  const v0 = document.getElementById("v0"), ang = document.getElementById("ang"), grav = document.getElementById("grav");
+  let anim = null, tNow = null;
+
+  function params() {
+    const v = +v0.value, th = +ang.value * Math.PI / 180, g = +grav.value;
+    const T = 2 * v * Math.sin(th) / g;
+    const R = v * v * Math.sin(2 * th) / g;
+    const H = (v * Math.sin(th)) ** 2 / (2 * g);
+    return { v, th, g, T, R, H };
+  }
+  function niceStep(span) {
+    const raw = span / 6, p = 10 ** Math.floor(Math.log10(raw)), m = raw / p;
+    return (m < 1.5 ? 1 : m < 3.5 ? 2 : m < 7.5 ? 5 : 10) * p;
+  }
+  function drawProj(t) {
+    const P = params(), W = cv.width, Hh = cv.height;
+    const padL = 64, padB = 48, padT = 24, padR = 24;
+    const spanX = Math.max(P.R, 1) * 1.08, spanY = Math.max(P.H * 1.25, spanX * (Hh - padB - padT) / (W - padL - padR) * 0.25);
+    const sx = (W - padL - padR) / spanX, sy = (Hh - padB - padT) / spanY;
+    const s = Math.min(sx, sy);
+    const X = x => padL + x * s, Y = y => Hh - padB - y * s;
+
+    ctx.fillStyle = C.card; ctx.fillRect(0, 0, W, Hh);
+    // grade
+    const step = niceStep(spanX);
+    ctx.font = "20px 'JetBrains Mono', monospace"; ctx.textBaseline = "top";
+    ctx.lineWidth = 1;
+    for (let x = 0; X(x) <= W - padR + 1; x += step) {
+      ctx.strokeStyle = C.grid; ctx.beginPath(); ctx.moveTo(X(x), padT); ctx.lineTo(X(x), Y(0)); ctx.stroke();
+      ctx.fillStyle = C["ink-soft"]; ctx.textAlign = "center"; ctx.fillText(fmt(x, step < 1 ? 1 : 0), X(x), Y(0) + 8);
+    }
+    ctx.textBaseline = "middle"; ctx.textAlign = "right";
+    for (let y = step; Y(y) >= padT; y += step) {
+      ctx.strokeStyle = C.grid; ctx.beginPath(); ctx.moveTo(padL, Y(y)); ctx.lineTo(W - padR, Y(y)); ctx.stroke();
+      ctx.fillStyle = C["ink-soft"]; ctx.fillText(fmt(y, step < 1 ? 1 : 0), padL - 8, Y(y));
+    }
+    ctx.textAlign = "left"; ctx.fillText("m", W - padR - 16, Y(0) + 18);
+    // chão
+    ctx.strokeStyle = C.ink; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(padL, Y(0)); ctx.lineTo(W - padR, Y(0)); ctx.stroke();
+    // trajetória prevista
+    ctx.setLineDash([8, 8]); ctx.strokeStyle = C["ink-soft"]; ctx.lineWidth = 2; ctx.beginPath();
+    for (let i = 0; i <= 120; i++) {
+      const tt = P.T * i / 120, x = P.v * Math.cos(P.th) * tt, y = P.v * Math.sin(P.th) * tt - 0.5 * P.g * tt * tt;
+      i ? ctx.lineTo(X(x), Y(Math.max(y, 0))) : ctx.moveTo(X(x), Y(y));
+    }
+    ctx.stroke(); ctx.setLineDash([]);
+    // altura máxima
+    const xa = P.R / 2;
+    ctx.strokeStyle = C.blue; ctx.lineWidth = 1.5; ctx.beginPath(); ctx.moveTo(X(xa), Y(0)); ctx.lineTo(X(xa), Y(P.H)); ctx.stroke();
+    ctx.fillStyle = C.blue; ctx.textAlign = "left"; ctx.textBaseline = "bottom";
+    ctx.fillText("H = " + fmt(P.H) + " m", X(xa) + 8, Y(P.H / 2));
+    // vetor velocidade inicial
+    const L = 70;
+    ctx.strokeStyle = C.accent; ctx.lineWidth = 3; ctx.beginPath();
+    ctx.moveTo(X(0), Y(0)); const ex = X(0) + L * Math.cos(P.th), ey = Y(0) - L * Math.sin(P.th); ctx.lineTo(ex, ey); ctx.stroke();
+    ctx.beginPath(); ctx.arc(X(0), Y(0), 30, -P.th, 0); ctx.strokeStyle = C["ink-soft"]; ctx.lineWidth = 1.5; ctx.stroke();
+    // projétil
+    const tt = t == null ? P.T * 0.5 : Math.min(t, P.T);
+    const bx = P.v * Math.cos(P.th) * tt, by = Math.max(P.v * Math.sin(P.th) * tt - 0.5 * P.g * tt * tt, 0);
+    if (t != null) {
+      ctx.strokeStyle = C.accent; ctx.lineWidth = 3; ctx.beginPath();
+      for (let i = 0; i <= 60; i++) {
+        const q = tt * i / 60, x = P.v * Math.cos(P.th) * q, y = Math.max(P.v * Math.sin(P.th) * q - 0.5 * P.g * q * q, 0);
+        i ? ctx.lineTo(X(x), Y(y)) : ctx.moveTo(X(x), Y(y));
+      }
+      ctx.stroke();
+    }
+    ctx.fillStyle = C.accent; ctx.beginPath(); ctx.arc(X(bx), Y(by), 11, 0, Math.PI * 2); ctx.fill();
+    ctx.strokeStyle = C.ink; ctx.lineWidth = 2; ctx.stroke();
+    ctx.fillStyle = C.ink; ctx.textBaseline = "top"; ctx.textAlign = "left";
+    ctx.fillText("t = " + fmt(tt, 2) + " s", padL + 10, padT + 4);
+  }
+  function updateProj() {
+    const P = params();
+    document.getElementById("v0o").textContent = P.v + " m/s";
+    document.getElementById("ango").textContent = ang.value + "°";
+    document.getElementById("rR").textContent = fmt(P.R) + " m";
+    document.getElementById("rH").textContent = fmt(P.H) + " m";
+    document.getElementById("rT").textContent = fmt(P.T, 2) + " s";
+    if (anim) { cancelAnimationFrame(anim); anim = null; }
+    tNow = null; drawProj(null);
+  }
+  function launch() {
+    const P = params();
+    if (anim) cancelAnimationFrame(anim);
+    if (reduce) { drawProj(P.T); return; }
+    const speed = Math.max(1, P.T / 2.5); // voos longos são acelerados
+    let start = null;
+    const frame = ts => {
+      if (start == null) start = ts;
+      tNow = (ts - start) / 1000 * speed;
+      drawProj(tNow);
+      anim = tNow < P.T ? requestAnimationFrame(frame) : null;
+    };
+    anim = requestAnimationFrame(frame);
+  }
+  [v0, ang, grav].forEach(el => el.addEventListener("input", updateProj));
+  document.getElementById("launch").addEventListener("click", launch);
+  updateProj();
+
+  /* ---------- Bancada 2: pêndulo ---------- */
+  const pc = document.getElementById("pend"), px = pc.getContext("2d");
+  const len = document.getElementById("len"), pg = document.getElementById("pg");
+  const theta0 = 0.35;
+  let pStart = performance.now();
+  function drawPend(now) {
+    const L = +len.value, g = +pg.value, w = Math.sqrt(g / L);
+    const t = (now - pStart) / 1000;
+    const th = reduce ? theta0 : theta0 * Math.cos(w * t);
+    const W = pc.width, H = pc.height, ox = W / 2, oy = 40, scale = (H - 120) / 2.5;
+    px.fillStyle = C.card; px.fillRect(0, 0, W, H);
+    // escala vertical em metros
+    px.strokeStyle = C.grid; px.lineWidth = 1; px.font = "18px 'JetBrains Mono', monospace"; px.fillStyle = C["ink-soft"]; px.textBaseline = "middle";
+    for (let m = 0.5; m <= 2.5; m += 0.5) {
+      const y = oy + m * scale; px.beginPath(); px.moveTo(24, y); px.lineTo(W - 24, y); px.stroke();
+      px.fillText(fmt(m, 1) + " m", 28, y - 12);
+    }
+    // suporte
+    px.fillStyle = C.ink; px.fillRect(ox - 60, oy - 10, 120, 8);
+    // arco de amplitude
+    px.setLineDash([6, 6]); px.strokeStyle = C["ink-soft"]; px.beginPath();
+    px.arc(ox, oy, L * scale, Math.PI / 2 - theta0, Math.PI / 2 + theta0); px.stroke(); px.setLineDash([]);
+    // fio e massa
+    const bx = ox + L * scale * Math.sin(th), by = oy + L * scale * Math.cos(th);
+    px.strokeStyle = C.ink; px.lineWidth = 2; px.beginPath(); px.moveTo(ox, oy); px.lineTo(bx, by); px.stroke();
+    px.fillStyle = C.accent; px.beginPath(); px.arc(bx, by, 18, 0, Math.PI * 2); px.fill();
+    px.strokeStyle = C.ink; px.stroke();
+    if (!reduce) requestAnimationFrame(drawPend);
+  }
+  function updatePend() {
+    const L = +len.value, g = +pg.value;
+    document.getElementById("leno").textContent = fmt(L, 2) + " m";
+    document.getElementById("pT").textContent = "T = " + fmt(2 * Math.PI * Math.sqrt(L / g), 2) + " s";
+    pStart = performance.now();
+    if (reduce) drawPend(pStart);
+  }
+  [len, pg].forEach(el => el.addEventListener("input", updatePend));
+  updatePend();
+  if (!reduce) requestAnimationFrame(drawPend);
+
+  /* ---------- Bancada 3: refração ---------- */
+  const rc = document.getElementById("refr"), rx = rc.getContext("2d");
+  const inc = document.getElementById("inc"), n1s = document.getElementById("n1"), n2s = document.getElementById("n2");
+  const deg = r => r * 180 / Math.PI;
+  function arrowHead(c, x1, y1, x2, y2) {
+    const a = Math.atan2(y2 - y1, x2 - x1), mx = (x1 + x2) / 2 + 10 * Math.cos(a), my = (y1 + y2) / 2 + 10 * Math.sin(a);
+    c.beginPath(); c.moveTo(mx, my);
+    c.lineTo(mx - 20 * Math.cos(a - 0.45), my - 20 * Math.sin(a - 0.45));
+    c.lineTo(mx - 20 * Math.cos(a + 0.45), my - 20 * Math.sin(a + 0.45));
+    c.closePath(); c.fill();
+  }
+  function ray(x1, y1, x2, y2, alpha) {
+    rx.globalAlpha = alpha; rx.strokeStyle = C.accent; rx.fillStyle = C.accent; rx.lineWidth = 4;
+    rx.beginPath(); rx.moveTo(x1, y1); rx.lineTo(x2, y2); rx.stroke();
+    arrowHead(rx, x1, y1, x2, y2); rx.globalAlpha = 1;
+  }
+  function drawRefr() {
+    const n1 = +n1s.value, n2 = +n2s.value, a1 = +inc.value * Math.PI / 180;
+    const s2 = n1 * Math.sin(a1) / n2, total = s2 > 1, a2 = total ? 0 : Math.asin(s2);
+    const W = rc.width, H = rc.height, cx = W / 2, cy = H / 2, L = H * 0.46;
+    rx.fillStyle = C.card; rx.fillRect(0, 0, W, H);
+    rx.fillStyle = C.blue;
+    rx.globalAlpha = Math.min(0.06 + (n1 - 1) * 0.18, 0.36); rx.fillRect(0, 0, W, cy);
+    rx.globalAlpha = Math.min(0.06 + (n2 - 1) * 0.18, 0.36); rx.fillRect(0, cy, W, H - cy);
+    rx.globalAlpha = 1;
+    rx.font = "22px 'JetBrains Mono', monospace"; rx.fillStyle = C.ink; rx.textAlign = "left";
+    rx.textBaseline = "top"; rx.fillText(n1s.selectedOptions[0].textContent, 20, 18);
+    rx.textBaseline = "bottom"; rx.fillText(n2s.selectedOptions[0].textContent, 20, H - 18);
+    // superfície e reta normal
+    rx.strokeStyle = C.ink; rx.lineWidth = 2; rx.beginPath(); rx.moveTo(0, cy); rx.lineTo(W, cy); rx.stroke();
+    rx.setLineDash([8, 8]); rx.strokeStyle = C["ink-soft"]; rx.beginPath(); rx.moveTo(cx, 20); rx.lineTo(cx, H - 20); rx.stroke(); rx.setLineDash([]);
+    rx.fillStyle = C["ink-soft"]; rx.textBaseline = "top"; rx.fillText("normal", cx + 10, 18);
+    // raios incidente, refletido e refratado
+    ray(cx - L * Math.sin(a1), cy - L * Math.cos(a1), cx, cy, 1);
+    ray(cx, cy, cx + L * Math.sin(a1), cy - L * Math.cos(a1), total ? 1 : 0.3);
+    if (!total) ray(cx, cy, cx + L * Math.sin(a2), cy + L * Math.cos(a2), 1);
+    // ângulos
+    rx.strokeStyle = C.ink; rx.lineWidth = 1.5; rx.fillStyle = C.ink; rx.textAlign = "center"; rx.textBaseline = "middle";
+    rx.beginPath(); rx.arc(cx, cy, 70, -Math.PI / 2 - a1, -Math.PI / 2); rx.stroke();
+    rx.fillText("θ₁", cx + 100 * Math.cos(-Math.PI / 2 - a1 / 2), cy + 100 * Math.sin(-Math.PI / 2 - a1 / 2));
+    if (!total) {
+      rx.beginPath(); rx.arc(cx, cy, 70, Math.PI / 2 - a2, Math.PI / 2); rx.stroke();
+      rx.fillText("θ₂", cx + 100 * Math.cos(Math.PI / 2 - a2 / 2), cy + 100 * Math.sin(Math.PI / 2 - a2 / 2));
+    } else {
+      rx.fillText("Nenhuma luz atravessa", cx, cy + 80);
+    }
+    document.getElementById("inco").textContent = inc.value + "°";
+    document.getElementById("rT2").textContent = total ? "reflexão total" : fmt(deg(a2)) + "°";
+    document.getElementById("rC").textContent = n1 > n2 ? fmt(deg(Math.asin(n2 / n1))) + "°" : "não há";
+    document.getElementById("rV").textContent = fmt(2.998 / n2, 2) + " × 10⁸ m/s";
+  }
+  [inc, n1s, n2s].forEach(el => el.addEventListener("input", drawRefr));
+  drawRefr();
+
+  /* ---------- Bancada 4: circuito ---------- */
+  const cc = document.getElementById("circ"), cxx = cc.getContext("2d");
+  const cU = document.getElementById("cu"), cR1 = document.getElementById("r1"), cR2 = document.getElementById("r2"), cMode = document.getElementById("mode");
+  const LOOP = 1360; // perímetro do circuito em px: 2·(400 + 280)
+  let dotOff = 0, lastTs = null;
+  function circ() {
+    const u = +cU.value, r1 = +cR1.value, r2 = +cR2.value, par = cMode.value === "p";
+    const req = par ? r1 * r2 / (r1 + r2) : r1 + r2;
+    return { u, r1, r2, par, req, i: u / req };
+  }
+  function loopPoint(s) {
+    s = ((s % LOOP) + LOOP) % LOOP;
+    if (s < 400) return [150 + s, 50];
+    if (s < 680) return [550, 50 + s - 400];
+    if (s < 1080) return [550 - (s - 680), 330];
+    return [150, 330 - (s - 1080)];
+  }
+  function resistor(x1, y1, x2, y2, label) {
+    const vert = x1 === x2, len = vert ? y2 - y1 : x2 - x1;
+    cxx.fillStyle = C.card;
+    vert ? cxx.fillRect(x1 - 18, y1, 36, len) : cxx.fillRect(x1, y1 - 18, len, 36);
+    cxx.strokeStyle = C.ink; cxx.lineWidth = 3; cxx.beginPath(); cxx.moveTo(x1, y1);
+    for (let k = 1; k < 8; k++) {
+      const d = len * k / 8, off = k % 2 ? 14 : -14;
+      vert ? cxx.lineTo(x1 + off, y1 + d) : cxx.lineTo(x1 + d, y1 + off);
+    }
+    cxx.lineTo(x2, y2); cxx.stroke();
+    cxx.fillStyle = C.ink; cxx.textBaseline = "middle";
+    if (vert) { cxx.textAlign = "right"; cxx.fillText(label, x1 - 26, (y1 + y2) / 2); }
+    else { cxx.textAlign = "center"; cxx.fillText(label, (x1 + x2) / 2, y1 + 38); }
+  }
+  function drawCirc(ts) {
+    const P = circ(), W = cc.width, H = cc.height;
+    if (lastTs != null && !reduce) dotOff = (dotOff + Math.min(Math.max(P.i * 30, 6), 240) * (ts - lastTs) / 1000) % LOOP;
+    lastTs = ts;
+    cxx.fillStyle = C.card; cxx.fillRect(0, 0, W, H);
+    cxx.strokeStyle = C.ink; cxx.lineWidth = 3; cxx.lineJoin = "round";
+    cxx.strokeRect(150, 50, 400, 280);
+    if (P.par) {
+      cxx.beginPath(); cxx.moveTo(350, 50); cxx.lineTo(350, 330); cxx.stroke();
+      cxx.fillStyle = C.ink; [50, 330].forEach(y => { cxx.beginPath(); cxx.arc(350, y, 6, 0, Math.PI * 2); cxx.fill(); });
+    }
+    // bateria: a placa longa é o polo positivo
+    cxx.fillStyle = C.card; cxx.fillRect(126, 172, 48, 36);
+    cxx.strokeStyle = C.ink; cxx.lineWidth = 3; cxx.beginPath(); cxx.moveTo(128, 182); cxx.lineTo(172, 182); cxx.stroke();
+    cxx.lineWidth = 7; cxx.beginPath(); cxx.moveTo(140, 198); cxx.lineTo(160, 198); cxx.stroke();
+    cxx.font = "20px 'JetBrains Mono', monospace"; cxx.fillStyle = C.ink; cxx.textBaseline = "middle";
+    cxx.textAlign = "left"; cxx.fillText("+", 180, 174);
+    cxx.textAlign = "right"; cxx.fillText(fmt(P.u) + " V", 116, 190);
+    const l1 = "R₁ = " + P.r1 + " Ω", l2 = "R₂ = " + P.r2 + " Ω";
+    if (P.par) { resistor(350, 130, 350, 250, l1); resistor(550, 130, 550, 250, l2); }
+    else { resistor(290, 50, 410, 50, l1); resistor(550, 130, 550, 250, l2); }
+    // cargas no sentido convencional da corrente
+    cxx.fillStyle = C.accent;
+    for (let s = dotOff; s < dotOff + LOOP; s += 40) {
+      const [x, y] = loopPoint(s);
+      if (x === 150 && y > 164 && y < 216) continue;
+      cxx.beginPath(); cxx.arc(x, y, 5, 0, Math.PI * 2); cxx.fill();
+    }
+    if (!reduce) requestAnimationFrame(drawCirc);
+  }
+  function updateCirc() {
+    const P = circ();
+    document.getElementById("cuo").textContent = fmt(P.u) + " V";
+    document.getElementById("r1o").textContent = P.r1 + " Ω";
+    document.getElementById("r2o").textContent = P.r2 + " Ω";
+    document.getElementById("cReq").textContent = fmt(P.req, P.req < 10 ? 2 : 1) + " Ω";
+    document.getElementById("cI").textContent = fmt(P.i, 2) + " A";
+    document.getElementById("cP").textContent = fmt(P.u * P.i, 1) + " W";
+    document.getElementById("cNote").textContent = P.par
+      ? "i₁ = " + fmt(P.u / P.r1, 2) + " A · i₂ = " + fmt(P.u / P.r2, 2) + " A · mesma tensão nos dois ramos"
+      : "U₁ = " + fmt(P.i * P.r1, 2) + " V · U₂ = " + fmt(P.i * P.r2, 2) + " V · mesma corrente nos dois";
+    if (reduce) drawCirc(performance.now());
+  }
+  [cU, cR1, cR2, cMode].forEach(el => el.addEventListener("input", updateCirc));
+  updateCirc();
+  if (!reduce) requestAnimationFrame(drawCirc);
+
+  /* ---------- Quiz ---------- */
+  const Q = [
+    { q: "Um carro passa de 0 a 72 km/h em 10 s. Qual a aceleração média?",
+      o: ["7,2 m/s²", "2 m/s²", "20 m/s²", "0,5 m/s²"], a: 1,
+      e: "72 km/h = 20 m/s. Então a = Δv/Δt = 20/10 = 2 m/s². Lembre de dividir km/h por 3,6." },
+    { q: "Se o comprimento de um pêndulo simples for quadruplicado, o período:",
+      o: ["quadruplica", "fica igual", "dobra", "cai pela metade"], a: 2,
+      e: "T = 2π√(L/g). Com 4L, a raiz fica √4 = 2, então o período dobra. Teste na Bancada 2." },
+    { q: "Uma onda sonora tem frequência de 440 Hz e se propaga a 340 m/s. Qual o comprimento de onda?",
+      o: ["0,77 m", "1,29 m", "149 600 m", "100 m"], a: 0,
+      e: "λ = v/f = 340/440 ≈ 0,77 m. Essa é a nota lá usada para afinar instrumentos." },
+    { q: "Qual ângulo de lançamento dá o maior alcance, sem resistência do ar?",
+      o: ["30°", "60°", "90°", "45°"], a: 3,
+      e: "A = v₀²·sen 2θ/g é máximo quando sen 2θ = 1, ou seja, 2θ = 90° e θ = 45°. 30° e 60° dão o mesmo alcance." },
+    { q: "Um raio de luz passa do ar para a água. O que acontece com ele?",
+      o: ["Afasta-se da normal", "Aproxima-se da normal", "Não muda de direção", "Sofre reflexão total"], a: 1,
+      e: "A água tem índice maior que o ar (1,33 contra 1,00). Ao entrar num meio mais refringente, a luz fica mais lenta e se aproxima da normal. Confira na Bancada 3." },
+    { q: "Dois resistores de 6 Ω são ligados em paralelo. Qual a resistência equivalente?",
+      o: ["12 Ω", "6 Ω", "3 Ω", "1,5 Ω"], a: 2,
+      e: "Req = (6·6)/(6+6) = 36/12 = 3 Ω. Com resistores iguais em paralelo, basta dividir o valor pelo número deles." },
+    { q: "Qual a energia cinética de um bloco de 5 kg a 4 m/s?",
+      o: ["10 J", "20 J", "40 J", "80 J"], a: 2,
+      e: "Ec = ½·m·v² = ½·5·16 = 40 J. Cuidado para não esquecer de elevar a velocidade ao quadrado." },
+    { q: "Quanto calor é preciso para aquecer 200 g de água de 20 °C a 70 °C? (c = 1 cal/g·°C)",
+      o: ["1 000 cal", "10 000 cal", "14 000 cal", "4 000 cal"], a: 1,
+      e: "Q = m·c·ΔT = 200·1·50 = 10 000 cal, cerca de 41,8 kJ." }
+  ];
+  const grid = document.getElementById("quizGrid"), scoreText = document.getElementById("scoreText");
+  let answered = 0, right = 0;
+  function renderQuiz() {
+    answered = 0; right = 0; grid.innerHTML = "";
+    Q.forEach((item, qi) => {
+      const box = document.createElement("article"); box.className = "q";
+      box.innerHTML = `<span class="label">Questão ${qi + 1}</span><p>${item.q}</p><div class="opts"></div><p class="fb" hidden></p>`;
+      const opts = box.querySelector(".opts"), fb = box.querySelector(".fb");
+      item.o.forEach((txt, oi) => {
+        const b = document.createElement("button"); b.type = "button"; b.className = "opt"; b.id = `q${qi}o${oi}`;
+        b.textContent = String.fromCharCode(97 + oi) + ") " + txt;
+        b.addEventListener("click", () => {
+          opts.querySelectorAll("button").forEach((x, xi) => { x.disabled = true; if (xi === item.a) x.classList.add("right"); });
+          if (oi !== item.a) b.classList.add("wrong"); else right++;
+          answered++;
+          fb.hidden = false;
+          fb.textContent = (oi === item.a ? "Certo. " : "Não foi dessa vez. ") + item.e;
+          scoreText.textContent = answered === Q.length ? `Você acertou ${right} de ${Q.length}` : `${answered} de ${Q.length} respondidas · ${right} certas`;
+        });
+        opts.appendChild(b);
+      });
+      grid.appendChild(box);
+    });
+    scoreText.textContent = `0 de ${Q.length} respondidas`;
+  }
+  document.getElementById("reset").addEventListener("click", renderQuiz);
+  renderQuiz();
+
+  /* tema: redesenha os canvases com as cores certas */
+  const redraw = () => { readColors(); tNow == null ? drawProj(null) : drawProj(tNow); drawRefr(); if (reduce) { drawPend(performance.now()); drawCirc(performance.now()); } };
+  matchMedia("(prefers-color-scheme: dark)").addEventListener("change", redraw);
+  new MutationObserver(redraw).observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
+  document.fonts && document.fonts.ready.then(redraw);
+})();
+</script>
 </body>
 </html>
