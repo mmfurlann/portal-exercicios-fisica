@@ -1,0 +1,175 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Efeito Coriolis · A Tal da Física</title>
+<style>
+:root{--ink:#0E2A3B;--teal:#1F8A8A;--sun:#F2A541;--coral:#E4572E;--bg:#F4F8FA;--card:#fff;--mut:#5B6B75}
+*{box-sizing:border-box}
+body{margin:0;font-family:Calibri,"Segoe UI",Arial,sans-serif;background:var(--bg);color:var(--ink)}
+header{background:var(--ink);color:#fff;padding:14px 20px}
+header h1{margin:0;font-size:24px}
+header p{margin:4px 0 0;color:#CFE3EA;font-size:15px}
+main{display:flex;gap:18px;padding:18px;flex-wrap:wrap;max-width:1200px;margin:auto}
+.stage{background:var(--card);border-radius:14px;box-shadow:0 2px 10px #0001;padding:10px;flex:1 1 520px;display:flex;justify-content:center}
+canvas{max-width:100%;height:auto}
+.panel{flex:1 1 300px;background:var(--card);border-radius:14px;box-shadow:0 2px 10px #0001;padding:16px}
+.panel h2{font-size:17px;margin:14px 0 8px;color:var(--teal)}
+.panel h2:first-child{margin-top:0}
+button{font:inherit;font-size:16px;border:0;border-radius:10px;padding:10px 14px;cursor:pointer;margin:4px 4px 4px 0}
+.pri{background:var(--coral);color:#fff;font-weight:bold}
+.sec{background:#E3EEF2;color:var(--ink)}
+.sec.on{background:var(--teal);color:#fff}
+label{display:block;margin:8px 0 2px;font-size:15px}
+input[type=range]{width:100%}
+.note{background:#FFF4E0;border-radius:10px;padding:10px 12px;font-size:15px;line-height:1.4;margin-top:12px}
+.res{font-size:17px;font-weight:bold;margin-top:10px;min-height:48px}
+</style>
+<link rel="stylesheet" href="../estilo.css">
+<link rel="stylesheet" href="atmosfera.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Literata:ital,opsz,wght@0,7..72,400;0,7..72,600;1,7..72,400&family=JetBrains+Mono:wght@400;600&display=swap">
+</head>
+<body>
+<header class="top">
+  <div class="wrap">
+    <a class="brand" href="../index.html">
+      <svg width="28" height="28" viewBox="0 0 28 28" aria-hidden="true">
+        <path d="M3 24 Q14 -6 25 24" fill="none" stroke="var(--ink)" stroke-width="2" stroke-dasharray="3 3"/>
+        <circle cx="14" cy="9" r="3.5" fill="var(--accent)"/>
+      </svg>
+      A Tal da Física
+    </a>
+    <nav class="links" aria-label="Seções">
+      <a href="../index.html#trilhas">Trilhas</a>
+      <a href="../index.html#licao">Lição</a>
+      <a href="../laboratorio.html" aria-current="page">Laboratório</a>
+      <a href="../graficos.html">Gráficos</a>
+      <a href="../quiz.html">Quiz</a>
+      <a href="../enem.html">ENEM</a>
+      <a href="../eletricidade.html">Eletricidade</a>
+      <a href="../game/index.html">Game</a>
+      <a href="../index.html#constantes">Constantes</a>
+    </nav>
+  </div>
+</header>
+
+<div class="wrap atm-intro">
+  <a class="atm-back" href="../laboratorio.html#atmosfera">← Voltar ao laboratório</a>
+  <p class="label">Laboratório · Atmosfera e clima · 8º ano</p>
+  <h1 class="atm-title">Efeito Coriolis: lançando no disco que gira</h1>
+  <p>O disco representa a Terra vista de cima de um polo. A bolinha é lançada do polo em linha reta, como o vento.</p>
+</div>
+<main>
+  <div class="stage"><canvas id="cv" width="560" height="560" aria-label="Disco girando com a trajetória da bolinha"></canvas></div>
+  <div class="panel">
+    <h2>1. Escolha o hemisfério</h2>
+    <button class="sec on" id="hn">Hemisfério norte</button>
+    <button class="sec" id="hs">Hemisfério sul</button>
+    <h2>2. Rotação da Terra</h2>
+    <button class="sec on" id="rotOn">Girando</button>
+    <button class="sec" id="rotOff">Parada</button>
+    <label for="vel">Velocidade de rotação</label>
+    <input type="range" id="vel" min="0.2" max="1.5" step="0.1" value="0.8">
+    <h2>3. Ponto de vista</h2>
+    <button class="sec on" id="vTerra">De quem gira com a Terra</button>
+    <button class="sec" id="vFora">De fora da Terra (espaço)</button>
+    <div style="margin-top:14px"><button class="pri" id="lancar">Lançar a bolinha ▶</button><button class="sec" id="limpar">Limpar</button></div>
+    <div class="res" id="res"></div>
+    <div class="note"><b>Para pensar:</b> visto de fora, a bolinha sempre segue em linha reta. Quem gira junto com a Terra vê a trajetória se curvar. Esse desvio <b>não</b> é causado por uma força empurrando a bolinha: é consequência da rotação.</div>
+  </div>
+</main>
+<footer>
+  <div class="wrap">
+    <span>A Tal da Física · material de estudo gratuito</span>
+    <span class="mono">λ<sub>Na</sub> = 589 nm, a cor do nosso destaque</span>
+  </div>
+</footer>
+
+<script>
+const cv=document.getElementById('cv'),ctx=cv.getContext('2d');
+const W=cv.width,C=W/2,R=250;
+let hemi='N',rot=true,view='terra',omega=0.8;
+let ball=null,trails=[],diskAngle=0,last=performance.now();
+const $=id=>document.getElementById(id);
+function grp(ids,on){ids.forEach(i=>$(i).classList.toggle('on',i===on))}
+$('hn').onclick=()=>{hemi='N';grp(['hn','hs'],'hn');limpar()};
+$('hs').onclick=()=>{hemi='S';grp(['hn','hs'],'hs');limpar()};
+$('rotOn').onclick=()=>{rot=true;grp(['rotOn','rotOff'],'rotOn')};
+$('rotOff').onclick=()=>{rot=false;grp(['rotOn','rotOff'],'rotOff')};
+$('vTerra').onclick=()=>{view='terra';grp(['vTerra','vFora'],'vTerra')};
+$('vFora').onclick=()=>{view='fora';grp(['vTerra','vFora'],'vFora')};
+$('vel').oninput=e=>omega=+e.target.value;
+$('lancar').onclick=()=>{ball={t:0,th0:-Math.PI/2,v:95,w:(rot?omega:0)*(hemi==='N'?-1:1),d0:diskAngle,pts:[],ptsIn:[]};$('res').textContent=''};
+$('limpar').onclick=limpar;
+function limpar(){trails=[];ball=null;$('res').textContent=''}
+function drawDisk(a){
+  ctx.save();ctx.translate(C,C);ctx.rotate(a);
+  const g=ctx.createRadialGradient(0,0,20,0,0,R);g.addColorStop(0,'#EAF6F8');g.addColorStop(1,'#9CCBD6');
+  ctx.fillStyle=g;ctx.beginPath();ctx.arc(0,0,R,0,7);ctx.fill();
+  ctx.strokeStyle='#ffffffaa';ctx.lineWidth=1;
+  for(let r=50;r<R;r+=50){ctx.beginPath();ctx.arc(0,0,r,0,7);ctx.stroke()}
+  for(let k=0;k<12;k++){ctx.beginPath();ctx.moveTo(0,0);ctx.lineTo(R*Math.cos(k*Math.PI/6),R*Math.sin(k*Math.PI/6));ctx.stroke()}
+  // marcos fixos na Terra (casinhas)
+  ctx.fillStyle='#2C6E49';
+  [[0.3,140],[2.2,190],[4.1,120],[5.2,215]].forEach(([an,r])=>{ctx.beginPath();ctx.arc(r*Math.cos(an),r*Math.sin(an),9,0,7);ctx.fill()});
+  ctx.restore();
+  ctx.fillStyle='#0E2A3B';ctx.beginPath();ctx.arc(C,C,7,0,7);ctx.fill();
+  ctx.font='bold 15px Calibri,Arial';ctx.fillText(hemi==='N'?'Polo norte':'Polo sul',C+10,C-10);
+}
+function arrowRot(){
+  const ccw=(hemi==='N');
+  ctx.strokeStyle='#0E2A3B';ctx.lineWidth=3;
+  const a0=0.2,a1=0.9,rr=R+16;
+  ctx.beginPath();
+  if(ccw){ctx.arc(C,C,rr,a1,a0,true)}else{ctx.arc(C,C,rr,a0,a1,false)}
+  ctx.stroke();
+  const ae=ccw?a0:a1,x=C+rr*Math.cos(ae),y=C+rr*Math.sin(ae);
+  const tx=ccw?Math.sin(ae):-Math.sin(ae),ty=ccw?-Math.cos(ae):Math.cos(ae);
+  ctx.fillStyle='#0E2A3B';ctx.beginPath();ctx.moveTo(x+tx*14,y+ty*14);ctx.lineTo(x-ty*8,y+tx*8);ctx.lineTo(x+ty*8,y-tx*8);ctx.fill();
+  ctx.font='bold 14px Calibri,Arial';ctx.fillText(rot?(ccw?'Terra gira no sentido anti-horário':'Terra gira no sentido horário'):'Terra parada',14,W-14);
+}
+function frame(now){
+  const dt=Math.min(0.05,(now-last)/1000);last=now;
+  const w=(rot?omega:0)*(hemi==='N'?-1:1);
+  diskAngle+=w*dt;
+  ctx.clearRect(0,0,W,W);
+  const shownDisk=view==='fora'?diskAngle:0;
+  drawDisk(shownDisk);arrowRot();
+  if(ball){
+    ball.t+=dt;const r=ball.v*ball.t;
+    if(r<=R){
+      const xi=r*Math.cos(ball.th0),yi=r*Math.sin(ball.th0);
+      ball.ptsIn.push([xi,yi]);
+      const rel=ball.th0-(diskAngle-ball.d0); // ângulo relativo ao disco
+      ball.pts.push([r,rel]);
+    }else{trails.push(ball);mostrar(ball);ball=null}
+  }
+  const all=trails.concat(ball?[ball]:[]);
+  all.forEach((b,i)=>{
+    ctx.strokeStyle=i===all.length-1?'#E4572E':'#E4572E88';ctx.lineWidth=4;ctx.beginPath();
+    b.pts.forEach(([r,rel],k)=>{
+      let x,y;
+      if(view==='fora'){x=b.ptsIn[k][0];y=b.ptsIn[k][1]}
+      else{x=r*Math.cos(rel);y=r*Math.sin(rel)}
+      k?ctx.lineTo(C+x,C+y):ctx.moveTo(C+x,C+y)});
+    ctx.stroke();
+    const p=b.pts[b.pts.length-1];if(p){let x,y;if(view==='fora'){[x,y]=b.ptsIn[b.ptsIn.length-1]}else{x=p[0]*Math.cos(p[1]);y=p[0]*Math.sin(p[1])}
+      ctx.fillStyle='#F2A541';ctx.strokeStyle='#0E2A3B';ctx.lineWidth=2;ctx.beginPath();ctx.arc(C+x,C+y,9,0,7);ctx.fill();ctx.stroke()}
+  });
+  // seta da direção de lançamento
+  ctx.setLineDash([6,6]);ctx.strokeStyle='#0E2A3B66';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(C,C);ctx.lineTo(C,C-R);ctx.stroke();ctx.setLineDash([]);
+  ctx.fillStyle='#0E2A3B';ctx.font='13px Calibri,Arial';ctx.fillText('direção do lançamento',C+6,C-R+16);
+  requestAnimationFrame(frame);
+}
+function mostrar(b){
+  if(b.w===0){$('res').textContent='Terra parada: a bolinha segue em linha reta. Não há desvio.';return}
+  if(view==='fora'){$('res').textContent='Visto do espaço, a trajetória é reta. Troque para "De quem gira com a Terra".';return}
+  $('res').innerHTML=hemi==='N'?'Hemisfério norte: a trajetória foi desviada para a <span style="color:#E4572E">DIREITA</span>.':'Hemisfério sul: a trajetória foi desviada para a <span style="color:#E4572E">ESQUERDA</span>.';
+}
+requestAnimationFrame(frame);
+</script>
+</body>
+</html>

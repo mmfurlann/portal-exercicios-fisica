@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="description" content="Laboratório virtual de física: dez experimentos interativos de mecânica, óptica, ondulatória, termodinâmica e eletricidade.">
+<meta name="description" content="Laboratório virtual de física: dezesseis experimentos interativos de mecânica, óptica, ondulatória, termodinâmica, eletricidade e atmosfera e clima.">
 <title>Laboratório · A Tal da Física</title>
 <link rel="stylesheet" href="estilo.css">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -28,6 +28,7 @@
       <a href="quiz.html">Quiz</a>
       <a href="enem.html">ENEM</a>
       <a href="eletricidade.html">Eletricidade</a>
+      <a href="game/index.html">Game</a>
       <a href="index.html#constantes">Constantes</a>
     </nav>
   </div>
@@ -38,15 +39,16 @@
     <div class="wrap">
       <div class="section-head">
         <p class="label">Laboratório virtual</p>
-        <h2>Dez bancadas em cinco áreas</h2>
+        <h2>Dezoito experimentos em seis áreas</h2>
         <p>Cada experimento tem a ideia principal ao lado e os números calculados na hora. Mexa nos controles, faça a conta no papel e confira.</p>
       </div>
       <nav class="area-nav" aria-label="Áreas do laboratório">
-        <a href="#mecanica"><span class="sym mono">F</span>Mecânica <small>4 bancadas</small></a>
+        <a href="#mecanica"><span class="sym mono">F</span>Mecânica <small>5 bancadas e 2 simulações</small></a>
         <a href="#optica"><span class="sym mono">n</span>Óptica <small>3 bancadas</small></a>
         <a href="#ondas"><span class="sym mono">λ</span>Ondulatória <small>Doppler e ondas estacionárias</small></a>
         <a href="#termo"><span class="sym mono">Q</span>Termodinâmica <small>1 bancada</small></a>
         <a href="#eletricidade"><span class="sym mono">i</span>Eletricidade <small>1 bancada</small></a>
+        <a href="#atmosfera"><span class="sym mono">°C</span>Atmosfera e clima <small>5 simulações · 8º ano</small></a>
       </nav>
     </div>
   </section>
@@ -222,6 +224,61 @@
             <p class="bench-note mono" id="kNote"></p>
           </div>
         </div>
+
+        <div class="lab-item">
+          <div class="prose">
+            <h3>Polias de Arquimedes</h3>
+            <p>A polia fixa só muda a direção da força. Cada polia móvel divide o peso entre os dois lados da corda, então a força cai pela metade. Na talha de Arquimedes as polias móveis ficam em série, cada uma com a própria corda presa no teto, e a força cai pela metade a cada polia acrescentada.</p>
+            <p class="eq">F = P / 2ⁿ<br>corda puxada = 2ⁿ·h<br>W = F·d = P·h</p>
+            <ul class="tips">
+              <li>Com 4 polias móveis, 80 kg pesam na mão como 5 kg.</li>
+              <li>Clique em <strong>Puxar a corda</strong> e compare quanto sobe a carga e quanto desce a mão.</li>
+              <li>Nenhuma máquina simples economiza trabalho: o que se ganha em força se paga em distância.</li>
+              <li>Conta Plutarco que Arquimedes puxou sozinho um navio carregado usando um sistema de polias.</li>
+            </ul>
+          </div>
+          <div class="bench" aria-label="Simulador de polias de Arquimedes">
+            <div class="bench-head">
+              <span class="label">Polias de Arquimedes</span>
+              <button class="btn" id="pgo" type="button">Puxar a corda ▸</button>
+            </div>
+            <canvas id="poly" width="960" height="560" role="img" aria-label="Talha com polias móveis em série levantando uma carga" style="aspect-ratio: 12 / 7;"></canvas>
+            <div class="controls">
+              <div class="ctrl">
+                <label for="pm">Massa da carga <output id="pmo">80 kg</output></label>
+                <input type="range" id="pm" min="10" max="200" step="5" value="80">
+              </div>
+              <div class="ctrl">
+                <label for="pn">Polias móveis <output id="pno">2</output></label>
+                <input type="range" id="pn" min="0" max="4" step="1" value="2">
+              </div>
+              <div class="ctrl">
+                <label for="ph">Altura a erguer <output id="pho">1,0 m</output></label>
+                <input type="range" id="ph" min="0.5" max="3" step="0.5" value="1">
+              </div>
+            </div>
+            <div class="readout" aria-live="polite">
+              <div><span class="label">Força na mão</span><span class="v" id="pF">—</span></div>
+              <div><span class="label">Corda puxada</span><span class="v" id="pD">—</span></div>
+              <div><span class="label">Trabalho</span><span class="v" id="pW">—</span></div>
+            </div>
+            <p class="bench-note mono" id="pNote"></p>
+          </div>
+        </div>
+      </div>
+      <div class="sim-grid" style="margin-top:56px">
+        <a class="sim-card" href="roadster.html">
+          <span class="pill a">Física de hoje</span>
+          <h3>Roadster voador</h3>
+          <p>Um carro que paira com jatos de ar comprimido. Segure o disparo, tente um pouso suave e veja o empuxo, a equação do foguete e a potência do jato.</p>
+          <span class="sim-open">Abrir simulação →</span>
+        </a>
+        <a class="sim-card" href="mecanica-celeste.html">
+          <span class="pill i">Gravitação</span>
+          <h3>Mecânica celeste</h3>
+          <p>A gravidade do Sol como força centrípeta: órbitas circulares e elípticas, velocidade de escape, 3ª lei de Kepler e a rotação da Terra.</p>
+          <span class="sim-open">Abrir simulação →</span>
+        </a>
       </div>
     </div>
   </section>
@@ -513,6 +570,48 @@
             <p class="bench-note mono" id="cNote"></p>
           </div>
         </div>
+      </div>
+    </div>
+  </section>
+  <!-- ===================== ATMOSFERA E CLIMA ===================== -->
+  <section class="area" id="atmosfera">
+    <div class="wrap">
+      <div class="area-head">
+        <span class="area-sym mono">°C</span>
+        <div><p class="label">Área 6 · 8º ano</p><h2>Atmosfera e clima</h2></div>
+      </div>
+      <p class="area-intro">Cinco simulações sobre a física da atmosfera. Cada uma abre numa página própria; use o link no topo dela para voltar ao laboratório. São modelos simplificados, com valores ilustrativos: servem para comparar comportamentos, não para prever valores reais.</p>
+      <div class="sim-grid">
+        <a class="sim-card" href="atmosfera/sim_coriolis.html">
+          <span class="pill i">Aula 1</span>
+          <h3>Efeito Coriolis</h3>
+          <p>Um disco girando, visto de cima de um polo. Lance a bolinha com a Terra parada e depois girando, troque o hemisfério e o ponto de vista.</p>
+          <span class="sim-open">Abrir simulação →</span>
+        </a>
+        <a class="sim-card" href="atmosfera/sim_coriolis_3d.html">
+          <span class="pill i">Aula 1</span>
+          <h3>Efeito Coriolis em 3D</h3>
+          <p>Dois globos lado a lado mostram o mesmo lançamento: visto do espaço e visto por quem gira com a Terra. Arraste os globos para girar a câmera.</p>
+          <span class="sim-open">Abrir simulação →</span>
+        </a>
+        <a class="sim-card" href="atmosfera/sim_umidade_chuva.html">
+          <span class="pill i">Aulas 2 e 5</span>
+          <h3>Umidade e chuva</h3>
+          <p>Três abas: umidade relativa e saturação, psicrômetro com a tabela da apostila e índice pluviométrico (de milímetros para litros).</p>
+          <span class="sim-open">Abrir simulação →</span>
+        </a>
+        <a class="sim-card" href="atmosfera/sim_brisas.html">
+          <span class="pill i">Aula 3</span>
+          <h3>Brisas e calor específico</h3>
+          <p>Um corte do litoral ao longo do dia. Compare as temperaturas do mar e da terra, veja a brisa inverter e teste calores específicos iguais.</p>
+          <span class="sim-open">Abrir simulação →</span>
+        </a>
+        <a class="sim-card" href="atmosfera/sim_efeito_estufa.html">
+          <span class="pill i">Aula 6</span>
+          <h3>Efeito estufa</h3>
+          <p>A luz do Sol chega, a superfície emite infravermelho e os gases de efeito estufa retêm parte dele. Compare sem GEE, natural e intensificado.</p>
+          <span class="sim-open">Abrir simulação →</span>
+        </a>
       </div>
     </div>
   </section>

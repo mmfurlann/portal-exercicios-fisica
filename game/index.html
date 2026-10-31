@@ -1,0 +1,215 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>A Jornada até Einstein — jogo de Física</title>
+  <meta name="description" content="Jogo de tabuleiro educativo de Física para o Ensino Fundamental II e o Ensino Médio. Responda questões no estilo ENEM e transforme-se em Einstein.">
+  <meta name="theme-color" content="#0c1030">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230c1030'/%3E%3Cpath d='M16 5l3 8h8l-6.500 5 2.500 8-7-5-7 5 2.500-8L5 13h8z' fill='%23f5b83d'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body data-screen="start">
+  <a class="skip" href="#main">Ir para o conteúdo</a>
+  <canvas id="fx" aria-hidden="true"></canvas>
+
+  <header class="topbar">
+    <a href="#" id="brand" class="brand" aria-label="A Jornada até Einstein — voltar ao início">
+      <span class="brand-mark" aria-hidden="true">E=mc²</span>
+      <span class="brand-name">A Jornada até Einstein</span>
+    </a>
+    <nav class="topnav" aria-label="Ações do jogo">
+      <a class="btn btn-ghost" href="../index.html">← A Tal da Física</a>
+      <button class="btn btn-ghost" id="btn-ach" type="button" hidden>Conquistas</button>
+      <button class="btn btn-ghost" id="btn-rules" type="button">Regras</button>
+      <button class="btn btn-ghost" id="btn-sound" type="button" aria-pressed="true"><span class="lbl">Som ligado</span></button>
+      <button class="btn btn-ghost" id="btn-music" type="button" aria-pressed="true"><span class="lbl">Música ligada</span></button>
+      <button class="btn btn-ghost" id="btn-new" type="button">Nova partida</button>
+    </nav>
+  </header>
+
+  <main id="main">
+    <!-- ============ INÍCIO ============ -->
+    <section id="screen-start" class="screen start" aria-labelledby="start-title">
+      <div class="start-copy">
+        <h1 id="start-title" tabindex="-1" data-focus>Do aluno curioso ao <span class="nowrap">gênio da Física</span></h1>
+        <p class="start-lead">Percorra 30 casas, responda questões de Física no estilo ENEM e veja seu personagem evoluir a cada região, até a transformação final em Einstein.</p>
+        <div class="start-actions">
+          <button class="btn btn-primary btn-lg" id="btn-start" type="button">Começar jornada</button>
+          <button class="btn btn-secondary btn-lg" id="btn-continue" type="button" hidden>Continuar partida</button>
+          <button class="btn btn-secondary btn-lg" id="btn-view-end" type="button" hidden>Ver resultado final</button>
+          <button class="btn btn-ghost btn-lg" id="btn-rules-start" type="button">Como jogar</button>
+        </div>
+        <p class="continue-info" id="continue-info" hidden></p>
+        <ul class="start-facts">
+          <li>50 questões originais em 12 temas</li>
+          <li>5 regiões com dificuldade crescente</li>
+          <li>Sem pressa: nenhum cronômetro contra você</li>
+        </ul>
+      </div>
+      <div class="start-hero">
+        <h2 class="sr-only">As cinco formas do seu personagem</h2>
+        <ol class="lineup" id="lineup"></ol>
+      </div>
+    </section>
+
+    <!-- ============ JOGO ============ -->
+    <section id="screen-game" class="screen game" aria-label="Tabuleiro" hidden>
+      <div class="hud" role="group" aria-label="Situação da partida">
+        <div class="hud-region">
+          <p class="hud-region-name" id="hud-region"></p>
+          <p class="hud-level" id="hud-level"></p>
+        </div>
+        <div class="hud-progress">
+          <div class="bar" id="hud-progress" role="progressbar" aria-label="Progresso na jornada" aria-valuemin="1" aria-valuemax="30" aria-valuenow="1">
+            <span class="bar-fill" id="hud-fill"></span>
+          </div>
+          <p class="bar-text" id="hud-progress-text">Casa 1 de 30</p>
+        </div>
+        <div class="hud-stat"><span class="hud-num" id="hud-score" data-v="0">0</span><span class="hud-lbl">pontos</span></div>
+        <div class="hud-stat" id="hud-streak-wrap"><span class="hud-num"><span id="hud-streak">0</span><span class="flame" aria-hidden="true">🔥</span></span><span class="hud-lbl">acertos seguidos <small id="hud-streak-best"></small></span></div>
+      </div>
+
+      <div class="game-grid">
+        <div class="board-wrap">
+          <div id="board" class="board" aria-label="Tabuleiro com 30 casas"></div>
+        </div>
+
+        <aside class="side" aria-label="Seu personagem e estatísticas">
+          <div class="side-card side-char">
+            <div class="side-portrait" id="side-char" role="img" aria-label="Seu personagem"></div>
+            <p class="side-stage" id="side-stage"></p>
+            <p class="side-motto" id="side-motto"></p>
+            <ol class="side-dots" id="side-dots" aria-label="Estágios do personagem"></ol>
+          </div>
+          <div class="side-card">
+            <h2 class="side-h">Medalhas</h2>
+            <ul class="medals" id="medals"></ul>
+          </div>
+          <div class="side-card">
+            <h2 class="side-h">Desempenho</h2>
+            <dl class="stats">
+              <div><dt>Acertos</dt><dd id="st-correct">0</dd></div>
+              <div><dt>Erros</dt><dd id="st-wrong">0</dd></div>
+              <div><dt>Pistas</dt><dd id="st-hints">0</dd></div>
+              <div><dt>Tempo ativo</dt><dd id="st-time">0:00</dd></div>
+            </dl>
+            <button class="btn btn-ghost btn-sm" id="btn-review-last" type="button" hidden>Rever última resolução</button>
+          </div>
+        </aside>
+      </div>
+
+      <div class="actionbar">
+        <button class="cta" id="btn-challenge" type="button"></button>
+      </div>
+    </section>
+
+    <!-- ============ FIM ============ -->
+    <section id="screen-end" class="screen end" aria-labelledby="end-title" hidden>
+      <div class="end-hero">
+        <div class="end-char" id="end-char" role="img" aria-label="Einstein, forma final do personagem"></div>
+        <div class="end-copy">
+          <h1 id="end-title" tabindex="-1" data-focus>Jornada concluída!</h1>
+          <p class="end-lead" id="end-lead"></p>
+          <div class="end-score"><span id="end-score">0</span><span>pontos</span></div>
+          <ul class="medals" id="end-medals"></ul>
+        </div>
+      </div>
+      <dl class="end-stats">
+        <div><dt>Acertos</dt><dd id="end-correct">0</dd></div>
+        <div><dt>Erros</dt><dd id="end-wrong">0</dd></div>
+        <div><dt>Aproveitamento</dt><dd id="end-acc">0%</dd></div>
+        <div><dt>Tempo ativo</dt><dd id="end-time">0:00</dd></div>
+        <div><dt>Maior sequência</dt><dd id="end-streak">0</dd></div>
+      </dl>
+      <div class="end-cols">
+        <section>
+          <h2>Desempenho por tema</h2>
+          <ul class="themes" id="end-themes"></ul>
+          <p class="end-tip" id="end-tip"></p>
+        </section>
+        <section>
+          <h2>Conquistas</h2>
+          <ul class="ach-mini" id="end-ach"></ul>
+        </section>
+      </div>
+      <div class="end-actions">
+        <button class="btn btn-primary btn-lg" id="btn-again" type="button">Jogar novamente</button>
+        <button class="btn btn-secondary btn-lg" id="btn-home" type="button">Voltar ao início</button>
+      </div>
+    </section>
+  </main>
+
+  <div id="toasts" class="toasts" role="status" aria-live="polite"></div>
+
+  <!-- ============ QUESTÃO ============ -->
+  <dialog id="dlg-question" class="dlg q-dlg" aria-labelledby="q-title">
+    <div class="q-head">
+      <h2 id="q-title" class="q-title" tabindex="-1"></h2>
+      <button class="q-x" id="q-close" type="button" aria-label="Fechar e voltar ao tabuleiro">×</button>
+    </div>
+    <div class="q-body" id="q-body">
+      <div class="q-chips" id="q-chips"></div>
+      <div id="q-banner"></div>
+      <div id="q-figure"></div>
+      <div class="q-statement" id="q-statement"></div>
+      <fieldset class="q-fieldset">
+        <legend class="sr-only">Alternativas</legend>
+        <div class="q-options" id="q-options"></div>
+      </fieldset>
+      <p class="q-hint" id="q-hint-text" hidden></p>
+      <div class="q-result" id="q-result" hidden aria-live="polite"></div>
+    </div>
+    <div class="q-foot">
+      <div class="q-tools" id="q-tools">
+        <button class="btn btn-ghost btn-sm" id="btn-dica" type="button">Ver dica</button>
+        <button class="btn btn-ghost btn-sm" id="btn-pista" type="button">Usar Pista</button>
+      </div>
+      <button class="btn btn-primary btn-lg" id="q-confirm" type="button" disabled>Confirmar resposta</button>
+      <button class="btn btn-primary btn-lg" id="q-continue" type="button" hidden>Continuar</button>
+    </div>
+  </dialog>
+
+  <!-- ============ CERIMÔNIAS ============ -->
+  <dialog id="dlg-ceremony" class="dlg ceremony" aria-labelledby="cer-title">
+    <div id="cer-body"></div>
+    <button class="btn btn-primary btn-lg" id="cer-ok" type="button">Continuar</button>
+  </dialog>
+
+  <!-- ============ CONFIRMAÇÃO ============ -->
+  <dialog id="dlg-confirm" class="dlg small" aria-labelledby="cf-title" aria-describedby="cf-text">
+    <h2 id="cf-title"></h2>
+    <p id="cf-text"></p>
+    <div class="dlg-actions">
+      <button class="btn btn-secondary" id="cf-cancel" type="button">Cancelar</button>
+      <button class="btn btn-primary" id="cf-ok" type="button">Confirmar</button>
+    </div>
+  </dialog>
+
+  <!-- ============ REGRAS ============ -->
+  <dialog id="dlg-rules" class="dlg wide" aria-labelledby="rules-title">
+    <div class="dlg-head"><h2 id="rules-title">Como jogar</h2><button class="q-x" type="button" data-close aria-label="Fechar regras">×</button></div>
+    <div class="dlg-body rules" id="rules-body"></div>
+    <div class="dlg-actions"><button class="btn btn-primary" type="button" data-close>Entendi</button></div>
+  </dialog>
+
+  <!-- ============ CONQUISTAS ============ -->
+  <dialog id="dlg-ach" class="dlg wide" aria-labelledby="ach-title">
+    <div class="dlg-head"><h2 id="ach-title">Conquistas</h2><button class="q-x" type="button" data-close aria-label="Fechar conquistas">×</button></div>
+    <ul class="dlg-body ach-list" id="ach-list"></ul>
+    <div class="dlg-actions"><button class="btn btn-primary" type="button" data-close>Fechar</button></div>
+  </dialog>
+
+  <noscript><p class="noscript">Este jogo precisa de JavaScript ativado no navegador.</p></noscript>
+
+  <script src="js/questions.js"></script>
+  <script src="js/logic.js"></script>
+  <script src="js/figures.js"></script>
+  <script src="js/character.js"></script>
+  <script src="js/audio.js"></script>
+  <script src="js/music.js"></script>
+  <script src="js/fx.js"></script>
+  <script src="js/board.js"></script>
+  <script src="js/ui.js"></script>
+</body>
+</html>

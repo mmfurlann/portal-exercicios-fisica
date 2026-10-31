@@ -1,0 +1,236 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Umidade e chuva · A Tal da Física</title>
+<style>
+:root{--ink:#0E2A3B;--teal:#1F8A8A;--sun:#F2A541;--coral:#E4572E;--bg:#F4F8FA;--card:#fff;--mut:#5B6B75}
+*{box-sizing:border-box}
+body{margin:0;font-family:Calibri,"Segoe UI",Arial,sans-serif;background:var(--bg);color:var(--ink)}
+header{background:var(--ink);color:#fff;padding:14px 20px}
+header h1{margin:0;font-size:24px}
+header p{margin:4px 0 0;color:#CFE3EA;font-size:15px}
+nav{display:flex;gap:6px;padding:12px 18px 0;max-width:1150px;margin:auto;flex-wrap:wrap}
+nav button{font:inherit;font-size:17px;border:0;border-radius:10px 10px 0 0;padding:10px 18px;cursor:pointer;background:#DCE8EC;color:var(--ink)}
+nav button.on{background:var(--card);font-weight:bold;color:var(--teal)}
+section{display:none;max-width:1150px;margin:0 auto;background:var(--card);border-radius:0 14px 14px 14px;box-shadow:0 2px 10px #0001;padding:18px}
+section.on{display:flex;gap:22px;flex-wrap:wrap}
+.col{flex:1 1 320px}
+label{display:block;margin:12px 0 3px;font-size:16px}
+input[type=range]{width:100%}
+input[type=number]{font:inherit;font-size:18px;width:120px;padding:6px 8px;border:2px solid #C9D9DF;border-radius:8px}
+.big{font-size:42px;font-weight:bold;color:var(--teal)}
+.estado{border-radius:12px;padding:12px 14px;font-size:17px;margin-top:10px}
+.note{background:#FFF4E0;border-radius:10px;padding:10px 12px;font-size:15px;line-height:1.4;margin-top:12px}
+table{border-collapse:collapse;font-size:12.5px}
+th,td{border:1px solid #D5E1E5;padding:3px 5px;text-align:center}
+th{background:#1F8A8A;color:#fff}
+td.lin{background:#E3EEF2;font-weight:bold}
+td.hl{background:#F2A541;font-weight:bold;outline:2px solid #E4572E}
+td.hr,td.hc{background:#FFF0D6}
+.scroll{overflow:auto;max-height:520px}
+.passo{font-size:17px;margin:6px 0}
+canvas{max-width:100%}
+</style>
+<link rel="stylesheet" href="../estilo.css">
+<link rel="stylesheet" href="atmosfera.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Literata:ital,opsz,wght@0,7..72,400;0,7..72,600;1,7..72,400&family=JetBrains+Mono:wght@400;600&display=swap">
+</head>
+<body>
+<header class="top">
+  <div class="wrap">
+    <a class="brand" href="../index.html">
+      <svg width="28" height="28" viewBox="0 0 28 28" aria-hidden="true">
+        <path d="M3 24 Q14 -6 25 24" fill="none" stroke="var(--ink)" stroke-width="2" stroke-dasharray="3 3"/>
+        <circle cx="14" cy="9" r="3.5" fill="var(--accent)"/>
+      </svg>
+      A Tal da Física
+    </a>
+    <nav class="links" aria-label="Seções">
+      <a href="../index.html#trilhas">Trilhas</a>
+      <a href="../index.html#licao">Lição</a>
+      <a href="../laboratorio.html" aria-current="page">Laboratório</a>
+      <a href="../graficos.html">Gráficos</a>
+      <a href="../quiz.html">Quiz</a>
+      <a href="../enem.html">ENEM</a>
+      <a href="../eletricidade.html">Eletricidade</a>
+      <a href="../game/index.html">Game</a>
+      <a href="../index.html#constantes">Constantes</a>
+    </nav>
+  </div>
+</header>
+
+<div class="wrap atm-intro">
+  <a class="atm-back" href="../laboratorio.html#atmosfera">← Voltar ao laboratório</a>
+  <p class="label">Laboratório · Atmosfera e clima · 8º ano</p>
+  <h1 class="atm-title">Umidade do ar e chuva</h1>
+  <p>Três ferramentas para as Aulas 2 e 5: umidade relativa, psicrômetro e índice pluviométrico.</p>
+</div>
+<nav>
+  <button class="on" data-t="ur">Umidade relativa</button>
+  <button data-t="ps">Psicrômetro</button>
+  <button data-t="ch">Chuva</button>
+</nav>
+
+<section id="ur" class="on">
+  <div class="col">
+    <label for="temp">Temperatura do ar: <b id="tv"></b></label>
+    <input type="range" id="temp" min="0" max="40" step="1" value="25">
+    <label for="vap">Vapor de água presente no ar: <b id="vv"></b></label>
+    <input type="range" id="vap" min="0" max="50" step="0.5" value="12">
+    <p class="passo">Vapor máximo possível nessa temperatura: <b id="vmax"></b></p>
+    <p class="passo">UR = presente ÷ máximo × 100</p>
+    <div class="big" id="urv"></div>
+    <div class="estado" id="est"></div>
+    <div class="note"><b>Experimente:</b> mantenha o vapor fixo e <b>esfrie</b> o ar. A umidade relativa sobe até 100% e o vapor começa a condensar (como no copo gelado que "sua").</div>
+    <div class="note">O vapor máximo é calculado por uma fórmula aproximada da física da atmosfera. Os estados de criticidade seguem a tabela da apostila (p. 366).</div>
+  </div>
+  <div class="col"><canvas id="cx" width="460" height="460" aria-label="Caixa de ar com moléculas de vapor"></canvas></div>
+</section>
+
+<section id="ps">
+  <div class="col">
+    <label for="tseco">Termômetro de bulbo seco, T (°C)</label>
+    <input type="number" id="tseco" value="28" step="0.1">
+    <label for="tum">Termômetro de bulbo úmido, T<sub>m</sub> (°C)</label>
+    <input type="number" id="tum" value="21" step="1">
+    <p class="passo">1) Depressão psicrométrica: T − T<sub>m</sub> = <b id="dep"></b></p>
+    <p class="passo">2) Linha T<sub>m</sub> × coluna (T − T<sub>m</sub>) na tabela</p>
+    <div class="big" id="psr"></div>
+    <div class="estado" id="pest"></div>
+    <div class="note">Tabela psicrométrica transcrita da apostila (p. 393): T<sub>m</sub> de 10 °C a 39 °C (sem 36 °C e 38 °C) e T − T<sub>m</sub> de 5,2 °C a 9,0 °C. Fora desse intervalo, a ferramenta avisa.</div>
+  </div>
+  <div class="col scroll"><table id="tab"></table></div>
+</section>
+
+<section id="ch">
+  <div class="col">
+    <label for="mm">Chuva medida no pluviômetro (mm): <b id="mmv"></b></label>
+    <input type="range" id="mm" min="0" max="100" step="1" value="12">
+    <label for="area">Área (m²)</label>
+    <input type="number" id="area" value="400" min="1">
+    <p class="passo">1 mm de chuva = 1 L em cada m²</p>
+    <p class="passo">Em 1 m²: <b id="l1"></b></p>
+    <p class="passo">Na área escolhida: <b id="lt"></b></p>
+    <div class="note">Na régua do pluviômetro caseiro: 1 cm = 10 mm. Exemplo da apostila (p. 390): 0,5 cm = 5 mm = 5 L/m².</div>
+  </div>
+  <div class="col"><canvas id="cc" width="420" height="420" aria-label="Metro quadrado com lâmina de água"></canvas></div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <span>A Tal da Física · material de estudo gratuito</span>
+    <span class="mono">λ<sub>Na</sub> = 589 nm, a cor do nosso destaque</span>
+  </div>
+</footer>
+
+<script>
+const $=id=>document.getElementById(id);
+document.querySelectorAll('nav button').forEach(b=>b.onclick=()=>{document.querySelectorAll('nav button').forEach(x=>x.classList.toggle('on',x===b));document.querySelectorAll('section').forEach(s=>s.classList.toggle('on',s.id===b.dataset.t))});
+const fmt=(x,d=1)=>x.toFixed(d).replace('.',',');
+function estado(ur){
+  if(ur<12)return['Estado de EMERGÊNCIA (abaixo de 12%): interromper atividades ao ar livre entre 10 h e 16 h.','#F4B6A6'];
+  if(ur<=20)return['Estado de ALERTA (12% a 20%): suprimir exercícios e trabalhos ao ar livre entre 10 h e 16 h.','#F1C7C7'];
+  if(ur<=30)return['Estado de ATENÇÃO (21% a 30%): evitar exercícios ao ar livre entre 11 h e 15 h; beber água.','#F8E2A6'];
+  if(ur<60)return['Sem estado de criticidade, mas abaixo de 60% (OMS: já pode haver efeitos na saúde).','#E3EEF2'];
+  return['Sem estado de criticidade.','#D8F0E4'];
+}
+// ---------- Umidade relativa ----------
+const vsat=T=>5.018+0.32321*T+8.1847e-3*T*T+3.1243e-4*T*T*T; // g/m³ (aproximação)
+const cx=$('cx').getContext('2d');let mol=[];
+for(let i=0;i<220;i++)mol.push({x:Math.random()*420+20,y:Math.random()*380+20,vx:(Math.random()-.5)*2,vy:(Math.random()-.5)*2});
+function urUpd(){
+  const T=+$('temp').value,v=+$('vap').value,m=vsat(T),ur=Math.min(100,v/m*100);
+  $('tv').textContent=T+' °C';$('vv').textContent=fmt(v)+' g/m³';$('vmax').textContent=fmt(m)+' g/m³';
+  $('urv').textContent=fmt(ur,0)+'%'+(v>=m?' (saturado)':'');
+  const [t,cor]=v>=m?['Ar saturado: o excesso de vapor condensa em gotículas (orvalho, neblina, nuvem).','#CFE8F5']:estado(ur);
+  $('est').textContent=t;$('est').style.background=cor;
+}
+function urDraw(){
+  const T=+$('temp').value,v=+$('vap').value,m=vsat(T);const n=Math.round(Math.min(v,m)*4),cond=Math.max(0,Math.round((v-m)*4));
+  cx.fillStyle='#EAF4F8';cx.fillRect(0,0,460,460);cx.strokeStyle='#0E2A3B';cx.lineWidth=3;cx.strokeRect(10,10,440,440);
+  cx.fillStyle='#0E2A3B';cx.font='15px Calibri,Arial';cx.fillText('1 m³ de ar',20,32);
+  const sp=0.5+T/20;
+  for(let i=0;i<Math.min(n,mol.length);i++){const p=mol[i];p.x+=p.vx*sp;p.y+=p.vy*sp;if(p.x<20||p.x>440)p.vx*=-1;if(p.y<40||p.y>440)p.vy*=-1;
+    cx.fillStyle='#2A7FA8';cx.beginPath();cx.arc(p.x,p.y,4,0,7);cx.fill()}
+  for(let i=0;i<Math.min(cond,120);i++){const x=30+(i*37)%400,y=430-Math.floor(i/11)*12;cx.fillStyle='#1F8A8A';cx.beginPath();cx.ellipse(x,y,6,8,0,0,7);cx.fill()}
+  // barra
+  const ur=Math.min(1,v/m);cx.fillStyle='#fff';cx.fillRect(400,60,30,360);cx.fillStyle=ur>=1?'#1F8A8A':'#F2A541';cx.fillRect(400,60+360*(1-ur),30,360*ur);cx.strokeRect(400,60,30,360);
+  cx.fillStyle='#0E2A3B';cx.fillText('UR',402,54);
+  requestAnimationFrame(urDraw);
+}
+['temp','vap'].forEach(i=>$(i).oninput=urUpd);urUpd();requestAnimationFrame(urDraw);
+// ---------- Psicrômetro (tabela da apostila, p. 393) ----------
+const cols=[5.2,5.4,5.6,5.8,6.0,6.2,6.4,6.6,6.8,7.0,7.2,7.4,7.6,7.8,8.0,8.2,8.4,8.6,8.8,9.0];
+const TAB={
+10:[47,46,44,43,41,40,39,37,36,35,33,32,31,30,29,28,26,25,24,23],
+11:[49,47,46,45,43,42,41,40,38,37,35,34,33,32,31,30,29,28,27,26],
+12:[50,49,48,46,45,44,42,41,40,38,37,36,35,34,33,32,31,30,29,28],
+13:[52,51,49,48,46,45,44,43,41,40,39,38,37,36,35,34,33,32,31,30],
+14:[53,52,51,49,48,47,45,44,43,42,41,40,39,37,36,35,34,33,32,31],
+15:[55,53,52,51,49,48,47,46,45,43,42,41,40,39,38,37,36,35,34,33],
+16:[56,54,53,52,51,50,48,47,46,45,44,43,42,41,40,39,38,37,36,35],
+17:[57,56,54,53,52,51,50,48,47,46,45,44,43,42,41,41,39,38,37,36],
+18:[58,57,56,54,53,52,51,50,49,48,46,45,44,43,42,42,41,40,39,38],
+19:[59,58,57,55,54,53,52,51,50,50,48,47,46,45,44,43,42,41,40,39],
+20:[60,59,58,56,55,54,53,52,51,50,49,48,47,46,45,44,43,42,41,40],
+21:[61,60,59,57,56,55,54,53,52,51,50,49,48,47,46,45,44,43,43,42],
+22:[62,61,59,58,57,56,55,54,53,52,51,50,49,48,47,46,45,45,44,43],
+23:[63,61,60,59,58,57,56,55,54,53,52,51,50,49,48,47,47,46,45,44],
+24:[63,62,61,60,59,58,57,56,55,54,53,52,51,50,49,49,48,47,46,45],
+25:[64,63,62,61,60,59,58,57,56,55,54,53,52,51,50,50,49,48,47,46],
+26:[65,64,63,62,61,60,59,57,57,56,55,54,53,52,51,50,49,49,48,47],
+27:[65,64,63,62,61,60,59,58,57,56,56,55,54,53,52,51,50,49,49,48],
+28:[66,65,64,63,62,61,60,58,58,57,56,55,55,54,53,52,51,50,50,49],
+29:[67,66,65,64,63,62,61,59,59,58,57,56,55,54,54,53,52,51,50,50],
+30:[67,66,65,64,63,62,61,60,60,59,58,57,56,55,54,54,53,52,51,50],
+31:[68,67,66,65,64,63,62,60,60,60,58,58,57,56,55,54,53,53,52,51],
+32:[68,67,66,65,64,64,63,61,61,60,59,58,57,57,56,55,54,53,53,52],
+33:[69,68,67,66,65,64,63,61,61,61,60,59,58,57,56,56,55,54,53,53],
+34:[69,68,67,66,66,65,64,62,62,61,60,59,59,58,57,56,55,55,54,53],
+35:[70,69,68,67,66,65,64,63,63,62,61,60,59,58,58,57,56,55,55,54],
+37:[70,69,68,67,66,66,65,63,63,62,61,60,60,59,58,58,56,56,55,54],
+39:[71,70,69,68,67,67,66,64,64,63,62,61,61,60,59,59,58,57,57,55]};
+function montaTab(){let h='<tr><th>T<sub>m</sub> ↓ / T−T<sub>m</sub> →</th>'+cols.map((c,j)=>`<th id="h${j}">${fmt(c)}</th>`).join('')+'</tr>';
+  Object.keys(TAB).forEach(r=>{h+=`<tr><td class="lin" id="r${r}">${r}</td>`+TAB[r].map((v,j)=>`<td id="c${r}_${j}">${v}</td>`).join('')+'</tr>'});$('tab').innerHTML=h}
+montaTab();
+function psUpd(){
+  document.querySelectorAll('#tab td').forEach(td=>td.classList.remove('hl','hr','hc'));
+  const T=parseFloat(String($('tseco').value).replace(',','.')),Tm=parseFloat(String($('tum').value).replace(',','.'));
+  if(isNaN(T)||isNaN(Tm)){$('dep').textContent='–';$('psr').textContent='';return}
+  const d=Math.round((T-Tm)*10)/10;$('dep').textContent=fmt(d)+' °C';
+  const row=TAB[Math.round(Tm)];
+  if(!Number.isInteger(Tm)||!row){$('psr').textContent='—';$('pest').textContent='Tm fora da tabela da apostila (use um valor inteiro entre 10 e 39 °C, exceto 36 e 38).';$('pest').style.background='#E3EEF2';return}
+  let j=cols.findIndex(c=>Math.abs(c-d)<0.01),aviso='';
+  if(j<0){if(d<5.1||d>9.1){$('psr').textContent='—';$('pest').textContent='T − Tm fora da tabela da apostila (5,2 °C a 9,0 °C).';$('pest').style.background='#E3EEF2';return}
+    j=cols.reduce((b,c,i)=>Math.abs(c-d)<Math.abs(cols[b]-d)?i:b,0);aviso=' (coluna mais próxima: '+fmt(cols[j])+')'}
+  const ur=row[j];$('psr').textContent='UR ≈ '+ur+'%'+aviso;
+  for(let k=0;k<j;k++)$('c'+Math.round(Tm)+'_'+k).classList.add('hr');
+  Object.keys(TAB).forEach(r=>{if(+r<Math.round(Tm))$('c'+r+'_'+j).classList.add('hc')});
+  $('c'+Math.round(Tm)+'_'+j).classList.add('hl');
+  const [t,cor]=estado(ur);$('pest').textContent=t;$('pest').style.background=cor;
+}
+['tseco','tum'].forEach(i=>$(i).oninput=psUpd);psUpd();
+// ---------- Chuva ----------
+const cc=$('cc').getContext('2d');
+function chUpd(){
+  const mm=+$('mm').value,A=Math.max(0,+$('area').value||0);
+  $('mmv').textContent=mm+' mm';$('l1').textContent=mm+' L/m²';$('lt').textContent=(mm*A).toLocaleString('pt-BR')+' L';
+  cc.clearRect(0,0,420,420);
+  // caixa 1 m x 1 m em perspectiva
+  const x0=80,y0=300,w=240,dx=80,dy=-60,hpx=Math.min(200,mm*2);
+  cc.fillStyle='#C9A66B';cc.beginPath();cc.moveTo(x0,y0);cc.lineTo(x0+w,y0);cc.lineTo(x0+w+dx,y0+dy);cc.lineTo(x0+dx,y0+dy);cc.fill();
+  cc.fillStyle='#2A7FA8cc';cc.beginPath();cc.moveTo(x0,y0);cc.lineTo(x0+w,y0);cc.lineTo(x0+w,y0-hpx);cc.lineTo(x0,y0-hpx);cc.fill();
+  cc.fillStyle='#4FA3C7cc';cc.beginPath();cc.moveTo(x0,y0-hpx);cc.lineTo(x0+w,y0-hpx);cc.lineTo(x0+w+dx,y0+dy-hpx);cc.lineTo(x0+dx,y0+dy-hpx);cc.fill();
+  cc.fillStyle='#1E6C8E';cc.beginPath();cc.moveTo(x0+w,y0);cc.lineTo(x0+w+dx,y0+dy);cc.lineTo(x0+w+dx,y0+dy-hpx);cc.lineTo(x0+w,y0-hpx);cc.fill();
+  cc.fillStyle='#0E2A3B';cc.font='bold 16px Calibri,Arial';cc.fillText('1 m',x0+w/2-12,y0+22);cc.fillText('1 m',x0+w+dx/2+8,y0+dy/2+16);
+  cc.fillText('altura da água: '+mm+' mm',x0,y0+52);cc.fillText('volume: '+mm+' litros',x0,40);
+  cc.font='13px Calibri,Arial';cc.fillText('(altura exagerada no desenho)',x0,62);
+}
+['mm','area'].forEach(i=>$(i).oninput=chUpd);chUpd();
+</script>
+</body>
+</html>

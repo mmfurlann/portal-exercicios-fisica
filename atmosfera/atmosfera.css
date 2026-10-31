@@ -1,0 +1,77 @@
+/* Simulações de atmosfera e clima no padrão visual do site.
+   Carregado depois do estilo próprio de cada simulação e do estilo.css, para sobrescrever os dois. */
+
+/* as simulações usam estes nomes de cor; aqui eles passam a apontar para a paleta do site */
+:root {
+  --bg: var(--paper);
+  --teal: var(--blue);
+  --coral: var(--accent);
+  --sun: var(--accent);
+  --mut: var(--ink-soft);
+  --screen: #eef3f6;            /* fundo claro das áreas de desenho, que usam cores fixas */
+}
+
+/* cabeçalho, apresentação e rodapé do site */
+header.top { padding: 0; }
+nav.links { padding: 0; max-width: none; margin: 0; }
+.atm-intro { padding-block: 36px 8px; display: grid; gap: 10px; }
+.atm-intro .atm-title { font-size: clamp(1.9rem, 4vw, 2.7rem); font-weight: 800; letter-spacing: -0.01em; }
+.atm-intro > p:last-child { color: var(--ink-soft); max-width: 70ch; }
+.atm-back { font-family: var(--display); font-weight: 700; color: var(--accent-ink); text-decoration: none; justify-self: start; }
+.atm-back:hover { text-decoration: underline; }
+footer { margin-top: 32px; }
+
+/* área de trabalho */
+main { max-width: 1120px !important; padding: 20px max(16px, env(safe-area-inset-left, 0px)) 20px max(16px, env(safe-area-inset-right, 0px)) !important; }
+main h2, main h3 {
+  font-family: var(--display); font-size: 1.05rem !important; font-weight: 700; color: var(--blue);
+  letter-spacing: 0; margin: 14px 0 8px;
+}
+.card, .panel, .stage, body > section {
+  background: var(--card) !important; border: 1px solid var(--grid); border-radius: 10px !important;
+  box-shadow: 0 1px 0 var(--grid), 0 14px 32px -18px rgba(0, 0, 0, 0.55) !important;
+}
+label { font-family: var(--mono); font-size: .82rem !important; color: var(--ink-soft); }
+label b, label span { color: var(--ink); }
+input[type="range"] { accent-color: var(--accent); }
+input[type="number"] { background: var(--paper) !important; color: var(--ink) !important; border: 1px solid var(--grid) !important; font-family: var(--mono) !important; }
+
+/* botões no estilo do site */
+button {
+  font-family: var(--display) !important; font-weight: 700; font-size: .92rem !important;
+  background: var(--paper-2) !important; color: var(--ink) !important;
+  border: 1px solid var(--grid) !important; border-radius: 6px !important;
+}
+button:hover { border-color: var(--ink-soft) !important; }
+button.on, .sec.on { background: var(--blue) !important; border-color: var(--blue) !important; color: #14273a !important; }
+button.pri, .pri { background: var(--accent) !important; border-color: var(--accent) !important; color: #1a0d02 !important; }
+
+/* destaques e caixas de texto */
+.note { background: color-mix(in srgb, var(--accent) 9%, var(--card)) !important; border-left: 3px solid var(--accent); border-radius: 6px !important; color: var(--ink); }
+.big { font-family: var(--display); }
+.res { font-family: var(--display); }
+.box { background: var(--paper-2) !important; border: 1px solid var(--grid); }
+.box b { font-family: var(--mono); color: var(--accent-ink); }
+.estado { color: #14273a; }              /* faixas coloridas claras definidas pela própria simulação */
+.passo b, .leg { color: var(--ink); }
+
+/* áreas de desenho: tela clara para as figuras, que usam cores fixas */
+main canvas { background: var(--screen); border-radius: 8px; }
+.view { background: #0b1e2b !important; border: 1px solid var(--grid); border-radius: 10px !important; }
+.view canvas { background: transparent; border-radius: 0; }
+
+/* abas da simulação de umidade e chuva */
+body > nav:not(.links) { max-width: 1120px; padding: 16px max(16px, env(safe-area-inset-left, 0px)) 0; }
+body > nav:not(.links) button { border-radius: 8px 8px 0 0 !important; border-bottom: 0 !important; color: var(--ink-soft) !important; }
+body > nav:not(.links) button.on { background: var(--card) !important; border-color: var(--grid) !important; color: var(--accent-ink) !important; }
+body > section { max-width: 1120px; margin-inline: max(16px, env(safe-area-inset-left, 0px)) !important; }
+@media (min-width: 1152px) { body > section { margin-inline: auto !important; } }
+
+/* tabela psicrométrica */
+table { font-family: var(--mono); }
+th, td { border-color: var(--grid) !important; color: var(--ink); }
+th { background: var(--blue) !important; color: #14273a !important; }
+td.lin { background: var(--paper-2) !important; }
+td.hr, td.hc { background: color-mix(in srgb, var(--accent) 16%, var(--card)) !important; }
+td.hl { background: var(--accent) !important; color: #1a0d02 !important; outline-color: var(--accent-ink) !important; }
+@media (max-width: 620px) { body > nav:not(.links) { gap: 4px !important; } body > nav:not(.links) button { padding: 8px 10px !important; font-size: .82rem !important; } }

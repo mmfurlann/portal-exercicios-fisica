@@ -326,6 +326,97 @@
     update();
   }
 
+  /* ---------- Polias de Arquimedes (talha exponencial) ---------- */
+  // n polias móveis em série: cada uma tem a própria corda, presa no teto, e divide a força pela metade.
+  // A carga sobe h, a polia k sobe 2^(k−1)·h e a mão puxa 2^n·h de corda.
+  if ($("poly")) {
+    const cv = $("poly"), c = cv.getContext("2d"), g = 9.81, R = 22, TOP = 40;
+    let u = 0, pulling = false;
+    const par = () => ({ m: +$("pm").value, n: +$("pn").value, h: +$("ph").value });
+    const redraw = animate(cv, dt => {
+      const p = par(), W = cv.width, P = p.m * g, F = P / 2 ** p.n;
+      if (pulling) { u = Math.min(1, u + dt / 2.5); if (u >= 1) pulling = false; }
+      const prog = reduce && pulling ? 1 : u;
+      // subida da carga na tela: a polia de cima sobe 2^(n−1)·H e precisa parar abaixo da polia fixa
+      const H = Math.min(60, 146 / 2 ** Math.max(p.n - 1, 0));
+      clear(c, cv);
+      // teto
+      c.strokeStyle = C.ink; c.lineWidth = 3; c.beginPath(); c.moveTo(150, TOP); c.lineTo(W - 150, TOP); c.stroke();
+      c.lineWidth = 1.5; c.strokeStyle = C["ink-soft"];
+      for (let x = 156; x < W - 150; x += 16) { c.beginPath(); c.moveTo(x, TOP); c.lineTo(x - 10, TOP - 12); c.stroke(); }
+      // posições: polia 1 é a de baixo (carrega o peso); a de cima recebe a corda que vai para a mão
+      const xs = [], ys = [];
+      for (let k = 1; k <= p.n; k++) {
+        xs[k] = 340 + (k - 1) * R;
+        ys[k] = 280 + (p.n - k) * 44 - 2 ** (k - 1) * H * prog;
+      }
+      const xf = p.n ? xs[p.n] + 2 * R : 340 + R, yf = 90;
+      const xl = p.n ? xs[1] : xf - R, loadTop = p.n ? ys[1] + R + 28 : 380 - H * prog;
+      const handY = 120 + 2 ** p.n * H * prog;
+      const rope = (pts) => { c.strokeStyle = C["accent-ink"]; c.lineWidth = 2.5; c.beginPath(); pts.forEach(([x, y], i) => i ? c.lineTo(x, y) : c.moveTo(x, y)); c.stroke(); };
+      const wheel = (x, y, fixed) => {
+        c.fillStyle = C.paper; c.strokeStyle = C.ink; c.lineWidth = 3;
+        c.beginPath(); c.arc(x, y, R, 0, Math.PI * 2); c.fill(); c.stroke();
+        c.fillStyle = fixed ? C.blue : C.accent; c.beginPath(); c.arc(x, y, 5, 0, Math.PI * 2); c.fill();
+      };
+      c.font = mono(16); c.textBaseline = "middle";
+      // cordas de cada polia móvel: teto → por baixo da polia → eixo da polia de cima (ou polia fixa)
+      for (let k = 1; k <= p.n; k++) {
+        rope([[xs[k] - R, TOP], [xs[k] - R, ys[k]]]);
+        c.strokeStyle = C["accent-ink"]; c.lineWidth = 2.5; c.beginPath(); c.arc(xs[k], ys[k], R, Math.PI, 0, true); c.stroke();
+        rope([[xs[k] + R, ys[k]], [xs[k] + R, k < p.n ? ys[k + 1] : yf]]);
+        c.fillStyle = C["ink-soft"]; c.textAlign = "right";
+        c.fillText(`P/${2 ** k}`, xs[k] - R - 8, Math.max(TOP + 22, ys[k] - 30 - (p.n - k) * 4));
+      }
+      // corda da polia fixa até a mão
+      if (!p.n) rope([[xf - R, yf], [xf - R, loadTop]]);
+      c.strokeStyle = C["accent-ink"]; c.lineWidth = 2.5; c.beginPath(); c.arc(xf, yf, R, Math.PI, 0); c.stroke();
+      rope([[xf + R, yf], [xf + R, handY]]);
+      c.strokeStyle = C.ink; c.lineWidth = 3; c.beginPath(); c.moveTo(xf, TOP); c.lineTo(xf, yf); c.stroke();
+      wheel(xf, yf, true);
+      for (let k = 1; k <= p.n; k++) wheel(xs[k], ys[k], false);
+      // carga
+      if (p.n) { c.strokeStyle = C.ink; c.lineWidth = 3; c.beginPath(); c.moveTo(xs[1], ys[1]); c.lineTo(xs[1], loadTop); c.stroke(); }
+      const bw = 64 + p.m * 0.25, bh = 56;
+      c.fillStyle = C.ink; c.fillRect(xl - bw / 2, loadTop, bw, bh);
+      c.fillStyle = C.card; c.textAlign = "center"; c.font = mono(17); c.fillText(fmt(p.m, 0) + " kg", xl, loadTop + bh / 2);
+      // altura de partida da carga
+      const y0 = (p.n ? 280 + (p.n - 1) * 44 + R + 28 : 380) + bh;
+      c.setLineDash([6, 6]); c.strokeStyle = C["ink-soft"]; c.lineWidth = 1.2;
+      c.beginPath(); c.moveTo(xl - bw / 2 - 40, y0); c.lineTo(xl + bw / 2 + 40, y0); c.stroke(); c.setLineDash([]);
+      if (prog > 0.02) { arrow(c, xl - bw / 2 - 26, y0, xl - bw / 2 - 26, loadTop + bh, C.ok, 2.5, 10); c.fillStyle = C.ok; c.textAlign = "right"; c.font = mono(16); c.fillText("h", xl - bw / 2 - 34, (y0 + loadTop + bh) / 2); }
+      // forças: peso da carga e força da mão
+      const kpx = 40 / P;
+      arrow(c, xl, loadTop + bh + 4, xl, loadTop + bh + 4 + Math.max(P * kpx, 20), C.bad);
+      c.fillStyle = C.bad; c.textAlign = "left"; c.fillText(`P = ${fmt(P, 0)} N`, xl + 12, loadTop + bh + 40);
+      const hx = xf + R;
+      arrow(c, hx, handY, hx, handY + Math.max(F * kpx, 18), C.blue);
+      c.fillStyle = C.ink; c.beginPath(); c.arc(hx, handY, 8, 0, Math.PI * 2); c.fill();
+      c.fillStyle = C.blue; c.fillText(`F = ${fmt(F, 0)} N`, hx + 16, handY + 14);
+      // quadro com as contas
+      const lx = W - 300;
+      c.textAlign = "left"; c.textBaseline = "top"; c.font = mono(17);
+      [[C.ink, `${p.n} polia${p.n === 1 ? "" : "s"} móve${p.n === 1 ? "l" : "is"} + 1 fixa`],
+       [C.bad, `P = m·g = ${fmt(P, 0)} N`],
+       [C.blue, `F = P/2ⁿ = ${fmt(P, 0)}/${2 ** p.n}`],
+       [C.blue, `  = ${fmt(F, 1)} N`],
+       [C.ok, `corda = 2ⁿ·h = ${fmt(2 ** p.n * p.h, 1)} m`]
+      ].forEach(([col, txt], i) => { c.fillStyle = col; c.fillText(txt, lx, 70 + i * 30); });
+    });
+    const update = () => {
+      const p = par(), P = p.m * g, F = P / 2 ** p.n, d = 2 ** p.n * p.h;
+      set("pmo", fmt(p.m, 0) + " kg"); set("pno", String(p.n)); set("pho", fmt(p.h, 1) + " m");
+      set("pF", fmt(F, 1) + " N"); set("pD", fmt(d, 1) + " m"); set("pW", fmt(F * d, 0) + " J");
+      set("pNote", p.n === 0
+        ? `Só a polia fixa: ela muda a direção da força, mas não a reduz. Para erguer ${fmt(p.m, 0)} kg é preciso puxar com ${fmt(P, 0)} N.`
+        : `Vantagem mecânica 2ⁿ = ${2 ** p.n}: a força cai ${2 ** p.n} vezes, mas a mão puxa ${2 ** p.n} vezes mais corda. O trabalho é o mesmo do levantamento direto: F·d = P·h = ${fmt(P * p.h, 0)} J (polias ideais, sem atrito e sem massa).`);
+      u = 0; pulling = false; redraw();
+    };
+    onInput(["pm", "pn", "ph"], update);
+    $("pgo").addEventListener("click", () => { u = 0; pulling = true; redraw(); });
+    update();
+  }
+
   /* ---------- Refração ---------- */
   if ($("refr")) {
     const rc = $("refr"), rx = rc.getContext("2d");

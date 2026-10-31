@@ -1,0 +1,71 @@
+/* Páginas de simulação (Roadster voador, Mecânica celeste) no padrão do site.
+   As cores e fontes vêm do estilo.css; este arquivo é carregado depois dele. */
+.rd {
+  --rd-panel: var(--card); --rd-muted: var(--ink-soft); --rd-line: var(--grid);
+  --rd-soft: color-mix(in srgb, var(--accent) 14%, var(--card));
+  --rd-jet: var(--blue); --rd-warn: #e3b25a; --rd-bad: var(--bad); --rd-good: var(--ok);
+  --rd-sky: #262c32; --rd-ground: #5c656e;
+  --f-display: var(--display); --f-body: var(--body); --f-mono: var(--mono);
+}
+.rd-intro { padding-block: 36px 8px; display: grid; gap: 10px; }
+.rd-intro h1 { font-size: clamp(1.9rem, 4vw, 2.7rem); font-weight: 800; letter-spacing: -0.01em; }
+.rd-intro .rd-lede { color: var(--ink-soft); max-width: 70ch; }
+.rd-back { font-family: var(--display); font-weight: 700; color: var(--accent-ink); text-decoration: none; justify-self: start; }
+.rd-back:hover { text-decoration: underline; }
+.rd-links { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 6px; }
+.rd-links a { display: inline-flex; align-items: center; gap: 6px; font-family: var(--display); font-weight: 700; font-size: .9rem; text-decoration: none;
+  color: var(--accent-ink); border: 1px solid var(--accent); border-radius: 999px; padding: 6px 14px; }
+.rd-links a:hover { background: var(--rd-soft); }
+
+.rd-main { display: flex; flex-direction: column; gap: 24px; padding-block: 20px 8px; }
+.rd h2 { font-size: clamp(1.4rem, 2.6vw, 1.8rem); font-weight: 800; }
+.rd-eyebrow { font-family: var(--mono); font-size: .75rem; letter-spacing: .12em; text-transform: uppercase; color: var(--accent-ink); margin-bottom: 4px; }
+.rd-grid { display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr); gap: 20px; }
+@media (max-width: 820px) { .rd-grid { grid-template-columns: minmax(0, 1fr); } }
+.rd-panel { background: var(--card); border: 1px solid var(--grid); border-radius: 10px; padding: 18px; min-width: 0;
+  box-shadow: 0 1px 0 var(--grid), 0 14px 32px -18px rgba(0, 0, 0, 0.55); }
+.rd-stage { position: relative; width: 100%; aspect-ratio: 16/10; border-radius: 8px; overflow: hidden; background: var(--rd-sky); }
+.rd-stage canvas { width: 100%; height: 100%; display: block; }
+.rd-hud { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; margin-top: 12px; }
+@media (max-width: 480px) { .rd-hud { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.rd-hud div { border-top: 2px solid var(--grid); padding-top: 6px; }
+.rd-hud b { display: block; font-family: var(--mono); font-size: 1.05rem; font-weight: 600; font-variant-numeric: tabular-nums; }
+.rd-lab { font-family: var(--mono); font-size: .7rem; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-soft); }
+.rd-btns { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+.rd button { font-family: var(--display); font-weight: 700; font-size: .95rem; border-radius: 6px; border: 1px solid var(--grid);
+  background: var(--paper-2, var(--paper)); color: var(--ink); padding: 10px 14px; cursor: pointer; touch-action: none; user-select: none; -webkit-user-select: none; }
+.rd button:hover { border-color: var(--ink-soft); }
+.rd button.rd-primary { background: var(--accent); border-color: var(--accent); color: #1a0d02; flex: 1 1 180px; }
+.rd button.rd-primary.on { filter: brightness(1.15); }
+.rd button:focus-visible, .rd input:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.rd-msg { min-height: 1.5em; margin-top: 10px; font-size: .95rem; }
+.rd-msg.bad { color: var(--rd-bad); } .rd-msg.good { color: var(--rd-good); } .rd-msg.warn { color: var(--rd-warn); }
+.rd-trace { width: 100%; height: 110px; display: block; margin-top: 10px; }
+.rd-ctrl { display: flex; flex-direction: column; gap: 14px; }
+.rd-row label { display: flex; justify-content: space-between; gap: 8px; font-size: .95rem; }
+.rd-row output { font-family: var(--mono); font-size: .88rem; font-variant-numeric: tabular-nums; color: var(--accent-ink); white-space: nowrap; }
+.rd input[type=range] { width: 100%; accent-color: var(--accent); margin: 4px 0 0; }
+.rd-hint { font-size: .8rem; color: var(--ink-soft); margin-top: 2px; }
+.rd-readout { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 6px 12px; font-size: .92rem; margin-top: 4px; }
+.rd-readout span:nth-child(even) { font-family: var(--mono); font-variant-numeric: tabular-nums; text-align: right; }
+.rd-readout .hl { color: var(--accent-ink); font-weight: 600; }
+.rd-sep { height: 1px; background: var(--grid); margin: 4px 0; }
+.rd-eqs { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; margin-top: 14px; }
+@media (max-width: 720px) { .rd-eqs { grid-template-columns: minmax(0, 1fr); } }
+.rd-eq h3 { font-size: 1.1rem; margin: 0 0 6px; }
+.rd-eq p { margin: 6px 0 0; color: var(--ink-soft); font-size: .95rem; }
+.rd-formula { font-family: var(--mono); font-size: .92rem; background: var(--rd-soft); border-left: 3px solid var(--accent); border-radius: 6px; padding: 8px 10px; overflow-x: auto; white-space: nowrap; }
+.rd-formula .n { color: var(--accent-ink); font-weight: 600; }
+.rd-acc { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 20px; margin-top: 14px; }
+@media (max-width: 720px) { .rd-acc { grid-template-columns: minmax(0, 1fr); } }
+.rd-bars { display: flex; flex-direction: column; gap: 10px; }
+.rd-bar { display: grid; grid-template-columns: 118px minmax(0, 1fr) 62px; gap: 8px; align-items: center; font-size: .85rem; }
+.rd-bar .rd-track { height: 14px; background: var(--paper); border-radius: 3px; overflow: hidden; }
+.rd-bar .rd-fill { height: 100%; background: var(--accent); transition: width .2s; }
+.rd-bar .rd-fill.alt { background: var(--rd-ground); }
+.rd-bar span:last-child { font-family: var(--mono); text-align: right; font-variant-numeric: tabular-nums; }
+.rd-limits { margin: 8px 0 0; padding-left: 18px; max-width: 72ch; }
+.rd-limits li { margin-bottom: 6px; }
+.rd-src { font-size: .85rem; color: var(--ink-soft); margin-top: 14px; }
+.rd-sub { color: var(--ink-soft); max-width: 70ch; margin-top: 6px; }
+@media (prefers-reduced-motion: reduce) { .rd-bar .rd-fill { transition: none; } }

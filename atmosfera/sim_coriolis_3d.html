@@ -1,0 +1,277 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Coriolis em 3D · A Tal da Física</title>
+<style>
+:root{--ink:#0E2A3B;--teal:#1F8A8A;--sun:#F2A541;--coral:#E4572E;--bg:#F4F8FA;--card:#fff;--mut:#5B6B75}
+*{box-sizing:border-box}
+body{margin:0;font-family:Calibri,"Segoe UI",Arial,sans-serif;background:var(--bg);color:var(--ink)}
+header{background:var(--ink);color:#fff;padding:14px 20px}
+header h1{margin:0;font-size:24px}
+header p{margin:4px 0 0;color:#CFE3EA;font-size:15px}
+main{max-width:1400px;margin:auto;padding:16px;display:flex;flex-wrap:wrap;gap:16px}
+.views{flex:3 1 760px;display:flex;flex-wrap:wrap;gap:16px;align-items:flex-start;align-self:flex-start}
+.view{flex:1 1 340px;background:#0B1E2B;border-radius:14px;box-shadow:0 2px 10px #0002;overflow:hidden;position:relative}
+.view h2{margin:0;padding:10px 14px;font-size:16px;color:#fff;background:#12324A}
+.view h2 span{display:block;font-weight:normal;font-size:13px;color:#BFD6E0}
+canvas{display:block;width:100%;height:auto;touch-action:none;cursor:grab}
+canvas:active{cursor:grabbing}
+.panel{flex:1 1 300px;background:var(--card);border-radius:14px;box-shadow:0 2px 10px #0001;padding:16px;align-self:flex-start}
+.panel h3{font-size:16px;margin:14px 0 6px;color:var(--teal)}
+.panel h3:first-child{margin-top:0}
+button{font:inherit;font-size:15px;border:0;border-radius:10px;padding:8px 12px;cursor:pointer;margin:3px 3px 3px 0;background:#E3EEF2;color:var(--ink)}
+button.on{background:var(--teal);color:#fff}
+.pri{background:var(--coral);color:#fff;font-weight:bold;font-size:17px;padding:10px 16px}
+label{display:block;margin:8px 0 2px;font-size:15px}
+input[type=range]{width:100%}
+.res{font-size:17px;font-weight:bold;margin:10px 0;min-height:44px}
+.note{background:#FFF4E0;border-radius:10px;padding:10px 12px;font-size:14.5px;line-height:1.4;margin-top:10px}
+.leg{font-size:14px;margin:3px 0}
+.dot{display:inline-block;width:12px;height:12px;border-radius:50%;vertical-align:middle;margin-right:6px}
+.dash{display:inline-block;width:18px;border-top:3px dashed #5B6B75;vertical-align:middle;margin-right:6px}
+</style>
+<link rel="stylesheet" href="../estilo.css">
+<link rel="stylesheet" href="atmosfera.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Literata:ital,opsz,wght@0,7..72,400;0,7..72,600;1,7..72,400&family=JetBrains+Mono:wght@400;600&display=swap">
+</head>
+<body>
+<header class="top">
+  <div class="wrap">
+    <a class="brand" href="../index.html">
+      <svg width="28" height="28" viewBox="0 0 28 28" aria-hidden="true">
+        <path d="M3 24 Q14 -6 25 24" fill="none" stroke="var(--ink)" stroke-width="2" stroke-dasharray="3 3"/>
+        <circle cx="14" cy="9" r="3.5" fill="var(--accent)"/>
+      </svg>
+      A Tal da Física
+    </a>
+    <nav class="links" aria-label="Seções">
+      <a href="../index.html#trilhas">Trilhas</a>
+      <a href="../index.html#licao">Lição</a>
+      <a href="../laboratorio.html" aria-current="page">Laboratório</a>
+      <a href="../graficos.html">Gráficos</a>
+      <a href="../quiz.html">Quiz</a>
+      <a href="../enem.html">ENEM</a>
+      <a href="../eletricidade.html">Eletricidade</a>
+      <a href="../game/index.html">Game</a>
+      <a href="../index.html#constantes">Constantes</a>
+    </nav>
+  </div>
+</header>
+
+<div class="wrap atm-intro">
+  <a class="atm-back" href="../laboratorio.html#atmosfera">← Voltar ao laboratório</a>
+  <p class="label">Laboratório · Atmosfera e clima · 8º ano</p>
+  <h1 class="atm-title">Efeito Coriolis em 3D</h1>
+  <p>O mesmo lançamento visto de dois jeitos: do espaço e por quem gira junto com a Terra. Arraste os globos para girar a câmera.</p>
+</div>
+<main>
+  <div class="views">
+    <div class="view"><h2>Visto do espaço<span>A Terra gira; o objeto segue o movimento que já tinha</span></h2><canvas id="cvA" width="620" height="560" aria-label="Globo visto do espaço"></canvas></div>
+    <div class="view"><h2>Visto por quem gira com a Terra<span>Para nós, a Terra parece parada e o objeto se desvia</span></h2><canvas id="cvB" width="620" height="560" aria-label="Globo visto por quem gira com a Terra"></canvas></div>
+  </div>
+  <div class="panel">
+    <h3>Experimentos prontos</h3>
+    <button id="pApost">Do polo norte ao equador (apostila, p. 356)</button>
+    <button id="pSul">Do polo sul ao equador</button>
+    <button id="pNorteN">Hemisfério norte, para o norte</button>
+    <button id="pSulS">Hemisfério sul, para o sul</button>
+    <h3>Ponto de lançamento</h3>
+    <label for="lat">Latitude: <b id="latv"></b></label>
+    <input type="range" id="lat" min="-85" max="85" step="1" value="45">
+    <div><span style="font-size:15px">Direção do lançamento:</span><br>
+      <button class="dir on" data-d="N">↑ Norte</button><button class="dir" data-d="S">↓ Sul</button><button class="dir" data-d="L">→ Leste</button><button class="dir" data-d="O">← Oeste</button></div>
+    <label for="vel">Velocidade do objeto</label>
+    <input type="range" id="vel" min="0.2" max="0.8" step="0.05" value="0.45">
+    <h3>Rotação da Terra</h3>
+    <button id="rotOn" class="on">Girando</button><button id="rotOff">Parada</button>
+    <label for="om">Velocidade de rotação (exagerada)</label>
+    <input type="range" id="om" min="0.15" max="1" step="0.05" value="0.5">
+    <div style="margin-top:12px"><button class="pri" id="lancar">Lançar ▶</button><button id="pausa">⏸ Pausar</button><button id="limpar">Limpar</button></div>
+    <div class="res" id="res">Escolha um experimento e clique em Lançar.</div>
+    <h3>Câmera</h3>
+    <button id="camLado">De lado</button><button id="camN">Acima do polo norte</button><button id="camS">Abaixo do polo sul</button>
+    <h3>Legenda</h3>
+    <p class="leg"><span class="dot" style="background:#F2A541"></span>Objeto lançado (trajetória em vermelho)</p>
+    <p class="leg"><span class="dash"></span>Caminho se a Terra não girasse</p>
+    <p class="leg"><span class="dot" style="background:#5BD18B"></span>Pontos fixos na Terra (giram com ela)</p>
+    <div class="note"><b>Para pensar:</b> o objeto não é empurrado por nenhuma força lateral. Quem gira com a Terra vê o desvio porque o chão (e o observador) se moveu enquanto o objeto viajava. Hemisfério <b>norte</b>: desvio para a <b>direita</b>. Hemisfério <b>sul</b>: para a <b>esquerda</b>.</div>
+    <div class="note">Modelo simplificado: a rotação da Terra foi muito exagerada para o efeito aparecer em poucos segundos, e só o efeito Coriolis é considerado.</div>
+  </div>
+</main>
+<footer>
+  <div class="wrap">
+    <span>A Tal da Física · material de estudo gratuito</span>
+    <span class="mono">λ<sub>Na</sub> = 589 nm, a cor do nosso destaque</span>
+  </div>
+</footer>
+
+<script>
+// ---------- utilidades vetoriais ----------
+const V={add:(a,b)=>[a[0]+b[0],a[1]+b[1],a[2]+b[2]],sub:(a,b)=>[a[0]-b[0],a[1]-b[1],a[2]-b[2]],mul:(a,k)=>[a[0]*k,a[1]*k,a[2]*k],
+ dot:(a,b)=>a[0]*b[0]+a[1]*b[1]+a[2]*b[2],cross:(a,b)=>[a[1]*b[2]-a[2]*b[1],a[2]*b[0]-a[0]*b[2],a[0]*b[1]-a[1]*b[0]],
+ len:a=>Math.hypot(a[0],a[1],a[2]),norm:a=>{const l=Math.hypot(a[0],a[1],a[2]);return[a[0]/l,a[1]/l,a[2]/l]}};
+const rotZ=(p,t)=>{const c=Math.cos(t),s=Math.sin(t);return[c*p[0]-s*p[1],s*p[0]+c*p[1],p[2]]};
+const sph=(lat,lon)=>[Math.cos(lat)*Math.cos(lon),Math.cos(lat)*Math.sin(lon),Math.sin(lat)];
+const D=Math.PI/180;
+const $=id=>document.getElementById(id);
+
+// ---------- estado ----------
+let cam={yaw:0,pitch:25*D};
+let omega=0.5,rot=true,paused=false,earthAngle=0;
+let dir='N',vel=0.45,lat=45;
+let shots=[],cur=null;
+const markers=[];for(let i=0;i<26;i++){const la=(Math.random()*150-75)*D,lo=Math.random()*2*Math.PI;markers.push(sph(la,lo))}
+
+// ---------- câmera e projeção ----------
+function view(p){ // mundo -> câmera
+  const q=rotZ(p,cam.yaw);const c=Math.cos(cam.pitch),s=Math.sin(cam.pitch);
+  return[q[0],q[1]*c-q[2]*s,q[1]*s+q[2]*c];
+}
+function proj(cv,p){const S=cv.width*0.36,cx=cv.width/2,cy=cv.height/2+8;const q=view(p);return{x:cx+S*q[0],y:cy-S*q[2],front:q[1]<=0.02,d:-q[1]}}
+
+// ---------- física (referencial que gira com a Terra) ----------
+function launch(){
+  const la=lat*D,lo=-Math.PI/2-cam.yaw; // ponto voltado para a câmera
+  const r=sph(la,lo);
+  const e=[-Math.sin(lo),Math.cos(lo),0], n=[-Math.sin(la)*Math.cos(lo),-Math.sin(la)*Math.sin(lo),Math.cos(la)];
+  let u={N:n,S:V.mul(n,-1),L:e,O:V.mul(e,-1)}[dir];
+  if(Math.abs(la)>84*D&&(dir==='L'||dir==='O'))u=V.mul(n,lat>0?-1:1);
+  const v=V.mul(u,vel);
+  // caminho sem rotação (círculo máximo)
+  const ghost=[];for(let s=0;s<=1.75;s+=0.02)ghost.push(V.add(V.mul(r,Math.cos(s)),V.mul(u,Math.sin(s))));
+  cur={r,v,dist:0,t:0,pts:[{p:r,a:earthAngle}],ghost,turn:0,lat0:lat,dir,omega0:rot?omega:0,start:{p:r}};
+  shots.push(cur);$('res').textContent='Objeto em movimento...';
+}
+function step(dt){
+  const W=rot?omega:0;
+  earthAngle+=W*dt;
+  if(!cur)return;
+  // aceleração de Coriolis: a = -2 Ω × v  (Ω ao longo do eixo z)
+  let a=V.mul(V.cross([0,0,W],cur.v),-2);
+  a=V.sub(a,V.mul(cur.r,V.dot(a,cur.r)));
+  cur.turn+=V.dot(cur.r,V.cross(cur.v,a))*dt;
+  cur.v=V.add(cur.v,V.mul(a,dt));
+  const sp=V.len(cur.v);
+  let r=V.add(cur.r,V.mul(cur.v,dt));r=V.norm(r);
+  let v=V.sub(cur.v,V.mul(r,V.dot(cur.v,r)));v=V.mul(V.norm(v),sp);
+  cur.r=r;cur.v=v;cur.dist+=sp*dt;cur.t+=dt;
+  cur.pts.push({p:r,a:earthAngle});
+  if(cur.dist>1.75||cur.t>14){terminar()}
+}
+function terminar(){
+  const s=cur;cur=null;
+  if(s.omega0===0){$('res').innerHTML='Terra parada: o objeto segue o caminho tracejado. <span style="color:#1F8A8A">Não há desvio.</span>';return}
+  const lado=s.turn<0?'DIREITA':'ESQUERDA';
+  const hemi=s.lat0>0?'Lançado no hemisfério norte':s.lat0<0?'Lançado no hemisfério sul':'Lançado no equador';
+  $('res').innerHTML=`${hemi}: para quem gira com a Terra, o objeto foi desviado para a <span style="color:#E4572E">${lado}</span>.`;
+}
+
+// ---------- desenho ----------
+function poly(ctx,cv,pts,front,back,lw,dashBack,dashFront){
+  // desenha uma linha 3D em trechos contínuos (frente e trás separados)
+  ctx.lineWidth=lw;ctx.lineCap='round';ctx.lineJoin='round';
+  let run=[],runFront=null;
+  const flush=()=>{if(run.length>1){const col=runFront?front:back;if(col){ctx.strokeStyle=col;ctx.setLineDash(runFront?(dashFront||[]):(dashBack?[4,5]:[]));
+      ctx.beginPath();ctx.moveTo(run[0].x,run[0].y);for(let i=1;i<run.length;i++)ctx.lineTo(run[i].x,run[i].y);ctx.stroke()}}run=[]};
+  for(const p of pts){const q=proj(cv,p);
+    if(runFront!==null&&q.front!==runFront){flush()}
+    runFront=q.front;run.push(q)}
+  flush();ctx.setLineDash([]);
+}
+function globe(cv,ctx,ang,inercial){
+  const S=cv.width*0.36,cx=cv.width/2,cy=cv.height/2+8;
+  ctx.clearRect(0,0,cv.width,cv.height);
+  // estrelas
+  ctx.fillStyle='#ffffff55';for(let i=0;i<60;i++){const x=(i*137.5)%cv.width,y=(i*97.3)%cv.height;ctx.fillRect(x,y,1.5,1.5)}
+  // eixo (atrás)
+  const N=proj(cv,[0,0,1.28]),Sp=proj(cv,[0,0,-1.28]);
+  ctx.strokeStyle='#9BB7C6';ctx.lineWidth=2;ctx.setLineDash([6,6]);ctx.beginPath();ctx.moveTo(N.x,N.y);ctx.lineTo(Sp.x,Sp.y);ctx.stroke();ctx.setLineDash([]);
+  // esfera
+  const g=ctx.createRadialGradient(cx-S*0.35,cy-S*0.4,S*0.1,cx,cy,S);g.addColorStop(0,'#5DB3D6');g.addColorStop(0.7,'#1F6F99');g.addColorStop(1,'#123E5C');
+  ctx.fillStyle=g;ctx.beginPath();ctx.arc(cx,cy,S,0,7);ctx.fill();
+  const R=p=>rotZ(p,ang);
+  // grade
+  for(let k=0;k<12;k++){const lo=k*30*D,pts=[];for(let la=-90;la<=90;la+=4)pts.push(R(sph(la*D,lo)));poly(ctx,cv,pts,'#ffffff55',null,1)}
+  for(const la of [-60,-30,30,60]){const pts=[];for(let lo=0;lo<=360;lo+=4)pts.push(R(sph(la*D,lo*D)));poly(ctx,cv,pts,'#ffffff55',null,1)}
+  for(const la of [-23.4,23.4]){const pts=[];for(let lo=0;lo<=360;lo+=4)pts.push(R(sph(la*D,lo*D)));poly(ctx,cv,pts,'#F2C53Daa',null,1.5)}
+  {const pts=[];for(let lo=0;lo<=360;lo+=3)pts.push(R(sph(0,lo*D)));poly(ctx,cv,pts,'#F2A541',null,3)}
+  // pontos fixos na Terra
+  for(const m of markers){const q=proj(cv,R(m));if(q.front){ctx.fillStyle='#5BD18B';ctx.beginPath();ctx.arc(q.x,q.y,4.5,0,7);ctx.fill()}}
+  // polos
+  const pn=proj(cv,[0,0,1]),ps=proj(cv,[0,0,-1]);
+  ctx.font='bold 16px Calibri,Arial';
+  if(pn.front){ctx.fillStyle='#fff';ctx.beginPath();ctx.arc(pn.x,pn.y,5,0,7);ctx.fill();ctx.fillText('Polo norte',pn.x+8,pn.y-6)}
+  if(ps.front){ctx.fillStyle='#fff';ctx.beginPath();ctx.arc(ps.x,ps.y,5,0,7);ctx.fill();ctx.fillText('Polo sul',ps.x+8,ps.y+16)}
+  const eq=proj(cv,R(sph(0,-Math.PI/2-cam.yaw-ang-0.2)));if(eq.front){ctx.fillStyle='#F2A541';ctx.font='bold 14px Calibri,Arial';ctx.fillText('Equador',eq.x+4,eq.y-6)}
+  // eixo (frente)
+  ctx.strokeStyle='#DDEBF2';ctx.lineWidth=2.5;ctx.beginPath();
+  const n1=proj(cv,[0,0,1]);if(n1.front){ctx.moveTo(n1.x,n1.y);ctx.lineTo(N.x,N.y)}
+  const s1=proj(cv,[0,0,-1]);if(s1.front){ctx.moveTo(s1.x,s1.y);ctx.lineTo(Sp.x,Sp.y)}ctx.stroke();
+  // seta da rotação (só na vista do espaço)
+  if(inercial&&rot){
+    const pts=[];for(let lo=-150;lo<=-30;lo+=4)pts.push(sph(68*D,(lo*D)-cam.yaw));
+    poly(ctx,cv,pts,'#F2C53D','#F2C53D66',4);
+    const a=proj(cv,pts[pts.length-2]),b=proj(cv,pts[pts.length-1]);
+    const an=Math.atan2(b.y-a.y,b.x-a.x);ctx.fillStyle=b.front?'#F2C53D':'#F2C53D66';ctx.beginPath();
+    ctx.moveTo(b.x+12*Math.cos(an),b.y+12*Math.sin(an));ctx.lineTo(b.x+8*Math.cos(an+2.2),b.y+8*Math.sin(an+2.2));ctx.lineTo(b.x+8*Math.cos(an-2.2),b.y+8*Math.sin(an-2.2));ctx.fill();
+  }
+  ctx.fillStyle='#DDEBF2';ctx.font='14px Calibri,Arial';
+  ctx.fillText(inercial?(rot?'A Terra gira de oeste para leste':'Terra parada'):'Observador gira junto: a Terra parece parada',14,cv.height-14);
+}
+function trails(cv,ctx,inercial){
+  shots.forEach((s,i)=>{
+    const ultimo=i===shots.length-1;
+    // caminho sem rotação (referencial da Terra) — só na vista girante
+    if(!inercial)poly(ctx,cv,s.ghost,ultimo?'#FFFFFF':'#FFFFFF66','#FFFFFF33',3,true,[9,8]);
+    const pts=s.pts.map(o=>inercial?rotZ(o.p,o.a):o.p);
+    poly(ctx,cv,pts,ultimo?'#FF5A36':'#FF5A3688','#FF5A3633',4.5,true);
+    // ponto de lançamento (preso à Terra)
+    const st=proj(cv,inercial?rotZ(s.start.p,earthAngle):s.start.p);
+    if(st.front){ctx.strokeStyle='#fff';ctx.lineWidth=2;ctx.beginPath();ctx.arc(st.x,st.y,7,0,7);ctx.stroke()}
+    const lp=pts[pts.length-1],q=proj(cv,lp);
+    if(q.front&&(s===cur||ultimo)){ctx.fillStyle='#F2A541';ctx.strokeStyle='#0B1E2B';ctx.lineWidth=2;ctx.beginPath();ctx.arc(q.x,q.y,9,0,7);ctx.fill();ctx.stroke()}
+  });
+}
+const A=$('cvA'),B=$('cvB'),ca=A.getContext('2d'),cb=B.getContext('2d');
+function draw(){
+  globe(A,ca,earthAngle,true);trails(A,ca,true);
+  globe(B,cb,0,false);trails(B,cb,false);
+}
+// ---------- laço ----------
+let last=performance.now();
+function loop(t){let dt=Math.min(0.05,(t-last)/1000);last=t;
+  if(!paused){const n=6;for(let i=0;i<n;i++)step(dt/n)}
+  draw();requestAnimationFrame(loop)}
+// ---------- controles ----------
+function setLat(v){lat=v;$('lat').value=v;$('latv').textContent=Math.abs(v)+'° '+(v>0?'N (hemisfério norte)':v<0?'S (hemisfério sul)':'(equador)')}
+function setDir(d){dir=d;document.querySelectorAll('.dir').forEach(b=>b.classList.toggle('on',b.dataset.d===d))}
+function setRot(on){rot=on;$('rotOn').classList.toggle('on',on);$('rotOff').classList.toggle('on',!on)}
+function setCam(y,p){cam.yaw=y;cam.pitch=p}
+$('lat').oninput=e=>setLat(+e.target.value);
+document.querySelectorAll('.dir').forEach(b=>b.onclick=()=>setDir(b.dataset.d));
+$('vel').oninput=e=>vel=+e.target.value;
+$('om').oninput=e=>omega=+e.target.value;
+$('rotOn').onclick=()=>setRot(true);$('rotOff').onclick=()=>setRot(false);
+$('lancar').onclick=()=>{paused=false;$('pausa').textContent='⏸ Pausar';launch()};
+$('pausa').onclick=()=>{paused=!paused;$('pausa').textContent=paused?'▶ Continuar':'⏸ Pausar'};
+$('limpar').onclick=()=>{shots=[];cur=null;$('res').textContent='Escolha um experimento e clique em Lançar.'};
+$('camLado').onclick=()=>setCam(cam.yaw,15*D);$('camN').onclick=()=>setCam(cam.yaw,80*D);$('camS').onclick=()=>setCam(cam.yaw,-80*D);
+const preset=(la,d,p)=>{setLat(la);setDir(d);setRot(true);setCam(cam.yaw,p);shots=[];cur=null;launch()};
+$('pApost').onclick=()=>preset(85,'S',60*D);
+$('pSul').onclick=()=>preset(-85,'N',-60*D);
+$('pNorteN').onclick=()=>preset(20,'N',35*D);
+$('pSulS').onclick=()=>preset(-20,'S',-35*D);
+// arrastar para girar a câmera
+[A,B].forEach(cv=>{let drag=null;
+  cv.addEventListener('pointerdown',e=>{drag={x:e.clientX,y:e.clientY};cv.setPointerCapture(e.pointerId)});
+  cv.addEventListener('pointermove',e=>{if(!drag)return;cam.yaw+=(e.clientX-drag.x)*0.01;cam.pitch=Math.max(-1.5,Math.min(1.5,cam.pitch+(e.clientY-drag.y)*0.01));drag={x:e.clientX,y:e.clientY}});
+  cv.addEventListener('pointerup',()=>drag=null);cv.addEventListener('pointercancel',()=>drag=null);
+});
+setLat(45);requestAnimationFrame(loop);
+</script>
+</body>
+</html>

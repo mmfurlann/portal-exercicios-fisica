@@ -1,0 +1,355 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Roadster voador · A Tal da Física</title>
+<meta name="description" content="Simulação do carro que paira com propulsores de ar comprimido: empuxo, equação do foguete, potência do jato e aceleração na pista.">
+<link rel="stylesheet" href="estilo.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Literata:ital,opsz,wght@0,7..72,400;0,7..72,600;1,7..72,400&family=JetBrains+Mono:wght@400;600&display=swap">
+<link rel="stylesheet" href="simulacao.css">
+</head>
+<body>
+<header class="top">
+  <div class="wrap">
+    <a class="brand" href="index.html">
+      <svg width="28" height="28" viewBox="0 0 28 28" aria-hidden="true">
+        <path d="M3 24 Q14 -6 25 24" fill="none" stroke="var(--ink)" stroke-width="2" stroke-dasharray="3 3"/>
+        <circle cx="14" cy="9" r="3.5" fill="var(--accent)"/>
+      </svg>
+      A Tal da Física
+    </a>
+    <nav class="links" aria-label="Seções">
+      <a href="index.html#trilhas">Trilhas</a>
+      <a href="index.html#licao">Lição</a>
+      <a href="laboratorio.html" aria-current="page">Laboratório</a>
+      <a href="graficos.html">Gráficos</a>
+      <a href="quiz.html">Quiz</a>
+      <a href="enem.html">ENEM</a>
+      <a href="eletricidade.html">Eletricidade</a>
+      <a href="game/index.html">Game</a>
+      <a href="index.html#constantes">Constantes</a>
+    </nav>
+  </div>
+</header>
+
+<div class="rd">
+<div class="wrap rd-intro">
+  <a class="rd-back" href="laboratorio.html#mecanica">← Voltar ao laboratório</a>
+  <p class="label">Laboratório · Mecânica · Propulsores de gás frio</p>
+  <h1>Física do Roadster voador</h1>
+  <p class="rd-lede">O protótipo mostrado em McGregor (Texas) em 15/out/2026 levanta voo com cerca de 10 bocais que soltam ar comprimido de um tanque de ~260 kg no lugar dos bancos traseiros. Não há asa nem hélice: é a 3ª lei de Newton pura. Ajuste os parâmetros e teste o salto.</p>
+  <nav class="rd-links" aria-label="Ver a demonstração real">
+    <a href="https://x.com/Tesla" target="_blank" rel="noopener">▶ Vídeo da demonstração (Tesla no X)</a>
+    <a href="https://www.tesla.com/roadster" target="_blank" rel="noopener">Página oficial do Roadster ↗</a>
+    <a href="https://www.engadget.com/2287518/tesla-roadster-launch-live-blog/" target="_blank" rel="noopener">Cobertura ao vivo (Engadget) ↗</a>
+  </nav>
+</div>
+
+<main class="wrap rd-main">
+<div class="rd-grid">
+  <div class="rd-panel">
+    <div class="rd-stage"><canvas id="scene" aria-label="Simulação do carro pairando"></canvas></div>
+    <div class="rd-hud">
+      <div><span class="rd-lab">Altura</span><b id="hH">0,00 m</b></div>
+      <div><span class="rd-lab">Vel. vertical</span><b id="hV">0,00 m/s</b></div>
+      <div><span class="rd-lab">Ar restante</span><b id="hG">260 kg</b></div>
+      <div><span class="rd-lab">Empuxo</span><b id="hF">0 kN</b></div>
+    </div>
+    <div class="rd-btns">
+      <button class="rd-primary" id="hold">Segure para disparar</button>
+      <button id="auto">Salto automático</button>
+      <button id="reset">Reabastecer</button>
+    </div>
+    <div class="rd-msg" id="msg">Segure o botão (ou a barra de espaço). Solte antes de subir demais: o pouso precisa ser abaixo de ~3 m/s.</div>
+    <canvas class="rd-trace" id="trace" aria-label="Gráfico de altura e ar restante ao longo do tempo"></canvas>
+  </div>
+
+  <div class="rd-panel rd-ctrl">
+    <div class="rd-row"><label for="mCar">Massa do carro (sem ar)<output id="oCar"></output></label>
+      <input type="range" id="mCar" min="1400" max="2600" step="50" value="2000"></div>
+    <div class="rd-row"><label for="mGas">Ar no tanque<output id="oGas"></output></label>
+      <input type="range" id="mGas" min="40" max="400" step="10" value="260"></div>
+    <div class="rd-row"><label for="pTank">Pressão do tanque<output id="oP"></output></label>
+      <input type="range" id="pTank" min="200" max="1000" step="10" value="700">
+      <div class="rd-hint">10 000 psi ≈ 690 bar, valor citado por Musk</div></div>
+    <div class="rd-row"><label for="isp">Impulso específico (Isp)<output id="oIsp"></output></label>
+      <input type="range" id="isp" min="40" max="78" step="1" value="70">
+      <div class="rd-hint">Teto teórico do ar a 20 °C: ≈ 78 s</div></div>
+    <div class="rd-row"><label for="tw">Empuxo máximo ÷ peso<output id="oTw"></output></label>
+      <input type="range" id="tw" min="1" max="2.5" step="0.05" value="1.5"></div>
+    <div class="rd-row"><label for="hT">Altura do salto automático<output id="oHt"></output></label>
+      <input type="range" id="hT" min="1" max="10" step="0.5" value="3"></div>
+    <div class="rd-sep"></div>
+    <div class="rd-readout" id="readout"></div>
+  </div>
+</div>
+
+<div class="rd-panel">
+  <p class="rd-eyebrow">As equações do modelo</p>
+  <h2>Como os números saem</h2>
+  <div class="rd-eqs">
+    <div class="rd-eq"><h3>1. Empuxo</h3>
+      <div class="rd-formula">F = ṁ · v<sub>e</sub> &nbsp;&nbsp; v<sub>e</sub> = I<sub>sp</sub> · g₀</div>
+      <p>O jato empurra o carro com força igual à vazão de massa vezes a velocidade de saída do gás. Para pairar, F tem que igualar o peso m·g.</p></div>
+    <div class="rd-eq"><h3>2. Velocidade de saída</h3>
+      <div class="rd-formula">v<sub>e,máx</sub> = √(2·c<sub>p</sub>·T₀) ≈ <span class="n">767 m/s</span></div>
+      <p>Sem combustão, a única energia é a entalpia do ar a temperatura ambiente. Isso limita o I<sub>sp</sub> a uns 78 s; um foguete químico passa de 300 s.</p></div>
+    <div class="rd-eq"><h3>3. Tempo máximo pairando</h3>
+      <div class="rd-formula">t = I<sub>sp</sub> · ln(m₀ / m<sub>f</sub>)</div>
+      <p>Sai de m·g = −ṁ·v<sub>e</sub>. Como o carro fica mais leve ao gastar ar, a vazão cai com o tempo: é a equação do foguete aplicada ao pairar.</p></div>
+    <div class="rd-eq"><h3>4. Potência do jato</h3>
+      <div class="rd-formula">P = ½ · F · v<sub>e</sub></div>
+      <p>Pairar 2,2 t com ar a ~690 m/s exige uns 7 MW de jato, dez vezes a potência dos motores elétricos. Por isso só dura segundos.</p></div>
+    <div class="rd-eq"><h3>5. Volume do tanque</h3>
+      <div class="rd-formula">V = Z · m · R · T / p</div>
+      <p>Gás real: a 700 bar o ar é ~30% menos compressível que o ideal (Z ≈ 1,3). O resultado bate com um tanque do tamanho dos bancos traseiros.</p></div>
+    <div class="rd-eq"><h3>6. Energia para recarregar</h3>
+      <div class="rd-formula">W ≥ m · R · T · ln(p / p₀)</div>
+      <p>Mínimo teórico (compressão isotérmica). O compressor de bordo tira essa energia da bateria; na prática, gasta perto do dobro.</p></div>
+  </div>
+</div>
+
+<div class="rd-panel">
+  <p class="rd-eyebrow">Aceleração na pista</p>
+  <h2>Por que os propulsores baixam o 0–100 km/h</h2>
+  <p class="rd-sub">Pneu só empurra até μ vezes a força normal. O jato não depende de aderência, e a sucção (ventoinha que gruda o carro no chão) aumenta a força normal.</p>
+  <div class="rd-acc">
+    <div class="rd-ctrl">
+      <div class="rd-row"><label for="mu">Atrito do pneu (μ)<output id="oMu"></output></label>
+        <input type="range" id="mu" min="0.9" max="1.6" step="0.05" value="1.2"></div>
+      <div class="rd-row"><label for="suc">Sucção (força extra ÷ peso)<output id="oSuc"></output></label>
+        <input type="range" id="suc" min="0" max="1.5" step="0.05" value="0.3"></div>
+      <div class="rd-row"><label for="twR">Empuxo traseiro ÷ peso<output id="oTwR"></output></label>
+        <input type="range" id="twR" min="0" max="2" step="0.05" value="1"></div>
+    </div>
+    <div>
+      <div class="rd-bars" id="bars"></div>
+      <div class="rd-readout" id="accOut" style="margin-top:12px"></div>
+      <div class="rd-hint" style="margin-top:6px">Modelo de largada limitada por aderência (sem limite de potência, sem arrasto). a = μ·g·(1+s) + (F/W)·g.</div>
+    </div>
+  </div>
+</div>
+
+<div class="rd-panel">
+  <p class="rd-eyebrow">Onde o modelo simplifica</p>
+  <h2>Limites</h2>
+  <ul class="rd-limits">
+    <li>A Tesla não publicou empuxo, I<sub>sp</sub> nem massa oficiais. Os valores padrão (2 000 kg, 260 kg de ar, 700 bar, 70 s) vêm de reportagens e estimativas públicas.</li>
+    <li>Ao se expandir, o ar esfria muito no tanque e no bocal, e o I<sub>sp</sub> real cai durante a queima. O modelo usa I<sub>sp</sub> constante.</li>
+    <li>A simulação é só vertical. Giros e capotagens no ar dependem de torques dos bocais laterais e do momento de inércia, que não estão aqui.</li>
+    <li>Efeito solo, arrasto e o ruído (forte o bastante para ferir a audição; a demonstração foi pilotada remotamente) ficam de fora.</li>
+  </ul>
+  <p class="rd-src">Fontes: <a href="https://glitchwire.com/news/the-tesla-roadster-hovered-flipped-and-landed-the-air-tank-weighed-260-kilos/" target="_blank" rel="noopener">Glitchwire</a> ·
+  <a href="https://www.space.com/technology/spacex-thrusters-just-made-a-tesla-roadster-fly-and-elon-musks-car-is-still-out-there-in-space" target="_blank" rel="noopener">Space.com</a> ·
+  <a href="https://insideevs.com/news/350682/tesla-roadster-spacex-thrusters/" target="_blank" rel="noopener">InsideEVs</a> ·
+  <a href="https://scopeviews.co.uk/SpaceXTesla.htm" target="_blank" rel="noopener">Scope Views</a></p>
+</div>
+</main>
+</div>
+
+<footer>
+  <div class="wrap">
+    <span>A Tal da Física · material de estudo gratuito</span>
+    <span class="mono">λ<sub>Na</sub> = 589 nm, a cor do nosso destaque</span>
+  </div>
+</footer>
+
+<script>
+(function(){
+const g=9.80665, R=287.05, T0=293.15, CP=1005;
+const $=id=>document.getElementById(id);
+const nf=(x,d=0)=>x.toLocaleString('pt-BR',{minimumFractionDigits:d,maximumFractionDigits:d});
+const P={};
+const root=document.querySelector('.rd');
+function read(){
+  P.mCar=+$('mCar').value; P.mGas=+$('mGas').value; P.p=+$('pTank').value;
+  P.isp=+$('isp').value; P.tw=+$('tw').value; P.hT=+$('hT').value;
+  P.ve=P.isp*g; P.m0=P.mCar+P.mGas; P.W0=P.m0*g; P.Tmax=P.tw*P.W0;
+}
+function css(v){return getComputedStyle(root).getPropertyValue(v).trim()}
+
+/* ---------- painel de resultados ---------- */
+function updateReadout(){
+  read();
+  $('oCar').textContent=nf(P.mCar)+' kg'; $('oGas').textContent=nf(P.mGas)+' kg';
+  $('oP').textContent=nf(P.p)+' bar'; $('oIsp').textContent=nf(P.isp)+' s';
+  $('oTw').textContent=nf(P.tw,2)+'×'; $('oHt').textContent=nf(P.hT,1)+' m';
+  const F=P.W0, mdot=F/P.ve, th=P.isp*Math.log(P.m0/P.mCar), dv=P.ve*Math.log(P.m0/P.mCar);
+  const Pj=0.5*F*P.ve, Z=1+0.00045*P.p, V=Z*P.mGas*R*T0/(P.p*1e5)*1000;
+  const Ec=P.mGas*R*T0*Math.log(P.p)/3.6e6, Ej=0.5*P.mGas*P.ve*P.ve/3.6e6;
+  const tFull=P.isp*Math.log(P.m0/P.mCar)/P.tw; // aprox. queimando em empuxo máximo
+  const rows=[
+    ['Peso inicial',nf(F/1000,1)+' kN'],
+    ['Velocidade do jato (vₑ)',nf(P.ve)+' m/s'],
+    ['Vazão para pairar',nf(mdot,1)+' kg/s'],
+    ['Tempo máximo pairando',nf(th,1)+' s','hl'],
+    ['Queima em empuxo máximo',nf(tFull,1)+' s'],
+    ['Δv total disponível',nf(dv,0)+' m/s'],
+    ['Potência do jato pairando',nf(Pj/1e6,1)+' MW','hl'],
+    ['Volume do tanque (Z≈'+nf(Z,2)+')',nf(V)+' L'],
+    ['Energia cinética no jato',nf(Ej,1)+' kWh'],
+    ['Recarga, mínimo teórico',nf(Ec,1)+' kWh','hl'],
+  ];
+  $('readout').innerHTML=rows.map(r=>`<span class="${r[2]||''}">${r[0]}</span><span class="${r[2]||''}">${r[1]}</span>`).join('');
+  updateAcc();
+}
+
+/* ---------- aceleração ---------- */
+function updateAcc(){
+  const mu=+$('mu').value, s=+$('suc').value, tr=+$('twR').value;
+  $('oMu').textContent=nf(mu,2); $('oSuc').textContent=nf(s,2)+'×'; $('oTwR').textContent=nf(tr,2)+'×';
+  const cases=[
+    ['Só pneus',mu*g,'alt'],
+    ['+ sucção',mu*g*(1+s),'alt'],
+    ['+ sucção + jato',mu*g*(1+s)+tr*g,''],
+  ];
+  const v100=100/3.6, worst=v100/cases[0][1];
+  $('bars').innerHTML=cases.map(c=>{const t=v100/c[1];
+    return `<div class="rd-bar"><span>${c[0]}</span><div class="rd-track"><div class="rd-fill ${c[2]}" style="width:${(t/worst*100).toFixed(1)}%"></div></div><span>${nf(t,2)} s</span></div>`}).join('');
+  const a=cases[2][1], t=v100/a, gasUsed=tr*P.W0/P.ve*t;
+  $('accOut').innerHTML=`<span>Aceleração máxima</span><span>${nf(a/g,2)} g</span>
+    <span>0–60 mph (96,6 km/h)</span><span>${nf(26.82/a,2)} s</span>
+    <span>Ar gasto na largada</span><span>${nf(gasUsed,1)} kg</span>`;
+}
+
+/* ---------- simulação ---------- */
+const S={};
+function resetSim(){
+  read();
+  Object.assign(S,{t:0,h:0,v:0,gas:P.mGas,T:0,mode:'idle',phase:'',hold:0,held:false,air:false,trace:[],lastTrace:0,maxH:0});
+  setMsg('Segure o botão (ou a barra de espaço). Solte antes de subir demais: o pouso precisa ser abaixo de ~3 m/s.','');
+}
+function setMsg(t,c){const m=$('msg');m.textContent=t;m.className='rd-msg '+(c||'')}
+function ctrl(vdes,m){return Math.max(0,Math.min(P.Tmax,m*(g+3*(vdes-S.v))))}
+function step(dt){
+  const m=P.mCar+S.gas;
+  let T=0;
+  if(S.gas>0){
+    if(S.mode==='manual'&&S.held) T=P.Tmax;
+    else if(S.mode==='auto'){
+      if(S.phase==='up'){
+        T=ctrl(Math.max(-1.5,Math.min(3,1.2*(P.hT-S.h))),m);
+        if(Math.abs(P.hT-S.h)<0.08&&Math.abs(S.v)<0.15){S.phase='hold';S.hold=0}
+      }else if(S.phase==='hold'){
+        T=ctrl(1.2*(P.hT-S.h),m); S.hold+=dt; if(S.hold>2)S.phase='down';
+      }else if(S.phase==='down'){
+        T=ctrl(-Math.max(0.35,Math.min(1.5,0.8*S.h)),m);
+      }
+    }
+  }
+  const dm=Math.min(S.gas,T/P.ve*dt);
+  S.gas-=dm; if(S.gas<=1e-6&&T>0){S.gas=0}
+  S.T=dm>0?T:0;
+  let a=S.T/m-g;
+  if(S.h<=0&&a<=0&&S.v<=0){S.v=0;S.h=0}
+  else{S.v+=a*dt;S.h+=S.v*dt}
+  if(S.h>0.02)S.air=true;
+  S.maxH=Math.max(S.maxH,S.h);
+  if(S.h<=0&&S.air){
+    const imp=-S.v; S.h=0;S.v=0;S.air=false;
+    if(S.mode==='auto'){S.mode='idle';setMsg(`Salto completo: subiu a ${nf(S.maxH,1)} m e pousou a ${nf(imp,1)} m/s. Ar restante: ${nf(S.gas)} kg.`,'good')}
+    else if(imp>6)setMsg(`Pouso destrutivo a ${nf(imp,1)} m/s (≈ queda de ${nf(imp*imp/2/g,1)} m). Toque em Reabastecer.`,'bad');
+    else if(imp>3)setMsg(`Pouso duro a ${nf(imp,1)} m/s. Tente pulsos curtos perto do chão.`,'warn');
+    else setMsg(`Pouso suave a ${nf(imp,1)} m/s. Altura máxima ${nf(S.maxH,1)} m.`,'good');
+    S.maxH=0;
+  }
+  if(S.gas<=0&&S.air&&S.mode!=='empty'){S.mode='empty';setMsg('Acabou o ar no meio do voo: agora é queda livre.','bad')}
+  S.t+=dt;
+  if(S.t-S.lastTrace>=0.05){S.lastTrace=S.t;S.trace.push([S.t,S.h,S.gas/Math.max(1,P.mGas)]);if(S.trace.length>400)S.trace.shift()}
+}
+
+/* ---------- desenho ---------- */
+const cv=$('scene'),cx=cv.getContext('2d'),tc=$('trace'),tx=tc.getContext('2d');
+function fit(c){const r=c.getBoundingClientRect(),d=window.devicePixelRatio||1;
+  if(c.width!==Math.round(r.width*d)||c.height!==Math.round(r.height*d)){c.width=Math.round(r.width*d);c.height=Math.round(r.height*d)}
+  return {w:c.width,h:c.height,d}}
+function drawScene(){
+  const {w,h,d}=fit(cv); if(w<60*d||h<60*d)return; // ainda sem tamanho na página
+  const C={sky:css('--rd-sky'),gr:css('--rd-ground'),ink:css('--ink'),mu:css('--ink-soft'),ac:css('--accent'),jet:css('--rd-jet'),ln:css('--grid')};
+  cx.clearRect(0,0,w,h);
+  const span=Math.max(6,P.hT+3,S.h+3), groundY=h-26*d, ppm=(groundY-14*d)/span;
+  // régua
+  cx.font=`${11*d}px ${css('--f-mono')}`;cx.fillStyle=C.mu;cx.strokeStyle=C.ln;cx.lineWidth=1*d;
+  const stepM=span>14?4:span>8?2:1;
+  for(let m=0;m<=span;m+=stepM){const y=groundY-m*ppm;cx.beginPath();cx.moveTo(34*d,y);cx.lineTo(w,y);cx.globalAlpha=.5;cx.stroke();cx.globalAlpha=1;cx.fillText(m+' m',4*d,y-3*d)}
+  // alvo
+  if(S.mode==='auto'){const y=groundY-P.hT*ppm;cx.setLineDash([6*d,5*d]);cx.strokeStyle=C.ac;cx.beginPath();cx.moveTo(34*d,y);cx.lineTo(w,y);cx.stroke();cx.setLineDash([])}
+  // chão
+  cx.fillStyle=C.gr;cx.fillRect(0,groundY,w,h-groundY);
+  // carro (perfil genérico, 4,3 m)
+  const L=4.3*ppm, H=1.15*ppm, x0=w*0.55-L/2, yb=groundY-S.h*ppm-0.35*ppm;
+  const frac=S.T/Math.max(1,P.Tmax);
+  if(frac>0){ // jatos
+    const pts=[0.18,0.42,0.6,0.84];
+    pts.forEach((p,i)=>{const jx=x0+p*L,len=(0.6+1.6*frac)*ppm*(0.9+0.2*Math.sin(S.t*60+i*2)),wd=0.22*ppm;
+      const gr=cx.createLinearGradient(0,yb,0,yb+len);gr.addColorStop(0,C.jet);gr.addColorStop(1,'rgba(0,0,0,0)');
+      cx.fillStyle=gr;cx.beginPath();cx.moveTo(jx-wd/2,yb);cx.lineTo(jx+wd/2,yb);cx.lineTo(jx+wd*1.4,yb+len);cx.lineTo(jx-wd*1.4,yb+len);cx.closePath();cx.fill()});
+    if(S.h<1.2){cx.fillStyle=C.jet;cx.globalAlpha=.25*frac;cx.beginPath();cx.ellipse(x0+L/2,groundY,L*0.8,0.25*ppm,0,0,Math.PI*2);cx.fill();cx.globalAlpha=1}
+  }
+  // carroceria
+  cx.fillStyle=C.ink;cx.beginPath();
+  cx.moveTo(x0,yb-0.35*ppm);
+  cx.quadraticCurveTo(x0,yb-0.55*ppm,x0+0.25*L,yb-0.62*ppm);
+  cx.quadraticCurveTo(x0+0.42*L,yb-H,x0+0.55*L,yb-H*0.98);
+  cx.quadraticCurveTo(x0+0.72*L,yb-H*0.95,x0+0.86*L,yb-0.66*ppm);
+  cx.lineTo(x0+L,yb-0.55*ppm);cx.lineTo(x0+L,yb-0.12*ppm);cx.lineTo(x0+0.02*L,yb-0.12*ppm);cx.closePath();cx.fill();
+  // vidro
+  cx.fillStyle=C.ac;cx.globalAlpha=.55;cx.beginPath();
+  cx.moveTo(x0+0.36*L,yb-0.72*ppm);cx.quadraticCurveTo(x0+0.47*L,yb-H*0.93,x0+0.57*L,yb-H*0.92);cx.lineTo(x0+0.7*L,yb-0.72*ppm);cx.closePath();cx.fill();cx.globalAlpha=1;
+  // rodas
+  [0.2,0.8].forEach(p=>{cx.fillStyle=C.ink;cx.beginPath();cx.arc(x0+p*L,yb,0.34*ppm,0,Math.PI*2);cx.fill();cx.fillStyle=C.gr;cx.beginPath();cx.arc(x0+p*L,yb,0.16*ppm,0,Math.PI*2);cx.fill()});
+  // vetores de força
+  const m=P.mCar+S.gas, cxm=x0+L+0.5*ppm, cy=yb-0.6*ppm, k=0.9*ppm/(m*g);
+  arrow(cxm,cy,cxm,cy+m*g*k,C.mu,d,'P');
+  if(S.T>0)arrow(cxm+16*d,cy,cxm+16*d,cy-S.T*k,C.ac,d,'F');
+}
+function arrow(x1,y1,x2,y2,c,d,l){cx.strokeStyle=c;cx.fillStyle=c;cx.lineWidth=2.5*d;cx.beginPath();cx.moveTo(x1,y1);cx.lineTo(x2,y2);cx.stroke();
+  const s=Math.sign(y2-y1)||1;cx.beginPath();cx.moveTo(x2,y2);cx.lineTo(x2-5*d,y2-7*d*s);cx.lineTo(x2+5*d,y2-7*d*s);cx.closePath();cx.fill();
+  cx.font=`600 ${12*d}px ${css('--f-display')}`;cx.fillText(l,x2+7*d,y2-2*d*s)}
+function drawTrace(){
+  const {w,h,d}=fit(tc);if(w<60*d||h<30*d)return;tx.clearRect(0,0,w,h);
+  const C={ac:css('--blue'),mu:css('--ink-soft'),ln:css('--grid'),w:css('--accent')};
+  const pad=4*d, top=16*d, bot=h-pad, tr=S.trace;
+  tx.font=`${11*d}px ${css('--f-mono')}`;
+  tx.fillStyle=C.ac;tx.fillText('altura',pad,11*d);tx.fillStyle=C.w;tx.fillText('ar restante',70*d,11*d);
+  tx.strokeStyle=C.ln;tx.lineWidth=1*d;tx.beginPath();tx.moveTo(0,bot);tx.lineTo(w,bot);tx.stroke();
+  if(tr.length<2)return;
+  const t0=tr[0][0],t1=Math.max(tr[tr.length-1][0],t0+5),hm=Math.max(2,...tr.map(p=>p[1]));
+  const X=t=>pad+(t-t0)/(t1-t0)*(w-2*pad);
+  const line=(f,c)=>{tx.strokeStyle=c;tx.lineWidth=2*d;tx.beginPath();tr.forEach((p,i)=>{const y=bot-f(p)*(bot-top);i?tx.lineTo(X(p[0]),y):tx.moveTo(X(p[0]),y)});tx.stroke()};
+  line(p=>p[2],C.w); line(p=>p[1]/hm,C.ac);
+  tx.fillStyle=C.mu;tx.textAlign='right';tx.fillText('máx '+nf(hm,1)+' m',w-pad,11*d);tx.textAlign='left';
+}
+function hud(){
+  $('hH').textContent=nf(S.h,2)+' m';$('hV').textContent=nf(S.v,2)+' m/s';
+  $('hG').textContent=nf(S.gas,1)+' kg';$('hF').textContent=nf(S.T/1000,1)+' kN';
+}
+let last=performance.now();
+function loop(now){
+  let dt=Math.min(0.05,(now-last)/1000);last=now;
+  const n=Math.ceil(dt/0.004);for(let i=0;i<n;i++)step(dt/n);
+  drawScene();drawTrace();hud();requestAnimationFrame(loop);
+}
+
+/* ---------- controles ---------- */
+const hb=$('hold');
+const on=e=>{e.preventDefault();if(S.mode==='auto')return;S.mode='manual';S.held=true;hb.classList.add('on')};
+const off=()=>{S.held=false;hb.classList.remove('on')};
+hb.addEventListener('pointerdown',on);['pointerup','pointerleave','pointercancel'].forEach(t=>hb.addEventListener(t,off));
+hb.addEventListener('contextmenu',e=>e.preventDefault());
+window.addEventListener('keydown',e=>{if(e.code==='Space'&&!e.repeat&&!/INPUT|BUTTON/.test(document.activeElement.tagName)){on(e)}});
+window.addEventListener('keyup',e=>{if(e.code==='Space')off()});
+$('auto').addEventListener('click',()=>{if(S.h>0.05)return;S.mode='auto';S.phase='up';S.maxH=0;setMsg(`Autopiloto: sobe até ${nf(P.hT,1)} m, paira 2 s e desce controlando a velocidade.`,'')});
+$('reset').addEventListener('click',resetSim);
+['mCar','mGas','pTank','isp','tw','hT'].forEach(id=>$(id).addEventListener('input',()=>{const air=S.air;updateReadout();if(!air&&S.mode!=='auto'&&(id==='mGas'))S.gas=P.mGas;}));
+['mu','suc','twR'].forEach(id=>$(id).addEventListener('input',updateAcc));
+['mGas','mCar'].forEach(id=>$(id).addEventListener('change',()=>{if(!S.air&&S.mode!=='auto')resetSim()}));
+
+updateReadout();resetSim();requestAnimationFrame(loop);
+})();
+</script>
+</body>
+</html>

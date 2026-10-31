@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Brisas e calor específico · A Tal da Física</title>
+<style>
+:root{--ink:#0E2A3B;--teal:#1F8A8A;--sun:#F2A541;--coral:#E4572E;--bg:#F4F8FA;--card:#fff}
+*{box-sizing:border-box}
+body{margin:0;font-family:Calibri,"Segoe UI",Arial,sans-serif;background:var(--bg);color:var(--ink)}
+header{background:var(--ink);color:#fff;padding:14px 20px}
+header h1{margin:0;font-size:24px}
+header p{margin:4px 0 0;color:#CFE3EA;font-size:15px}
+main{max-width:1150px;margin:auto;padding:18px;display:flex;flex-wrap:wrap;gap:18px}
+.card{background:var(--card);border-radius:14px;box-shadow:0 2px 10px #0001;padding:12px}
+.stage{flex:1 1 640px}
+.panel{flex:1 1 280px}
+canvas{width:100%;height:auto;display:block}
+h2{font-size:17px;color:var(--teal);margin:4px 0 8px}
+button{font:inherit;font-size:16px;border:0;border-radius:10px;padding:10px 14px;cursor:pointer;margin:4px 4px 4px 0;background:#E3EEF2;color:var(--ink)}
+.pri{background:var(--coral);color:#fff;font-weight:bold}
+label{display:block;margin:10px 0 2px;font-size:15px}
+input[type=range]{width:100%}
+.big{font-size:18px;font-weight:bold;margin:10px 0}
+.note{background:#FFF4E0;border-radius:10px;padding:10px 12px;font-size:15px;line-height:1.4;margin-top:10px}
+.row{display:flex;gap:10px}
+.box{flex:1;border-radius:10px;padding:8px;text-align:center}
+.box b{display:block;font-size:22px}
+</style>
+<link rel="stylesheet" href="../estilo.css">
+<link rel="stylesheet" href="atmosfera.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Literata:ital,opsz,wght@0,7..72,400;0,7..72,600;1,7..72,400&family=JetBrains+Mono:wght@400;600&display=swap">
+</head>
+<body>
+<header class="top">
+  <div class="wrap">
+    <a class="brand" href="../index.html">
+      <svg width="28" height="28" viewBox="0 0 28 28" aria-hidden="true">
+        <path d="M3 24 Q14 -6 25 24" fill="none" stroke="var(--ink)" stroke-width="2" stroke-dasharray="3 3"/>
+        <circle cx="14" cy="9" r="3.5" fill="var(--accent)"/>
+      </svg>
+      A Tal da Física
+    </a>
+    <nav class="links" aria-label="Seções">
+      <a href="../index.html#trilhas">Trilhas</a>
+      <a href="../index.html#licao">Lição</a>
+      <a href="../laboratorio.html" aria-current="page">Laboratório</a>
+      <a href="../graficos.html">Gráficos</a>
+      <a href="../quiz.html">Quiz</a>
+      <a href="../enem.html">ENEM</a>
+      <a href="../eletricidade.html">Eletricidade</a>
+      <a href="../game/index.html">Game</a>
+      <a href="../index.html#constantes">Constantes</a>
+    </nav>
+  </div>
+</header>
+
+<div class="wrap atm-intro">
+  <a class="atm-back" href="../laboratorio.html#atmosfera">← Voltar ao laboratório</a>
+  <p class="label">Laboratório · Atmosfera e clima · 8º ano</p>
+  <h1 class="atm-title">Brisas do litoral e calor específico</h1>
+  <p>Mar e terra recebem a mesma energia do Sol. Quem aquece e esfria mais depressa? Para onde sopra o vento?</p>
+</div>
+<main>
+  <div class="card stage"><canvas id="cv" width="760" height="420" aria-label="Corte do litoral com mar, terra e vento"></canvas>
+  <canvas id="gr" width="760" height="190" aria-label="Gráfico das temperaturas ao longo do dia"></canvas></div>
+  <div class="card panel">
+    <h2>Controles</h2>
+    <button class="pri" id="play">▶ Rodar o dia</button><button id="pause">⏸ Pausar</button><button id="reset">↺ Reiniciar</button>
+    <label for="hora">Hora do dia: <span id="hv"></span></label>
+    <input type="range" id="hora" min="0" max="24" step="0.25" value="6">
+    <label for="cr">Calor específico da água ÷ calor específico da areia: <b id="crv">5</b></label>
+    <input type="range" id="cr" min="1" max="6" step="0.5" value="5">
+    <div class="row" style="margin-top:12px">
+      <div class="box" style="background:#DCEEF6">Mar<b id="tm">–</b></div>
+      <div class="box" style="background:#F6E7D5">Terra<b id="tt">–</b></div>
+    </div>
+    <div class="big" id="vento"></div>
+    <div class="note"><b>Experimente:</b> coloque a razão de calor específico em <b>1</b> (mar e terra iguais). O que acontece com a brisa? Depois volte para <b>5</b>, o valor aproximado da apostila (p. 370).</div>
+    <div class="note">Modelo simplificado com valores ilustrativos: serve para comparar comportamentos, não para prever temperaturas reais.</div>
+  </div>
+</main>
+<footer>
+  <div class="wrap">
+    <span>A Tal da Física · material de estudo gratuito</span>
+    <span class="mono">λ<sub>Na</sub> = 589 nm, a cor do nosso destaque</span>
+  </div>
+</footer>
+
+<script>
+const cv=document.getElementById('cv'),c=cv.getContext('2d');
+const gr=document.getElementById('gr'),g=gr.getContext('2d');
+const $=id=>document.getElementById(id);
+let ratio=5,playing=false,hora=6,serie=null;
+const sol=h=>Math.max(0,Math.sin((h-6)/12*Math.PI)); // 6h às 18h
+function simular(){
+  // integra 3 dias para atingir regime e guarda o último
+  const Cl=1,Cs=ratio, k=0.18, S=6, T0=22;
+  let Tl=T0,Ts=T0;const out=[];const dt=0.05;
+  for(let d=0;d<3;d++){for(let h=0;h<24;h+=dt){
+    const q=S*sol(h);
+    Tl+=dt*(q-k*(Tl-T0)*3-1.2)/Cl;
+    Ts+=dt*(q-k*(Ts-T0)*3-1.2)/Cs;
+    if(d===2)out.push([h,Tl,Ts]);}}
+  serie=out;
+}
+function temps(h){const i=Math.min(serie.length-1,Math.round(h/0.05));return serie[i]}
+function seta(x1,y1,x2,y2,cor,lw){c.strokeStyle=cor;c.fillStyle=cor;c.lineWidth=lw;c.beginPath();c.moveTo(x1,y1);c.lineTo(x2,y2);c.stroke();
+  const a=Math.atan2(y2-y1,x2-x1);c.beginPath();c.moveTo(x2,y2);c.lineTo(x2-14*Math.cos(a-0.45),y2-14*Math.sin(a-0.45));c.lineTo(x2-14*Math.cos(a+0.45),y2-14*Math.sin(a+0.45));c.fill()}
+function desenhar(){
+  const [h,Tl,Ts]=temps(hora);const dia=sol(hora)>0;const W=cv.width,H=cv.height;
+  // céu
+  const s=sol(hora);c.fillStyle=dia?`rgb(${150+80*s},${200+40*s},${235})`:'#1B2A44';c.fillRect(0,0,W,H);
+  // Sol ou Lua
+  if(dia){const x=80+(W-160)*((hora-6)/12),y=150-110*s;c.fillStyle='#F2A541';c.beginPath();c.arc(x,y,30,0,7);c.fill()}
+  else{c.fillStyle='#F4F1DE';c.beginPath();c.arc(W-110,70,22,0,7);c.fill();c.fillStyle='#1B2A44';c.beginPath();c.arc(W-100,64,20,0,7);c.fill()}
+  // mar e terra
+  const base=300;c.fillStyle='#2A7FA8';c.fillRect(0,base,W*0.48,H-base);
+  c.fillStyle='#C9A66B';c.beginPath();c.moveTo(W*0.46,H);c.lineTo(W*0.46,base+4);c.lineTo(W*0.6,base-6);c.lineTo(W,base-14);c.lineTo(W,H);c.fill();
+  c.fillStyle='#fff';c.font='bold 20px Calibri,Arial';c.fillText('MAR',40,H-30);c.fillStyle='#5B3A12';c.fillText('TERRA',W-110,H-30);
+  // termômetros
+  termo(W*0.30,H-26,Ts);termo(W*0.70,H-26,Tl);
+  // vento
+  const d=Tl-Ts; const forca=Math.min(1,Math.abs(d)/4);
+  if(Math.abs(d)>0.25){
+    const lw=2+5*forca,cor=dia?'#0E2A3B':'#F4F1DE';
+    if(d>0){ // terra mais quente: brisa marítima
+      seta(W*0.18,base-25,W*0.66,base-35,cor,lw);seta(W*0.8,base-50,W*0.8,base-190,cor,lw);seta(W*0.66,base-215,W*0.22,base-215,cor,lw);seta(W*0.12,base-190,W*0.12,base-50,cor,lw);
+      $('vento').innerHTML='Terra mais quente → ar sobe sobre a terra.<br>Vento do <span style="color:#1F8A8A">MAR para a TERRA</span>: brisa marítima.';
+    }else{
+      seta(W*0.8,base-30,W*0.3,base-22,cor,lw);seta(W*0.16,base-50,W*0.16,base-190,cor,lw);seta(W*0.3,base-215,W*0.74,base-215,cor,lw);seta(W*0.86,base-190,W*0.86,base-60,cor,lw);
+      $('vento').innerHTML='Mar mais quente → ar sobe sobre o mar.<br>Vento da <span style="color:#E4572E">TERRA para o MAR</span>: brisa terrestre.';
+    }
+  }else{$('vento').textContent='Temperaturas quase iguais: praticamente sem brisa.'}
+  $('tm').textContent=Ts.toFixed(1).replace('.',',')+' °C';$('tt').textContent=Tl.toFixed(1).replace('.',',')+' °C';
+  const hh=Math.floor(hora)%24,mm=Math.round((hora-Math.floor(hora))*60);$('hv').textContent=String(hh).padStart(2,'0')+':'+String(mm).padStart(2,'0');
+  grafico();
+}
+function termo(x,y,T){c.fillStyle='#fff';c.fillRect(x-7,y-90,14,90);c.beginPath();c.arc(x,y+6,12,0,7);c.fill();
+  const hgt=Math.max(4,Math.min(86,(T-10)*3.4));c.fillStyle='#E4572E';c.fillRect(x-4,y-hgt,8,hgt+4);c.beginPath();c.arc(x,y+6,9,0,7);c.fill();
+  c.fillStyle='#ffffffdd';c.fillRect(x+14,y-58,74,26);c.fillStyle='#0E2A3B';c.font='bold 17px Calibri,Arial';c.fillText(T.toFixed(1).replace('.',',')+' °C',x+19,y-39)}
+function grafico(){
+  const W=gr.width,H=gr.height,L=48,B=H-28,T=14;g.clearRect(0,0,W,H);g.fillStyle='#fff';g.fillRect(0,0,W,H);
+  const ts=serie.flatMap(p=>[p[1],p[2]]);const mn=Math.floor(Math.min(...ts))-1,mx=Math.ceil(Math.max(...ts))+1;
+  const X=h=>L+(W-L-12)*h/24,Y=t=>B-(B-T)*(t-mn)/(mx-mn);
+  g.strokeStyle='#DDE6EA';g.fillStyle='#5B6B75';g.font='12px Calibri,Arial';
+  for(let h=0;h<=24;h+=3){g.beginPath();g.moveTo(X(h),T);g.lineTo(X(h),B);g.stroke();g.fillText(h+'h',X(h)-8,B+16)}
+  for(let t=Math.ceil(mn);t<=mx;t+=2){g.beginPath();g.moveTo(L,Y(t));g.lineTo(W-12,Y(t));g.stroke();g.fillText(t+'°',L-26,Y(t)+4)}
+  [[1,'#C07A2C','Terra'],[2,'#2A7FA8','Mar']].forEach(([i,cor,nm],k)=>{g.strokeStyle=cor;g.lineWidth=3;g.beginPath();serie.forEach((p,j)=>j?g.lineTo(X(p[0]),Y(p[i])):g.moveTo(X(p[0]),Y(p[i])));g.stroke();g.fillStyle=cor;g.font='bold 13px Calibri,Arial';g.fillText(nm,W-70,T+14+k*16)});
+  g.strokeStyle='#E4572E';g.lineWidth=2;g.beginPath();g.moveTo(X(hora),T);g.lineTo(X(hora),B);g.stroke();
+  const am=(i)=>{const v=serie.map(p=>p[i]);return (Math.max(...v)-Math.min(...v)).toFixed(1)};
+  g.fillStyle='#0E2A3B';g.font='13px Calibri,Arial';g.fillText('Amplitude térmica — terra: '+am(1).replace('.',',')+' °C | mar: '+am(2).replace('.',',')+' °C',L+6,T+12);
+}
+$('hora').oninput=e=>{hora=+e.target.value;desenhar()};
+$('cr').oninput=e=>{ratio=+e.target.value;$('crv').textContent=ratio;simular();desenhar()};
+$('play').onclick=()=>{playing=true};$('pause').onclick=()=>{playing=false};
+$('reset').onclick=()=>{playing=false;hora=6;$('hora').value=6;desenhar()};
+let last=performance.now();
+function loop(t){const dt=(t-last)/1000;last=t;if(playing){hora=(hora+dt*1.6)%24;$('hora').value=hora;desenhar()}requestAnimationFrame(loop)}
+simular();desenhar();requestAnimationFrame(loop);
+</script>
+</body>
+</html>

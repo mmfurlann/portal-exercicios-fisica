@@ -1,0 +1,394 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Mecânica celeste · A Tal da Física</title>
+<meta name="description" content="Simulador de órbitas: a gravidade do Sol como força centrípeta, órbitas circulares e elípticas, 3ª lei de Kepler e a rotação da Terra.">
+<link rel="stylesheet" href="estilo.css">
+<link rel="stylesheet" href="simulacao.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Literata:ital,opsz,wght@0,7..72,400;0,7..72,600;1,7..72,400&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+/* espaço escuro para as duas cenas */
+.rd { --rd-sky: #171b20; }
+.ce-stage { aspect-ratio: 4/3; }
+.ce-rot { aspect-ratio: 1/1; max-width: 420px; margin-inline: auto; width: 100%; }
+.ce-presets { display: flex; flex-wrap: wrap; gap: 6px; }
+.ce-presets button { padding: 7px 10px; font-size: .85rem; }
+.rd button.on { background: var(--blue); border-color: var(--blue); color: #14273a; }
+.ce-checks { display: flex; flex-wrap: wrap; gap: 6px 16px; }
+.ce-checks label { display: flex; gap: 6px; align-items: center; font-size: .92rem; cursor: pointer; }
+.ce-checks input { accent-color: var(--accent); width: 16px; height: 16px; }
+.ce-cmp { margin-top: 12px; }
+.ce-cmp .rd-bar { grid-template-columns: 112px minmax(0, 1fr) 92px; }
+.ce-cmp .rd-fill { transition: none; }
+.ce-cmp .rd-fill.need { background: var(--blue); }
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="wrap">
+    <a class="brand" href="index.html">
+      <svg width="28" height="28" viewBox="0 0 28 28" aria-hidden="true">
+        <path d="M3 24 Q14 -6 25 24" fill="none" stroke="var(--ink)" stroke-width="2" stroke-dasharray="3 3"/>
+        <circle cx="14" cy="9" r="3.5" fill="var(--accent)"/>
+      </svg>
+      A Tal da Física
+    </a>
+    <nav class="links" aria-label="Seções">
+      <a href="index.html#trilhas">Trilhas</a>
+      <a href="index.html#licao">Lição</a>
+      <a href="laboratorio.html" aria-current="page">Laboratório</a>
+      <a href="graficos.html">Gráficos</a>
+      <a href="quiz.html">Quiz</a>
+      <a href="enem.html">ENEM</a>
+      <a href="eletricidade.html">Eletricidade</a>
+      <a href="game/index.html">Game</a>
+      <a href="index.html#constantes">Constantes</a>
+    </nav>
+  </div>
+</header>
+
+<div class="rd">
+<div class="wrap rd-intro">
+  <a class="rd-back" href="laboratorio.html#mecanica">← Voltar ao laboratório</a>
+  <p class="label">Laboratório · Mecânica · Gravitação</p>
+  <h1>Mecânica celeste</h1>
+  <p class="rd-lede">A Terra gira em torno do Sol porque a gravidade puxa o tempo todo para o centro. Esse puxão é a força centrípeta da órbita. Mude a distância e a velocidade e veja quando a órbita é um círculo, quando vira elipse e quando o planeta escapa.</p>
+</div>
+
+<main class="wrap rd-main">
+<div class="rd-grid">
+  <div class="rd-panel">
+    <div class="rd-stage ce-stage"><canvas id="orb" aria-label="Planeta em órbita do Sol com os vetores de força e velocidade"></canvas></div>
+    <div class="rd-hud">
+      <div><span class="rd-lab">Distância</span><b id="hR">—</b></div>
+      <div><span class="rd-lab">Velocidade</span><b id="hV">—</b></div>
+      <div><span class="rd-lab">F gravitacional</span><b id="hF">—</b></div>
+      <div><span class="rd-lab">Tempo</span><b id="hT">—</b></div>
+    </div>
+    <div class="rd-bars ce-cmp" aria-label="Comparação entre a força gravitacional e a força centrípeta para um círculo">
+      <div class="rd-bar"><span>F gravitacional</span><div class="rd-track"><div class="rd-fill" id="bG"></div></div><span id="tG"></span></div>
+      <div class="rd-bar"><span>m·v²/r</span><div class="rd-track"><div class="rd-fill need" id="bN"></div></div><span id="tN"></span></div>
+    </div>
+    <div class="rd-btns">
+      <button class="rd-primary" id="play">Pausar</button>
+      <button id="reset">Reiniciar</button>
+    </div>
+    <div class="rd-msg" id="msg"></div>
+  </div>
+
+  <div class="rd-panel rd-ctrl">
+    <div>
+      <p class="rd-lab" style="margin-bottom:6px">Planetas</p>
+      <div class="ce-presets" id="presets">
+        <button data-r="0.387" data-m="0.055">Mercúrio</button>
+        <button data-r="0.723" data-m="0.815">Vênus</button>
+        <button data-r="1" data-m="1">Terra</button>
+        <button data-r="1.524" data-m="0.107">Marte</button>
+        <button data-r="5.203" data-m="317.8">Júpiter</button>
+      </div>
+    </div>
+    <div class="rd-row"><label for="r0">Distância ao Sol<output id="oR"></output></label>
+      <input type="range" id="r0" min="0.3" max="6" step="0.01" value="1"></div>
+    <div class="rd-row"><label for="f">Velocidade de lançamento<output id="oF"></output></label>
+      <input type="range" id="f" min="0.3" max="1.6" step="0.01" value="1">
+      <div class="rd-hint">1,00× é a velocidade exata da órbita circular; √2 ≈ 1,41× é a de escape</div></div>
+    <div class="rd-row"><label for="M">Massa da estrela<output id="oM"></output></label>
+      <input type="range" id="M" min="0.5" max="2" step="0.05" value="1"></div>
+    <div class="rd-row"><label for="mp">Massa do planeta<output id="oMp"></output></label>
+      <input type="range" id="mp" min="0.05" max="320" step="0.05" value="1">
+      <div class="rd-hint">Repare: muda a força, mas não muda a órbita</div></div>
+    <div class="rd-row"><label for="sp">Ritmo da animação<output id="oSp"></output></label>
+      <input type="range" id="sp" min="0.05" max="2" step="0.05" value="0.25"></div>
+    <div class="ce-checks">
+      <label><input type="checkbox" id="cVec" checked> Vetores</label>
+      <label><input type="checkbox" id="cCmp" checked> Componentes</label>
+      <label><input type="checkbox" id="cTrail" checked> Rastro</label>
+    </div>
+    <div class="rd-sep"></div>
+    <div class="rd-readout" id="readout"></div>
+  </div>
+</div>
+
+<div class="rd-panel">
+  <p class="rd-eyebrow">As equações do modelo</p>
+  <h2>A gravidade como força centrípeta</h2>
+  <div class="rd-eqs">
+    <div class="rd-eq"><h3>1. Gravitação universal</h3>
+      <div class="rd-formula">F<sub>g</sub> = G · M · m / r²</div>
+      <p>Newton: o Sol (massa M) atrai o planeta (massa m) com uma força que cai com o quadrado da distância. G = 6,67 × 10⁻¹¹ N·m²/kg².</p></div>
+    <div class="rd-eq"><h3>2. Força centrípeta</h3>
+      <div class="rd-formula">F<sub>cp</sub> = m · v² / r = m · ω² · r</div>
+      <p>Para andar em círculo, o corpo precisa de uma força resultante apontando para o centro. Ela não é uma força nova: alguém tem que fazer esse papel.</p></div>
+    <div class="rd-eq"><h3>3. Órbita circular</h3>
+      <div class="rd-formula">G·M·m / r² = m·v² / r &nbsp;⇒&nbsp; v = √(G·M / r)</div>
+      <p>Na órbita, a gravidade é a força centrípeta. A massa m do planeta cancela: Júpiter e uma pedrinha na mesma distância andam com a mesma velocidade. Para a Terra, <span class="n">v ≈ 29,8 km/s</span>.</p></div>
+    <div class="rd-eq"><h3>4. Período</h3>
+      <div class="rd-formula">T = 2·π·r / v</div>
+      <p>Uma volta completa tem comprimento 2πr. Com r = 1,50 × 10¹¹ m e v = 29,8 km/s, sai T ≈ 365 dias.</p></div>
+    <div class="rd-eq"><h3>5. 3ª lei de Kepler</h3>
+      <div class="rd-formula">T² / r³ = 4·π² / (G·M)</div>
+      <p>Juntando 3 e 4: a razão T²/r³ é a mesma para todos os planetas do Sol. Medindo T em anos e r em UA, ela vale 1.</p></div>
+    <div class="rd-eq"><h3>6. Velocidade de escape</h3>
+      <div class="rd-formula">v<sub>esc</sub> = √(2·G·M / r) = √2 · v<sub>circular</sub></div>
+      <p>Abaixo da circular, a gravidade sobra e o planeta cai para dentro (elipse). Acima, falta gravidade e ele se afasta (elipse maior). A partir de √2, não volta mais.</p></div>
+  </div>
+</div>
+
+<div class="rd-panel">
+  <p class="rd-eyebrow">O outro movimento circular da Terra</p>
+  <h2>Rotação: quem está no equador anda a 1 670 km/h</h2>
+  <p class="rd-sub">Cada ponto da superfície descreve um círculo em torno do eixo, de raio R·cos φ. Parte da gravidade é gasta como força centrípeta, e o peso aparente fica um pouco menor. E se o dia fosse bem mais curto?</p>
+  <div class="rd-acc">
+    <div class="rd-stage ce-rot"><canvas id="rot" aria-label="Terra girando com um ponto na latitude escolhida"></canvas></div>
+    <div class="rd-ctrl">
+      <div class="rd-row"><label for="lat">Latitude<output id="oLat"></output></label>
+        <input type="range" id="lat" min="0" max="90" step="1" value="23">
+        <div class="rd-hint">São Paulo fica perto de 23° S; o equador é 0°, os polos 90°</div></div>
+      <div class="rd-row"><label for="day">Duração do dia<output id="oDay"></output></label>
+        <input type="range" id="day" min="1.4" max="48" step="0.01" value="23.93">
+        <div class="rd-hint">Uma volta completa leva 23 h 56 min (dia sideral)</div></div>
+      <div class="rd-readout" id="rotOut"></div>
+      <div class="rd-msg" id="rotMsg"></div>
+    </div>
+  </div>
+</div>
+
+<div class="rd-panel">
+  <p class="rd-eyebrow">Onde o modelo simplifica</p>
+  <h2>Limites</h2>
+  <ul class="rd-limits">
+    <li>Só existem a estrela e um planeta. Os outros planetas puxam de leve e fazem a órbita real girar e oscilar ao longo de séculos.</li>
+    <li>A estrela fica parada. Na verdade os dois giram em torno do centro de massa, que no caso Sol–Júpiter fica logo acima da superfície do Sol.</li>
+    <li>As órbitas reais já são elipses um pouco achatadas (a da Terra varia de 147 a 152 milhões de km). Aqui a Terra começa em órbita circular.</li>
+    <li>Na rotação, a Terra é tratada como esfera perfeita e g = 9,81 m/s² sem rotação. A Terra real é achatada nos polos, o que muda mais um pouco o g.</li>
+  </ul>
+</div>
+</main>
+</div>
+
+<footer>
+  <div class="wrap">
+    <span>A Tal da Física · material de estudo gratuito</span>
+    <span class="mono">λ<sub>Na</sub> = 589 nm, a cor do nosso destaque</span>
+  </div>
+</footer>
+
+<script>
+(function(){
+const G=6.674e-11, MSUN=1.989e30, MEARTH=5.972e24, AU=1.496e11, YR=3.15576e7, KMS=AU/YR/1000;
+const RE=6.371e6, g0=9.81;
+const $=id=>document.getElementById(id);
+const nf=(x,d=0)=>x.toLocaleString('pt-BR',{minimumFractionDigits:d,maximumFractionDigits:d});
+const SUP={'-':'⁻','0':'⁰','1':'¹','2':'²','3':'³','4':'⁴','5':'⁵','6':'⁶','7':'⁷','8':'⁸','9':'⁹'};
+function sci(x,d=2){if(!isFinite(x)||x===0)return '0';const e=Math.floor(Math.log10(Math.abs(x)));const m=x/10**e;
+  return nf(m,d)+' × 10'+String(e).split('').map(c=>SUP[c]).join('')}
+const root=document.querySelector('.rd');
+function css(v){return getComputedStyle(root).getPropertyValue(v).trim()}
+const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+/* ---------- órbita: unidades de UA, anos e massas solares (G·M = 4π²·M) ---------- */
+const P={}, O={};
+function read(){
+  P.r0=+$('r0').value; P.f=+$('f').value; P.M=+$('M').value; P.mp=+$('mp').value; P.sp=+$('sp').value;
+  P.mu=4*Math.PI**2*P.M; P.vc=Math.sqrt(P.mu/P.r0); P.m=P.mp*MEARTH;
+  const v=P.f*P.vc, eps=v*v/2-P.mu/P.r0;
+  P.bound=eps<0;
+  if(P.bound){P.a=-P.mu/(2*eps);const h=P.r0*v;P.e=Math.sqrt(Math.max(0,1+2*eps*h*h/(P.mu*P.mu)));
+    P.ra=P.a*(1+P.e);P.rp=P.a*(1-P.e);P.T=Math.sqrt(P.a**3/P.M);P.view=Math.max(P.ra,P.r0)*1.12}
+  else P.view=P.r0*2.6;
+}
+const Fg=(r)=>G*MSUN*P.M*P.m/(r*AU)**2;
+function labels(){
+  $('oR').textContent=nf(P.r0,2)+' UA'; $('oF').textContent=nf(P.f,2)+'×';
+  $('oM').textContent=nf(P.M,2)+' M☉'; $('oMp').textContent=nf(P.mp,P.mp<10?2:0)+' M⊕';
+  $('oSp').textContent=nf(P.sp,2)+' ano/s';
+  document.querySelectorAll('#presets button').forEach(b=>b.classList.toggle('on',Math.abs(+b.dataset.r-P.r0)<0.006&&Math.abs(+b.dataset.m-P.mp)<0.03));
+}
+function readout(){
+  const vcR=P.vc*KMS, ac=(P.vc*AU/YR)**2/(P.r0*AU), Tc=2*Math.PI*P.r0/P.vc;
+  const rows=[
+    ['Velocidade circular',nf(vcR,1)+' km/s','hl'],
+    ['F gravitacional no início',sci(Fg(P.r0))+' N'],
+    ['Aceleração centrípeta',nf(ac*1000,2)+' mm/s²'],
+    ['Período circular',Tc<2?nf(Tc*365.25,0)+' dias':nf(Tc,2)+' anos','hl'],
+    ['T² / r³',nf(Tc*Tc/P.r0**3,2)+' ano²/UA³'],
+    ['Velocidade de escape',nf(vcR*Math.SQRT2,1)+' km/s'],
+  ];
+  if(Math.abs(P.f-1)<0.005) rows.push(['Órbita','circular','hl']);
+  else if(P.bound) rows.push(['Órbita','elíptica','hl'],['Periélio',nf(P.rp,2)+' UA'],['Afélio',nf(P.ra,2)+' UA'],['Período',P.T<2?nf(P.T*365.25,0)+' dias':nf(P.T,2)+' anos'],['Excentricidade',nf(P.e,2)]);
+  else rows.push(['Órbita','aberta: escapa','hl']);
+  $('readout').innerHTML=rows.map(r=>`<span class="${r[2]||''}">${r[0]}</span><span class="${r[2]||''}">${r[1]}</span>`).join('');
+}
+function setMsg(t,c){const m=$('msg');m.textContent=t;m.className='rd-msg '+(c||'')}
+function launchMsg(){
+  if(Math.abs(P.f-1)<0.005) setMsg('Órbita circular: a gravidade é exatamente a força centrípeta que o círculo pede (as duas barras empatam).','good');
+  else if(P.f<1) setMsg('Abaixo da velocidade circular: a gravidade é maior que m·v²/r, o planeta cai para dentro e a órbita vira elipse. O ponto de partida é o afélio.','warn');
+  else if(P.bound) setMsg('Acima da velocidade circular: a gravidade não dá conta de curvar tanto, o planeta se afasta e a órbita vira elipse. O ponto de partida é o periélio.','warn');
+  else setMsg('Velocidade de escape: com v ≥ √2·v_circular, a gravidade não consegue mais trazer o planeta de volta.','bad');
+}
+function reset(){
+  read(); labels(); readout();
+  Object.assign(O,{x:P.r0,y:0,vx:0,vy:P.f*P.vc,t:0,trail:[[P.r0,0]],status:'run'});
+  launchMsg();
+}
+function acc(x,y){const r2=x*x+y*y,k=-P.mu/(r2*Math.sqrt(r2));return [k*x,k*y]}
+function advance(T){
+  let n=0;
+  while(T>1e-12&&n<20000&&O.status==='run'){
+    const r=Math.hypot(O.x,O.y), h=Math.min(T,0.002*r**1.5/Math.sqrt(P.M));
+    let [ax,ay]=acc(O.x,O.y); O.vx+=ax*h/2; O.vy+=ay*h/2;
+    O.x+=O.vx*h; O.y+=O.vy*h;
+    [ax,ay]=acc(O.x,O.y); O.vx+=ax*h/2; O.vy+=ay*h/2;
+    O.t+=h; T-=h; n++;
+    const rn=Math.hypot(O.x,O.y);
+    if(rn<0.005){O.status='crash';setMsg('O planeta caiu no Sol.','bad')}
+    else if(rn>P.view*1.25){O.status='escape';setMsg('O planeta escapou: saiu da região do desenho e não volta mais. Toque em Reiniciar.','bad')}
+  }
+  const last=O.trail[O.trail.length-1];
+  if(Math.hypot(O.x-last[0],O.y-last[1])>P.view*0.006){O.trail.push([O.x,O.y]);if(O.trail.length>1600)O.trail.shift()}
+}
+
+/* ---------- desenho ---------- */
+const cv=$('orb'),cx=cv.getContext('2d'),rc=$('rot'),rx=rc.getContext('2d');
+function fit(c){const r=c.getBoundingClientRect(),d=window.devicePixelRatio||1;
+  if(c.width!==Math.round(r.width*d)||c.height!==Math.round(r.height*d)){c.width=Math.round(r.width*d);c.height=Math.round(r.height*d)}
+  return {w:c.width,h:c.height,d}}
+const stars=Array.from({length:90},(_,i)=>[(Math.sin(i*12.9898)*43758.5453)%1,(Math.sin(i*78.233)*12543.12)%1,(i%3)+1].map((v,j)=>j<2?Math.abs(v):v));
+function arrow(c,x1,y1,x2,y2,col,d,lab,dash){
+  const L=Math.hypot(x2-x1,y2-y1); if(L<3*d)return;
+  c.strokeStyle=col;c.fillStyle=col;c.lineWidth=2.5*d;c.setLineDash(dash?[5*d,4*d]:[]);
+  c.beginPath();c.moveTo(x1,y1);c.lineTo(x2,y2);c.stroke();c.setLineDash([]);
+  const ux=(x2-x1)/L,uy=(y2-y1)/L;
+  c.beginPath();c.moveTo(x2,y2);c.lineTo(x2-9*d*ux-5*d*uy,y2-9*d*uy+5*d*ux);c.lineTo(x2-9*d*ux+5*d*uy,y2-9*d*uy-5*d*ux);c.closePath();c.fill();
+  if(lab){c.font=`700 ${13*d}px ${css('--f-mono')}`;c.fillText(lab,x2+6*d*ux+4*d,y2+6*d*uy+4*d)}
+}
+function drawOrbit(){
+  const {w,h,d}=fit(cv); if(w<60*d||h<60*d)return;
+  const C={ac:css('--accent'),bl:css('--blue'),ink:css('--ink'),mu:css('--ink-soft'),ln:css('--grid'),ok:css('--ok')};
+  cx.fillStyle=css('--rd-sky');cx.fillRect(0,0,w,h);
+  cx.fillStyle=C.mu;stars.forEach(s=>{cx.globalAlpha=.25+.15*s[2];cx.fillRect(s[0]*w,s[1]*h,s[2]*.7*d,s[2]*.7*d)});cx.globalAlpha=1;
+  const s=(Math.min(w,h)/2-18*d)/P.view, X=x=>w/2+x*s, Y=y=>h/2-y*s;
+  // círculo de referência
+  cx.strokeStyle=C.ln;cx.lineWidth=1*d;cx.setLineDash([4*d,5*d]);cx.beginPath();cx.arc(w/2,h/2,P.r0*s,0,Math.PI*2);cx.stroke();cx.setLineDash([]);
+  // rastro
+  if($('cTrail').checked&&O.trail.length>1){cx.strokeStyle=C.bl;cx.globalAlpha=.55;cx.lineWidth=1.5*d;cx.beginPath();
+    O.trail.forEach((p,i)=>i?cx.lineTo(X(p[0]),Y(p[1])):cx.moveTo(X(p[0]),Y(p[1])));cx.lineTo(X(O.x),Y(O.y));cx.stroke();cx.globalAlpha=1}
+  // Sol
+  const sr=(10+4*P.M)*d, gr=cx.createRadialGradient(w/2,h/2,0,w/2,h/2,sr*2.4);
+  gr.addColorStop(0,'#fff3c4');gr.addColorStop(.4,'#f6c35b');gr.addColorStop(.42,'rgba(242,166,90,.35)');gr.addColorStop(1,'rgba(242,166,90,0)');
+  cx.fillStyle=gr;cx.beginPath();cx.arc(w/2,h/2,sr*2.4,0,Math.PI*2);cx.fill();
+  // planeta
+  const px=X(O.x),py=Y(O.y),pr=Math.max(4,Math.min(11,5+Math.log10(P.mp+1)*2.4))*d;
+  if(O.status!=='crash'){cx.fillStyle=C.bl;cx.beginPath();cx.arc(px,py,pr,0,Math.PI*2);cx.fill()}
+  // vetores
+  if($('cVec').checked&&O.status==='run'){
+    const r=Math.hypot(O.x,O.y), v=Math.hypot(O.vx,O.vy), base=58*d;
+    const vl=Math.min(150*d,base*v/P.vc), Fl=Math.min(150*d,base*(P.r0/r)**2);
+    const tx=O.vx/v, ty=O.vy/v, fx=-O.x/r, fy=-O.y/r;
+    arrow(cx,px,py,px+tx*vl,py-ty*vl,C.bl,d,'v');
+    arrow(cx,px,py,px+fx*Fl,py-fy*Fl,C.ac,d,'Fg');
+    if($('cCmp').checked&&Math.abs(P.f-1)>=0.005){
+      const ft=fx*tx+fy*ty, nx=fx-ft*tx, ny=fy-ft*ty;
+      arrow(cx,px,py,px+nx*Fl,py-ny*Fl,C.ok,d,'Fcp',true);
+      arrow(cx,px,py,px+ft*tx*Fl,py-ft*ty*Fl,C.mu,d,'Ft',true);
+    }
+  }
+  cx.fillStyle=C.mu;cx.font=`${11*d}px ${css('--f-mono')}`;cx.fillText('- - - órbita circular de raio '+nf(P.r0,2)+' UA',10*d,h-10*d);
+}
+function hud(){
+  const r=Math.hypot(O.x,O.y), v=Math.hypot(O.vx,O.vy);
+  $('hR').textContent=nf(r,3)+' UA'; $('hV').textContent=nf(v*KMS,1)+' km/s';
+  $('hF').textContent=sci(Fg(r),1)+' N';
+  $('hT').textContent=O.t<2?nf(O.t*365.25,0)+' dias':nf(O.t,2)+' anos';
+  const fg=Fg(r), need=P.m*(v*AU/YR)**2/(r*AU), mx=Math.max(fg,need);
+  $('bG').style.width=(fg/mx*100).toFixed(1)+'%'; $('bN').style.width=(need/mx*100).toFixed(1)+'%';
+  $('tG').textContent=sci(fg,1); $('tN').textContent=sci(need,1);
+}
+
+/* ---------- rotação da Terra ---------- */
+let rotPhase=0;
+function rotUpdate(){
+  const lat=+$('lat').value, T=+$('day').value, phi=lat*Math.PI/180;
+  $('oLat').textContent=lat+'°'; const hh=Math.floor(T), mm=Math.round((T-hh)*60);
+  $('oDay').textContent=hh+' h '+String(mm).padStart(2,'0')+' min';
+  const w=2*Math.PI/(T*3600), r=RE*Math.cos(phi), v=w*r, ac=w*w*r;
+  const gx=g0-w*w*RE*Math.cos(phi)**2, gy=w*w*RE*Math.cos(phi)*Math.sin(phi), geff=Math.sqrt(gx*gx+gy*gy);
+  const W0=70*g0, W=gx<=0?0:70*geff;
+  const rows=[
+    ['Raio do círculo (R·cos φ)',nf(r/1000,0)+' km'],
+    ['Velocidade do ponto',nf(v*3.6,0)+' km/h','hl'],
+    ['Aceleração centrípeta',nf(ac,ac<0.1?4:2)+' m/s²'],
+    ['Peso de 70 kg sem rotação',nf(W0,1)+' N'],
+    ['Peso aparente',nf(W,1)+' N','hl'],
+    ['Diferença',nf((1-W/W0)*100,ac<0.1?2:1)+'%'],
+  ];
+  $('rotOut').innerHTML=rows.map(r=>`<span class="${r[2]||''}">${r[0]}</span><span class="${r[2]||''}">${r[1]}</span>`).join('');
+  const m=$('rotMsg'), eq=g0-w*w*RE;
+  if(gx<=0){m.textContent='Nesta latitude a gravidade não dá conta de ser a força centrípeta: as pessoas flutuariam e seriam lançadas para fora.';m.className='rd-msg bad'}
+  else if(eq<=0){m.textContent='Com um dia tão curto, no equador as pessoas já flutuariam: lá o círculo é o maior e pede a maior força centrípeta.';m.className='rd-msg warn'}
+  else if(lat===90){m.textContent='No polo, o ponto só gira sobre si mesmo: raio zero, sem aceleração centrípeta.';m.className='rd-msg'}
+  else {m.textContent='No dia real, a diferença de peso é pequena: no máximo 0,34%, no equador.';m.className='rd-msg'}
+}
+function drawRot(dt){
+  const {w,h,d}=fit(rc); if(w<60*d||h<60*d)return;
+  const C={ac:css('--accent'),bl:css('--blue'),ink:css('--ink'),mu:css('--ink-soft'),ln:css('--grid')};
+  const T=+$('day').value, phi=+$('lat').value*Math.PI/180;
+  if(!reduce) rotPhase+=dt*2*Math.PI/Math.max(0.8,6*T/24);
+  rx.fillStyle=css('--rd-sky');rx.fillRect(0,0,w,h);
+  const cX=w/2,cY=h/2,R=Math.min(w,h)*0.34;
+  // eixo
+  rx.strokeStyle=C.mu;rx.lineWidth=1.5*d;rx.setLineDash([5*d,4*d]);rx.beginPath();rx.moveTo(cX,cY-R-28*d);rx.lineTo(cX,cY+R+28*d);rx.stroke();rx.setLineDash([]);
+  // Terra
+  const gr=rx.createRadialGradient(cX-R*.35,cY-R*.35,R*.1,cX,cY,R);gr.addColorStop(0,'#5b8fbf');gr.addColorStop(1,'#1f3a55');
+  rx.fillStyle=gr;rx.beginPath();rx.arc(cX,cY,R,0,Math.PI*2);rx.fill();
+  // meridianos girando (só a face visível)
+  rx.strokeStyle='rgba(220,235,245,.28)';rx.lineWidth=1*d;
+  for(let k=0;k<12;k++){const th=rotPhase+k*Math.PI/6; if(Math.cos(th)<0)continue;
+    rx.beginPath();for(let i=0;i<=40;i++){const la=-Math.PI/2+i*Math.PI/40, x=cX+R*Math.cos(la)*Math.sin(th), y=cY-R*Math.sin(la);i?rx.lineTo(x,y):rx.moveTo(x,y)}rx.stroke()}
+  // equador e o círculo da latitude
+  const ell=(yy,rr,col,lw)=>{rx.strokeStyle=col;rx.lineWidth=lw;rx.beginPath();rx.ellipse(cX,yy,rr,rr*0.16,0,0,Math.PI*2);rx.stroke()};
+  ell(cY,R,'rgba(220,235,245,.35)',1*d);
+  const ry=cY-R*Math.sin(phi), rr=R*Math.cos(phi);
+  ell(ry,Math.max(rr,0.5),C.ac,2*d);
+  // ponto na latitude, girando com a Terra
+  const px=cX+rr*Math.sin(rotPhase), py=ry+rr*0.16*Math.cos(rotPhase), front=Math.cos(rotPhase)>0;
+  // raio do círculo e vetores, desenhados no ponto da borda (mais legível)
+  const bx=cX+rr, by=ry;
+  rx.strokeStyle=C.ink;rx.lineWidth=1.5*d;rx.setLineDash([3*d,3*d]);rx.beginPath();rx.moveTo(cX,by);rx.lineTo(bx,by);rx.stroke();rx.setLineDash([]);
+  rx.fillStyle=C.ink;rx.font=`${12*d}px ${css('--f-mono')}`;if(rr>40*d)rx.fillText('R·cos φ',cX+rr/2-24*d,by-8*d);
+  const wv=2*Math.PI/(T*3600), ac=wv*wv*RE*Math.cos(phi), al=Math.min(R*0.9,R*0.9*ac/(9.81*0.35)+ (ac>0?14*d:0));
+  if(rr>2)arrow(rx,bx,by,bx-Math.min(al,rr+20*d),by,C.ac,d,'acp');
+  arrow(rx,bx,by,bx-Math.cos(phi)*R*0.42,by+Math.sin(phi)*R*0.42,C.mu,d,'g',true);
+  rx.globalAlpha=front?1:.45;rx.fillStyle=C.bl;rx.beginPath();rx.arc(px,py,5*d,0,Math.PI*2);rx.fill();rx.globalAlpha=1;
+  rx.fillStyle=C.ac;rx.beginPath();rx.arc(bx,by,4*d,0,Math.PI*2);rx.fill();
+  rx.fillStyle=C.mu;rx.font=`${11*d}px ${css('--f-mono')}`;rx.fillText('N',cX+6*d,cY-R-16*d);rx.fillText('S',cX+6*d,cY+R+24*d);
+}
+
+/* ---------- laço ---------- */
+let running=true,last=performance.now();
+function loop(now){
+  const dt=Math.min(0.05,(now-last)/1000);last=now;
+  if(running&&O.status==='run')advance(dt*P.sp);
+  drawOrbit();hud();drawRot(dt);
+  requestAnimationFrame(loop);
+}
+
+/* ---------- controles ---------- */
+$('play').addEventListener('click',()=>{running=!running;$('play').textContent=running?'Pausar':'Continuar'});
+$('reset').addEventListener('click',reset);
+['r0','f','M','mp'].forEach(id=>$(id).addEventListener('input',reset));
+$('sp').addEventListener('input',()=>{P.sp=+$('sp').value;labels()});
+document.querySelectorAll('#presets button').forEach(b=>b.addEventListener('click',()=>{
+  $('r0').value=b.dataset.r;$('mp').value=b.dataset.m;$('f').value=1;$('M').value=1;
+  $('sp').value=+b.dataset.r>3?1:0.25; reset()}));
+['lat','day'].forEach(id=>$(id).addEventListener('input',rotUpdate));
+
+reset();rotUpdate();requestAnimationFrame(loop);
+})();
+</script>
+</body>
+</html>
