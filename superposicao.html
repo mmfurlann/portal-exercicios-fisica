@@ -1,0 +1,320 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Circuito linear · A Tal da Física</title>
+<meta name="description" content="Resolução animada, passo a passo, de uma questão de circuito linear: superposição, combinação de experimentos e cálculo de 5(x + y).">
+<link rel="stylesheet" href="estilo.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Literata:ital,opsz,wght@0,7..72,400;0,7..72,600;1,7..72,400&family=JetBrains+Mono:wght@400;600&display=swap">
+<link rel="stylesheet" href="simulacao.css">
+<style>
+  .sp-stage { position: relative; width: 100%; aspect-ratio: 16/10; border-radius: 8px; overflow: hidden; background: var(--rd-sky); }
+  .sp-stage > svg, .sp-stage > canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; transition: opacity .45s; }
+  .sp-off { opacity: 0; pointer-events: none; }
+  .sp-dots { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 12px; }
+  .sp-dots button { width: 34px; height: 34px; padding: 0; font-family: var(--mono); font-size: .85rem; }
+  .sp-dots button[aria-current="step"] { background: var(--accent); border-color: var(--accent); color: #1a0d02; }
+  .sp-bar { height: 4px; background: var(--grid); border-radius: 2px; margin-top: 10px; overflow: hidden; }
+  .sp-bar i { display: block; height: 100%; width: 0; background: var(--accent); }
+  .sp-text h3 { font-size: 1.25rem; margin-bottom: 8px; }
+  .sp-text p, .sp-text .eqb { margin-top: 10px; }
+  .rv { opacity: 0; transform: translateY(6px); transition: opacity .5s, transform .5s; }
+  .rv.on { opacity: 1; transform: none; }
+  .eqb { font-family: var(--mono); font-size: .95rem; background: var(--paper); border-left: 3px solid var(--accent); border-radius: 4px; padding: 8px 12px; line-height: 1.7; overflow-x: auto; }
+  .eqb .k { color: var(--accent-ink); } .eqb .b { color: var(--blue); } .eqb .g { color: var(--ok); }
+  .ans { font-family: var(--display); font-size: 1.6rem; font-weight: 800; color: var(--ok); }
+  .sp-q { color: var(--ink-soft); font-size: .95rem; }
+  .sp-q ol { margin: 6px 0 0; padding-left: 0; list-style: none; display: flex; flex-wrap: wrap; gap: 6px 16px; font-family: var(--mono); }
+  .sp-q li.ok { color: var(--ok); font-weight: 600; }
+  /* circuito */
+  .w { stroke: var(--ink); stroke-width: 2.4; fill: none; stroke-linecap: round; }
+  .rs { fill: var(--rd-sky); stroke: var(--ink); stroke-width: 2.4; }
+  .nd { fill: var(--ink); } .tm { fill: var(--rd-sky); stroke: var(--ink); stroke-width: 2.2; }
+  .arc { fill: none; stroke-width: 2.4; }
+  .src { stroke: var(--accent); } .src-f { fill: var(--accent); }
+  .mea { stroke: var(--blue); } .mea-f { fill: var(--blue); }
+  .lbl { font-family: var(--body); font-style: italic; font-weight: 600; font-size: 30px; }
+  .val { font-family: var(--mono); font-size: 21px; font-weight: 600; }
+  .glow { animation: glow 1.6s ease-in-out infinite; }
+  @keyframes glow { 50% { filter: drop-shadow(0 0 6px currentColor); stroke-width: 3.6; } }
+  @media (prefers-reduced-motion: reduce) { .glow { animation: none; } .rv { transition: none; } }
+  .sp-sl { margin-top: 14px; display: grid; gap: 10px; }
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="wrap">
+    <a class="brand" href="index.html">
+      <svg width="28" height="28" viewBox="0 0 28 28" aria-hidden="true">
+        <path d="M3 24 Q14 -6 25 24" fill="none" stroke="var(--ink)" stroke-width="2" stroke-dasharray="3 3"/>
+        <circle cx="14" cy="9" r="3.5" fill="var(--accent)"/>
+      </svg>
+      A Tal da Física
+    </a>
+    <nav class="links" aria-label="Seções">
+      <a href="index.html#trilhas">Trilhas</a>
+      <a href="index.html#licao">Lição</a>
+      <a href="laboratorio.html" aria-current="page">Laboratório</a>
+      <a href="graficos.html">Gráficos</a>
+      <a href="quiz.html">Quiz</a>
+      <a href="enem.html">ENEM</a>
+      <a href="eletricidade.html">Eletricidade</a>
+      <a href="game/index.html">Game</a>
+      <a href="index.html#constantes">Constantes</a>
+    </nav>
+  </div>
+</header>
+
+<div class="rd">
+<div class="wrap rd-intro">
+  <a class="rd-back" href="laboratorio.html#eletricidade">← Voltar ao laboratório</a>
+  <p class="label">Questão resolvida · Eletricidade · Superposição</p>
+  <h1>O circuito que não precisa ser resolvido</h1>
+  <p class="rd-lede">Um circuito de fios e resistores (não necessariamente iguais) recebe as fontes c₁ e c₂, e medimos as tensões x e y. Com (c₁, c₂) = (5, 10) V mede-se (x, y) = (5, 3) V; com (3, 3) V mede-se (1, 2) V. Para (c₁, c₂) = (2, 1) V, quanto vale 5(x + y)? Aperte play e acompanhe a resolução.</p>
+</div>
+
+<main class="wrap rd-main">
+<div class="rd-grid">
+  <div class="rd-panel">
+    <div class="sp-stage">
+      <svg id="circ" viewBox="-24 -14 768 480" role="img" aria-label="Circuito com fontes c1 e c2 e tensões medidas x e y"></svg>
+      <canvas id="plane" class="sp-off" aria-label="Plano com os vetores dos experimentos"></canvas>
+    </div>
+    <div class="sp-bar"><i id="bar"></i></div>
+    <div class="rd-btns">
+      <button class="rd-primary" id="play">▶ Reproduzir</button>
+      <button id="prev">◀ Anterior</button>
+      <button id="next">Próximo ▶</button>
+    </div>
+    <div class="sp-dots" id="dots" role="group" aria-label="Ir para o passo"></div>
+  </div>
+
+  <div class="rd-panel sp-text" aria-live="polite">
+    <p class="rd-eyebrow" id="eyebrow"></p>
+    <div id="text"></div>
+  </div>
+</div>
+</main>
+</div>
+
+<script>
+(()=>{
+'use strict';
+const $=id=>document.getElementById(id);
+const nf=(v,d=2)=>{const s=(Math.abs(v)<1e-9?0:v).toFixed(d).replace(/\.?0+$/,'');return s.replace('.',',').replace('-','−')};
+const ease=t=>t<0?0:t>1?1:t<.5?2*t*t:1-Math.pow(-2*t+2,2)/2;
+const seg=(t,a,b)=>ease((t-a)/(b-a));
+const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+/* Matriz do circuito deduzida dos dois experimentos: (x,y) = M·(c1,c2) */
+const M=[[-1/3,2/3],[11/15,-1/15]];
+const meas=(c1,c2)=>[M[0][0]*c1+M[0][1]*c2, M[1][0]*c1+M[1][1]*c2];
+
+/* ---------- circuito em SVG ---------- */
+const NS='http://www.w3.org/2000/svg';
+const svg=$('circ');
+const T=160,B=310,XA=140,XB=290,XC=440,XD=590,XL=60,XR=660;
+let html='';
+const line=(x1,y1,x2,y2)=>html+=`<line class="w" x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}"/>`;
+const res=(x1,y1,x2,y2)=>{line(x1,y1,x2,y2);const a=Math.atan2(y2-y1,x2-x1)*180/Math.PI;
+  html+=`<rect class="rs" x="-17" y="-7" width="34" height="14" transform="translate(${(x1+x2)/2} ${(y1+y2)/2}) rotate(${a})"/>`};
+const node=(x,y)=>html+=`<circle class="nd" cx="${x}" cy="${y}" r="4.5"/>`;
+const term=(x,y)=>html+=`<circle class="tm" cx="${x}" cy="${y}" r="7"/>`;
+// trilho superior
+line(XL+7,T,XA,T);res(XA,T,XB,T);res(XB,T,XC,T);res(XC,T,XD,T);line(XD,T,XR-7,T);
+// trilho inferior
+line(XL+7,B,XA,B);res(XA,B,XB,B);line(XB,B,XR-7,B);
+// verticais
+res(XA,T,XA,B);res(XB,T,XB,B);res(XC,T,XC,B);res(XD,T,XD,B);
+// diagonais
+res(XA,B,XB,T);res(XB,T,XC,B);res(XC,B,XD,T);
+// terminais de x e y
+line(XA,B,XA,373);line(XB,B,XB,373);line(XC,T,XC,97);line(XD,T,XD,97);
+[[XA,T],[XB,T],[XC,T],[XD,T],[XA,B],[XB,B],[XC,B]].forEach(p=>node(...p));
+[[XL,T],[XL,B],[XR,T],[XR,B],[XA,380],[XB,380],[XC,90],[XD,90]].forEach(p=>term(...p));
+const arrow=(id,cls,d,hx,hy,ang,lx,ly,name,vx,vy,anchor)=>{
+  html+=`<g id="${id}" style="color:var(${cls==='src'?'--accent':'--blue'})">
+  <path class="arc ${cls}" d="${d}"/>
+  <polygon class="${cls}-f" points="0,0 -14,-6 -14,6" transform="translate(${hx} ${hy}) rotate(${ang})"/>
+  <text class="lbl ${cls}-f" x="${lx}" y="${ly}" text-anchor="middle">${name}</text>
+  <text class="val ${cls}-f" id="${id}v" x="${vx}" y="${vy}" text-anchor="${anchor}"></text></g>`};
+arrow('ac1','src',`M50 ${B-14} Q26 ${(T+B)/2} 48 ${T+18}`,49,T+16,-66,6,(T+B)/2+10,'c<tspan font-size="19" dy="6">1</tspan>',40,B+50,'middle');
+arrow('ac2','src',`M670 ${B-14} Q694 ${(T+B)/2} 672 ${T+18}`,671,T+16,-114,716,(T+B)/2+10,'c<tspan font-size="19" dy="6">2</tspan>',680,B+50,'middle');
+arrow('ax','mea',`M${XB-12} 392 Q${(XA+XB)/2} 432 ${XA+22} 398`,XA+20,397,-150,(XA+XB)/2,448,'x',XB+24,424,'start');
+arrow('ay','mea',`M${XD-12} 80 Q${(XC+XD)/2} 40 ${XC+22} 74`,XC+20,75,150,(XC+XD)/2,32,'y',XD+24,56,'start');
+svg.innerHTML=html;
+const setLabels=(c1,c2,x,y)=>{$('ac1v').textContent=c1;$('ac2v').textContent=c2;$('axv').textContent=x;$('ayv').textContent=y};
+const glow=(ids)=>['ac1','ac2','ax','ay'].forEach(i=>$(i).querySelector('.arc').classList.toggle('glow',ids.includes(i)&&!reduce));
+
+/* ---------- plano vetorial em canvas ---------- */
+const cv=$('plane'),ctx=cv.getContext('2d');
+let W=0,H=0;
+function fit(){const r=cv.getBoundingClientRect(),d=devicePixelRatio||1;W=r.width;H=r.height;cv.width=W*d;cv.height=H*d;ctx.setTransform(d,0,0,d,0,0)}
+new ResizeObserver(()=>{fit();render()}).observe(cv);
+const css=v=>getComputedStyle(document.documentElement).getPropertyValue(v).trim();
+const COL={ink:css('--ink'),soft:css('--ink-soft'),grid:'#3a434c',acc:css('--accent'),blue:css('--blue'),ok:css('--ok'),bad:css('--bad')};
+
+function axes(view,ax,ay){
+  // view: {x0,x1,y0,y1} em unidades; retorna mapeamento centrado com escala igual
+  const pad=30,sx=(W-2*pad)/(view.x1-view.x0),sy=(H-2*pad)/(view.y1-view.y0);
+  const ox=pad-view.x0*sx, oy=H-pad+view.y0*sy;
+  const P=(x,y)=>[ox+x*sx,oy-y*sy];
+  ctx.lineWidth=1;ctx.strokeStyle=COL.grid;
+  for(let i=Math.ceil(view.x0);i<=view.x1;i++){const [a,b]=P(i,view.y0),[,c]=P(i,view.y1);ctx.beginPath();ctx.moveTo(a,b);ctx.lineTo(a,c);ctx.stroke()}
+  for(let j=Math.ceil(view.y0);j<=view.y1;j++){const [a,b]=P(view.x0,j),[c]=P(view.x1,j);ctx.beginPath();ctx.moveTo(a,b);ctx.lineTo(c,b);ctx.stroke()}
+  ctx.strokeStyle=COL.soft;ctx.lineWidth=1.5;
+  let [a,b]=P(view.x0,0),[c]=P(view.x1,0);ctx.beginPath();ctx.moveTo(a,b);ctx.lineTo(c,b);ctx.stroke();
+  [a,b]=P(0,view.y0);let [,d]=P(0,view.y1);ctx.beginPath();ctx.moveTo(a,b);ctx.lineTo(a,d);ctx.stroke();
+  ctx.fillStyle=COL.soft;ctx.font='italic 600 16px Literata, Georgia, serif';
+  const [ex,ey]=P(view.x1,0);ctx.textAlign='right';ctx.fillText(ax,ex-2,ey-8);
+  const [fx,fy]=P(0,view.y1);ctx.textAlign='left';ctx.fillText(ay,fx+8,fy+14);
+  ctx.font='11px "JetBrains Mono", monospace';ctx.textAlign='center';
+  for(let i=Math.ceil(view.x0);i<=view.x1;i++){if(i&&i%2===0){const [p,q]=P(i,0);ctx.fillText(i,p,q+14)}}
+  ctx.textAlign='right';
+  for(let j=Math.ceil(view.y0);j<=view.y1;j++){if(j&&j%2===0){const [p,q]=P(0,j);ctx.fillText(j,p-5,q+4)}}
+  return P;
+}
+function vec(P,x0,y0,x1,y1,col,label,opts={}){
+  const [a,b]=P(x0,y0),[c,d]=P(x1,y1),L=Math.hypot(c-a,d-b);
+  if(L<1)return;
+  ctx.save();ctx.strokeStyle=col;ctx.fillStyle=col;ctx.lineWidth=opts.w||3;
+  if(opts.dash)ctx.setLineDash(opts.dash);ctx.globalAlpha=opts.alpha??1;
+  const ang=Math.atan2(d-b,c-a),h=Math.min(13,L*.45);
+  ctx.beginPath();ctx.moveTo(a,b);ctx.lineTo(c-Math.cos(ang)*h*.8,d-Math.sin(ang)*h*.8);ctx.stroke();ctx.setLineDash([]);
+  ctx.beginPath();ctx.moveTo(c,d);ctx.lineTo(c-h*Math.cos(ang-.38),d-h*Math.sin(ang-.38));ctx.lineTo(c-h*Math.cos(ang+.38),d-h*Math.sin(ang+.38));ctx.closePath();ctx.fill();
+  if(label){ctx.font='600 13px "JetBrains Mono", monospace';ctx.textAlign=opts.align||'left';
+    const [lx,ly]=opts.at?P(...opts.at):[c+8,d-6];
+    ctx.lineWidth=4;ctx.strokeStyle='#262c32';ctx.strokeText(label,lx,ly);ctx.fillText(label,lx,ly)}
+  ctx.restore();
+}
+function dot(P,x,y,col,label,align='left'){const [a,b]=P(x,y);ctx.fillStyle=col;ctx.beginPath();ctx.arc(a,b,5,0,7);ctx.fill();
+  if(label){ctx.font='600 13px "JetBrains Mono", monospace';ctx.textAlign=align;ctx.lineWidth=4;ctx.strokeStyle='#262c32';const dx=align==='left'?9:-9;ctx.strokeText(label,a+dx,b+18);ctx.fillText(label,a+dx,b+18)}}
+
+const SRC={x0:-3,x1:7,y0:-3,y1:11};
+const MEA={x0:-3.5,x1:6,y0:-1.5,y1:4};
+function srcPlane(t,showCoef){
+  const P=axes(SRC,'c₁','c₂');
+  const a=seg(t,0,.15),b=seg(t,.12,.27),c=seg(t,.25,.38),k=seg(t,.42,.66),m=seg(t,.7,.92);
+  vec(P,0,0,5*a,10*a,COL.acc,a>.9?'E₁ (5, 10)':'');
+  vec(P,0,0,3*b,3*b,COL.blue,b>.9?'E₂ (3, 3)':'',{at:[3.2,2.6]});
+  if(c>0)dot(P,2,1,COL.ok,c>.9&&m<.97?'alvo (2, 1)':'');
+  if(k>0){const s=1+(-1/5-1)*k;
+    vec(P,0,0,5*s,10*s,COL.acc,k>.97?'−⅕·E₁ = (−1, −2)':'',{at:k>.97?[-0.8,-2.5]:undefined,w:3.5});}
+  if(m>0)vec(P,-1,-2,-1+3*m,-2+3*m,COL.blue,m>.97?'+1·E₂':'',{at:[1.1,-1.3],w:3.5});
+  if(m>.97){const [px,py]=P(2,1);ctx.font='700 14px "JetBrains Mono", monospace';ctx.fillStyle=COL.ok;ctx.textAlign='left';ctx.lineWidth=4;ctx.strokeStyle='#262c32';ctx.strokeText('= (2, 1) ✓',px+10,py+5);ctx.fillText('= (2, 1) ✓',px+10,py+5)}
+}
+function meaPlane(t){
+  const P=axes(MEA,'x','y');
+  const a=seg(t,0,.15),b=seg(t,.12,.27);
+  vec(P,0,0,5*a,3*a,COL.acc,a>.9?'R₁ (5, 3)':'',{at:[4,3.25]});
+  vec(P,0,0,1*b,2*b,COL.blue,b>.9?'R₂ (1, 2)':'',{at:[1.15,2.35]});
+  const k=seg(t,.33,.58),m=seg(t,.62,.85);
+  if(k>0){const s=1+(-1/5-1)*k;vec(P,0,0,5*s,3*s,COL.acc,k>.97?'−⅕·R₁ = (−1; −0,6)':'',{at:[-3.3,-1.2],w:3.5})}
+  if(m>0)vec(P,-1,-.6,-1+m,-.6+2*m,COL.blue,m>.97?'+1·R₂':'',{at:[-0.75,0.6],align:'right',w:3.5});
+  if(m>.97){dot(P,0,1.4,COL.ok,'');const [px,py]=P(0,1.4);ctx.font='700 15px "JetBrains Mono", monospace';ctx.fillStyle=COL.ok;ctx.textAlign='right';
+    ctx.lineWidth=4;ctx.strokeStyle='#262c32';ctx.strokeText('(x, y) = (0; 1,4)',px-10,py-12);ctx.fillText('(x, y) = (0; 1,4)',px-10,py-12)}
+}
+
+/* ---------- passos ---------- */
+const steps=[
+ {eb:'Passo 1 · O que temos',dur:9,view:'circ',
+  html:`<h3>Dois experimentos e uma pergunta</h3>
+  <p class="rv" data-at=".05">Não sabemos o valor de nenhum resistor. Só sabemos o que <b>entra</b> (as fontes c₁ e c₂) e o que <b>sai</b> (as tensões x e y).</p>
+  <div class="eqb rv" data-at=".2"><span class="k">E₁:</span> (c₁, c₂) = (5, 10) → (x, y) = (5, 3)<br><span class="b">E₂:</span> (c₁, c₂) = (3, 3) → (x, y) = (1, 2)<br><span class="g">?? :</span> (c₁, c₂) = (2, 1) → (x, y) = ?</div>
+  <p class="rv" data-at=".75">Resolver a malha com Kirchhoff é impossível (faltam os valores). O segredo está no tipo de circuito.</p>`,
+  run(t){const L=t<.33?['5 V','10 V','5 V','3 V']:t<.66?['3 V','3 V','1 V','2 V']:['2 V','1 V','?','?'];setLabels(...L);glow(['ac1','ac2','ax','ay'])}},
+ {eb:'Passo 2 · A ideia-chave',dur:10,view:'circ',
+  html:`<h3>Circuito só com resistores é linear</h3>
+  <p class="rv" data-at=".05">Resistores ideais obedecem à lei de Ohm (U = R·i) e as leis de Kirchhoff são somas. Tudo é <b>linear</b>: multiplicar as fontes por k multiplica todas as tensões por k.</p>
+  <p class="rv" data-at=".3">Veja: dobrando E₁ inteiro, as medidas dobram junto. E pelo <b>princípio da superposição</b>, os efeitos de c₁ e c₂ simplesmente se somam:</p>
+  <div class="eqb rv" data-at=".5">x = a·c₁ + b·c₂<br>y = p·c₁ + q·c₂</div>
+  <p class="rv" data-at=".7">Consequência: se a nova fonte for uma <b>combinação</b> dos experimentos antigos, a nova medida é a <b>mesma combinação</b> das medidas antigas.</p>`,
+  run(t){const k=1+(reduce?0:.5-.5*Math.cos(t*Math.PI*4));setLabels(nf(5*k,1)+' V',nf(10*k,1)+' V',nf(5*k,1)+' V',nf(3*k,1)+' V');glow(['ac1','ac2','ax','ay'])}},
+ {eb:'Passo 3 · Montar o alvo',dur:11,view:'src',
+  html:`<h3>Escrever (2, 1) com E₁ e E₂</h3>
+  <p class="rv" data-at=".02">No plano das fontes, cada experimento é um vetor. Queremos α e β tais que:</p>
+  <div class="eqb rv" data-at=".3">α·<span class="k">(5, 10)</span> + β·<span class="b">(3, 3)</span> = <span class="g">(2, 1)</span></div>
+  <p class="rv" data-at=".42">Encolhemos E₁ por −⅕ (vira (−1, −2))…</p>
+  <p class="rv" data-at=".7">…e somamos E₂ inteiro: (−1, −2) + (3, 3) = (2, 1). Chegamos ao alvo!</p>`,
+  run(t){srcPlane(t)}},
+ {eb:'Passo 4 · Conferir na conta',dur:9,view:'src',
+  html:`<h3>Resolvendo α e β</h3>
+  <div class="eqb rv" data-at=".05">c₁: 5α + 3β = 2<br>c₂: 10α + 3β = 1</div>
+  <p class="rv" data-at=".3">Subtraindo a primeira da segunda, β some:</p>
+  <div class="eqb rv" data-at=".45">5α = −1 → <span class="k">α = −⅕</span><br>5·(−⅕) + 3β = 2 → 3β = 3 → <span class="b">β = 1</span></div>
+  <p class="rv" data-at=".75">Logo (2, 1) = −⅕·E₁ + 1·E₂. Agora é só aplicar a mesma receita nas medidas.</p>`,
+  run(t){srcPlane(1)}},
+ {eb:'Passo 5 · Mesma receita nas medidas',dur:11,view:'mea',
+  html:`<h3>A linearidade transporta α e β</h3>
+  <p class="rv" data-at=".02">No plano das medidas, os mesmos coeficientes valem:</p>
+  <div class="eqb rv" data-at=".3">(x, y) = −⅕·<span class="k">(5, 3)</span> + 1·<span class="b">(1, 2)</span></div>
+  <div class="eqb rv" data-at=".6">(x, y) = (−1; −0,6) + (1; 2) = <span class="g">(0; 1,4)</span></div>
+  <p class="rv" data-at=".85">Ou seja, x = 0 V e y = 1,4 V = 7/5 V.</p>`,
+  run(t){meaPlane(t)}},
+ {eb:'Passo 6 · Resposta',dur:8,view:'circ',
+  html:`<h3>Calculando 5(x + y)</h3>
+  <div class="eqb rv" data-at=".05">x + y = 0 + 7/5 = 7/5 V<br>5(x + y) = 5 · 7/5 = <span class="g">7 V</span></div>
+  <p class="ans rv" data-at=".35">Alternativa (A) 7</p>
+  <div class="sp-q rv" data-at=".35"><ol><li class="ok">(A) 7</li><li>(B) 10</li><li>(C) 1</li><li>(D) 5</li><li>(E) 2</li></ol></div>
+  <p class="rv" data-at=".55"><b>Atalho:</b> como só se pede x + y, trate s = x + y = a·c₁ + b·c₂ direto. E₁ dá 5a + 10b = 8 e E₂ dá 3a + 3b = 3, logo a = ⅖ e b = ⅗. Para (2, 1): s = ⅘ + ⅗ = 7/5, e 5s = 7.</p>`,
+  run(t){setLabels('2 V','1 V',t>.15?'0 V':'?',t>.15?'1,4 V':'?');glow(t>.15?['ax','ay']:['ac1','ac2'])}},
+ {eb:'Passo 7 · Experimente',dur:0,view:'circ',
+  html:`<h3>Mexa nas fontes</h3>
+  <p>Com os dois experimentos dá para descobrir a resposta do circuito a <b>qualquer</b> par de fontes:</p>
+  <div class="eqb">x = −⅓·c₁ + ⅔·c₂<br>y = 11/15·c₁ − 1/15·c₂</div>
+  <div class="sp-sl">
+    <div class="rd-row"><label for="s1">c₁ <output id="o1">2 V</output></label><input type="range" id="s1" min="-10" max="10" step="0.5" value="2"></div>
+    <div class="rd-row"><label for="s2">c₂ <output id="o2">1 V</output></label><input type="range" id="s2" min="-10" max="10" step="0.5" value="1"></div>
+  </div>
+  <div class="rd-readout" style="margin-top:12px"><span>x</span><span id="rx"></span><span>y</span><span id="ry"></span><span>5(x + y)</span><span id="rs"></span></div>
+  <p class="rd-hint" style="margin-top:10px">Teste (5, 10) e (3, 3): os valores do enunciado aparecem.</p>`,
+  run(){const c1=+$('s1').value,c2=+$('s2').value,[x,y]=meas(c1,c2);
+    $('o1').textContent=nf(c1,1)+' V';$('o2').textContent=nf(c2,1)+' V';
+    $('rx').textContent=nf(x,3)+' V';$('ry').textContent=nf(y,3)+' V';$('rs').textContent=nf(5*(x+y),3)+' V';
+    setLabels(nf(c1,1)+' V',nf(c2,1)+' V',nf(x,2)+' V',nf(y,2)+' V');glow([])}},
+];
+
+let cur=0,t0=0,playing=false,auto=false,prog=0;
+const dots=$('dots');
+steps.forEach((s,i)=>{const b=document.createElement('button');b.type='button';b.textContent=i+1;b.setAttribute('aria-label',s.eb);b.onclick=()=>{auto=false;go(i)};dots.appendChild(b)});
+
+function go(i){
+  cur=Math.max(0,Math.min(steps.length-1,i));const s=steps[cur];
+  $('eyebrow').textContent=s.eb;$('text').innerHTML=s.html;
+  [...dots.children].forEach((b,j)=>{if(j===cur)b.setAttribute('aria-current','step');else b.removeAttribute('aria-current')});
+  svg.classList.toggle('sp-off',s.view!=='circ');cv.classList.toggle('sp-off',s.view==='circ');
+  if(cur===steps.length-1){['s1','s2'].forEach(id=>$(id).addEventListener('input',()=>s.run()))}
+  t0=performance.now();prog=s.dur?0:1;playing=true;
+  if(reduce&&s.dur){prog=1}
+  $('prev').disabled=cur===0;$('next').disabled=cur===steps.length-1;
+  render();
+}
+function render(){
+  const s=steps[cur];
+  $('bar').style.width=(prog*100)+'%';
+  document.querySelectorAll('#text .rv').forEach(e=>e.classList.toggle('on',prog>=+e.dataset.at));
+  if(s.view!=='circ'){ctx.clearRect(0,0,W,H);}
+  s.run(prog);
+}
+function loop(now){
+  const s=steps[cur];
+  if(playing&&s.dur&&prog<1){prog=Math.min(1,(now-t0)/(s.dur*1000));render();
+    if(prog>=1&&auto){if(cur<steps.length-1)setTimeout(()=>{if(auto)go(cur+1)},900);if(cur>=steps.length-2)auto=false;updPlay()}}
+  else if(cur===1&&prog>=1&&!reduce){steps[1].run((now/10000)%1)}
+  requestAnimationFrame(loop);
+}
+function updPlay(){$('play').textContent=auto?'❚❚ Pausar':'▶ Reproduzir'}
+$('play').onclick=()=>{auto=!auto;
+  if(auto){if(cur===steps.length-1)go(0);else if(prog>=1)go(cur+1);else{t0=performance.now()-prog*steps[cur].dur*1000;playing=true}}
+  else playing=false;
+  updPlay()};
+$('prev').onclick=()=>{auto=false;updPlay();go(cur-1)};
+$('next').onclick=()=>{auto=false;updPlay();go(cur+1)};
+fit();go(0);requestAnimationFrame(loop);
+})();
+</script>
+</body>
+</html>
