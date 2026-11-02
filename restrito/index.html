@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<title>Área do aluno · A Tal da Física</title>
+<link rel="stylesheet" href="../estilo.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Literata:ital,opsz,wght@0,7..72,400;0,7..72,600;1,7..72,400&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+/* Área do aluno. A proteção é feita pelo Cloudflare Access (pasta /restrito);
+   esta página só é entregue depois que a pessoa entra com o e-mail autorizado. */
+.ar-intro { padding-block: 36px 8px; display: grid; gap: 10px; }
+.ar-intro h1 { font-size: clamp(1.9rem, 4vw, 2.7rem); font-weight: 800; letter-spacing: -0.01em; }
+.ar-intro > p:not(.label) { color: var(--ink-soft); max-width: 70ch; }
+.ar-bar { display: flex; flex-wrap: wrap; gap: 10px 16px; align-items: center; justify-content: space-between; background: var(--card);
+  border: 1px solid var(--grid); border-radius: 10px; padding: 12px 16px; }
+.ar-user { font-family: var(--mono); font-size: .88rem; color: var(--ink-soft); }
+.ar-user b { color: var(--ink); font-weight: 600; }
+.ar-main { display: grid; gap: 22px; padding-block: 20px 8px; }
+.ar-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+@media (max-width: 900px) { .ar-grid { grid-template-columns: minmax(0, 1fr); } }
+.ar-card { background: var(--card); border: 1px solid var(--grid); border-radius: 10px; padding: 20px; display: grid; gap: 10px; align-content: start;
+  box-shadow: 0 1px 0 var(--grid), 0 14px 32px -18px rgba(0, 0, 0, 0.55); }
+.ar-card h2 { font-size: 1.25rem; font-weight: 800; }
+.ar-card p { color: var(--ink-soft); }
+.ar-card ul { margin: 0; padding-left: 18px; display: grid; gap: 6px; }
+.ar-card a { color: var(--accent-ink); }
+.ar-empty { font-family: var(--mono); font-size: .82rem; color: var(--ink-soft); border: 1px dashed var(--grid); border-radius: 8px; padding: 10px 12px; }
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="wrap">
+    <a class="brand" href="../index.html">
+      <svg width="28" height="28" viewBox="0 0 28 28" aria-hidden="true">
+        <path d="M3 24 Q14 -6 25 24" fill="none" stroke="var(--ink)" stroke-width="2" stroke-dasharray="3 3"/>
+        <circle cx="14" cy="9" r="3.5" fill="var(--accent)"/>
+      </svg>
+      A Tal da Física
+    </a>
+    <nav class="links" aria-label="Seções">
+      <a href="../index.html#trilhas">Trilhas</a>
+      <a href="../index.html#licao">Lição</a>
+      <a href="../laboratorio.html">Laboratório</a>
+      <a href="../graficos.html">Gráficos</a>
+      <a href="../formulas.html">Fórmulas</a>
+      <a href="../quiz.html">Quiz</a>
+      <a href="../enem.html">ENEM</a>
+      <a href="../fuvest.html">FUVEST</a>
+      <a href="../eletricidade.html">Eletricidade</a>
+      <a href="../game/index.html">Game</a>
+      <a href="../index.html#constantes">Constantes</a>
+    </nav>
+  </div>
+</header>
+
+<div class="wrap ar-intro">
+  <p class="label">Acesso restrito</p>
+  <h1>Área do aluno</h1>
+  <p>Conteúdo exclusivo para alunos cadastrados. Se você está vendo esta página, seu acesso foi liberado.</p>
+</div>
+
+<main class="wrap ar-main">
+  <div class="ar-bar">
+    <span class="ar-user" id="who">Conectado</span>
+    <a class="btn ghost" href="/cdn-cgi/access/logout">Sair</a>
+  </div>
+
+  <!-- Para publicar material: coloque os arquivos dentro da pasta restrito/ (por exemplo restrito/lista-1.pdf)
+       e troque o aviso "Em breve" de um cartão por uma lista de links: <ul><li><a href="lista-1.pdf">Lista 1</a></li></ul> -->
+  <div class="ar-grid">
+    <section class="ar-card">
+      <h2>Materiais</h2>
+      <p>Apostilas, resumos e slides das aulas.</p>
+      <p class="ar-empty">Em breve.</p>
+    </section>
+    <section class="ar-card">
+      <h2>Listas de exercícios</h2>
+      <p>Listas com gabarito e resoluções comentadas.</p>
+      <p class="ar-empty">Em breve.</p>
+    </section>
+    <section class="ar-card">
+      <h2>Avisos</h2>
+      <p>Datas de provas, simulados e recados da turma.</p>
+      <p class="ar-empty">Nenhum aviso no momento.</p>
+    </section>
+  </div>
+</main>
+
+<footer>
+  <div class="wrap">
+    <span>A Tal da Física · área do aluno</span>
+    <span class="mono">λ<sub>Na</sub> = 589 nm, a cor do nosso destaque</span>
+  </div>
+</footer>
+
+<script>
+// O Cloudflare Access informa quem entrou; se não estiver disponível (teste local), a página segue sem o e-mail.
+fetch('/cdn-cgi/access/get-identity', { credentials: 'same-origin' })
+  .then(r => r.ok ? r.json() : null)
+  .then(d => { if (d && d.email) { const w = document.getElementById('who'); w.textContent = 'Conectado como '; const b = document.createElement('b'); b.textContent = d.email; w.appendChild(b); } })
+  .catch(() => {});
+</script>
+</body>
+</html>

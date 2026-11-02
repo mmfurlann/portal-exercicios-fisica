@@ -1,0 +1,427 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Motor Stirling tipo gama · A Tal da Física</title>
+<link rel="stylesheet" href="../estilo.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Literata:ital,opsz,wght@0,7..72,400;0,7..72,600;1,7..72,400&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+/* Simulação trazida do artefato "Motor Stirling tipo gama"; as cores e fontes do site estão em motores.css */
+.mt-wrap { max-width: 1120px; margin: 0 auto; display: grid; gap: 18px; }
+.mt-head { display: flex; flex-wrap: wrap; align-items: end; justify-content: space-between; gap: 12px 24px; }
+.mt-head h1 { font-family: var(--font-display); font-weight: 800; font-size: clamp(28px, 5vw, 44px); line-height: 1.05; margin: 0; letter-spacing: -0.01em; text-wrap: balance; }
+.mt-lede { margin: 6px 0 0; color: var(--muted); max-width: 64ch; }
+.eta { font-family: var(--font-mono); text-align: right; }
+.eta .mt-lbl { font-family: var(--font-body); font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+.eta .mt-val { font-size: 34px; font-weight: 500; color: var(--work); font-variant-numeric: tabular-nums; }
+.eta .frm { font-size: 13px; color: var(--muted); }
+
+.stage-grid { display: grid; grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.4fr); gap: 18px; }
+.panel { background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 14px; min-width: 0; }
+.panel h2 { font-family: var(--font-display); font-weight: 600; font-size: 15px; margin: 0 0 8px; letter-spacing: 0.01em; display: flex; justify-content: space-between; gap: 8px; }
+.panel h2 span { font-family: var(--font-mono); font-weight: 400; font-size: 13px; color: var(--muted); }
+canvas { display: block; width: 100%; height: auto; max-width: 100%; }
+#engine { aspect-ratio: 480 / 620; }
+#pv { aspect-ratio: 16 / 11; }
+
+.mt-readout { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; margin-top: 10px; }
+.mt-readout div { background: var(--bg); border-radius: 8px; padding: 6px 10px; min-width: 0; }
+.mt-readout b { display: block; font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); font-weight: 500; }
+.mt-readout output { font-family: var(--font-mono); font-size: 16px; font-variant-numeric: tabular-nums; white-space: nowrap; }
+
+.mt-steps { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; }
+.step {
+  text-align: left; font: inherit; color: inherit; background: var(--panel); border: 1px solid var(--line); border-radius: 12px;
+  padding: 10px 12px; cursor: pointer; display: grid; gap: 2px; align-content: start; min-width: 0; transition: border-color .2s, box-shadow .2s;
+}
+.step:hover { border-color: var(--muted); }
+.step:focus-visible, button:focus-visible, input:focus-visible { outline: 2px solid var(--work); outline-offset: 2px; }
+.step .tag { font-family: var(--font-mono); font-size: 12px; color: var(--muted); }
+.step .name { font-weight: 600; }
+.step .desc { font-size: 13px; color: var(--muted); }
+.step.on { border-color: currentColor; box-shadow: 0 0 0 1px currentColor inset; }
+.step[data-k="0"].on { color: var(--cold); } .step[data-k="1"].on, .step[data-k="3"].on { color: var(--regen); } .step[data-k="2"].on { color: var(--hot); }
+.step.on .desc { color: var(--ink); }
+
+.mt-controls { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 22px; }
+.btns { display: flex; gap: 8px; }
+button.ctl {
+  font: 600 14px var(--font-body); color: var(--ink); background: var(--bg); border: 1px solid var(--line); border-radius: 999px;
+  padding: 8px 16px; cursor: pointer;
+}
+button.ctl.primary { background: var(--ink); color: var(--panel); border-color: var(--ink); min-width: 104px; }
+.slider { display: grid; gap: 2px; min-width: 170px; flex: 1 1 170px; }
+.slider label { font-size: 13px; color: var(--muted); display: flex; justify-content: space-between; gap: 8px; }
+.slider label output { font-family: var(--font-mono); color: var(--ink); }
+input[type=range] { width: 100%; }
+#tq { accent-color: var(--hot); } #tf { accent-color: var(--cold); } #spd { accent-color: var(--work); }
+.toggle { display: flex; align-items: center; gap: 8px; font-size: 14px; cursor: pointer; }
+.toggle input { width: 18px; height: 18px; accent-color: var(--regen); }
+
+.balance { display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr); gap: 18px; }
+.tbl-wrap { overflow-x: auto; }
+.mt table { border-collapse: collapse; width: 100%; font-size: 14px; }
+th, td { padding: 7px 8px; text-align: right; border-bottom: 1px solid var(--grid); white-space: nowrap; }
+th:first-child, td:first-child { text-align: left; }
+th { font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); font-weight: 500; }
+td { font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
+td:first-child { font-family: var(--font-body); }
+tr.on td { background: var(--bg); }
+tfoot td { font-weight: 500; border-bottom: 0; }
+.pos { color: var(--hot); } .neg { color: var(--cold); }
+.notes { font-size: 14px; color: var(--muted); display: grid; gap: 8px; align-content: start; }
+.notes p { margin: 0; }
+.notes strong { color: var(--ink); }
+.foot { font-size: 12px; color: var(--muted); }
+
+@media (max-width: 820px) {
+  .stage-grid, .balance { grid-template-columns: minmax(0, 1fr); }
+  .mt-steps { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .mt-readout { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+</style>
+<link rel="stylesheet" href="motores.css">
+</head>
+<body>
+<header class="top">
+  <div class="wrap">
+    <a class="brand" href="../index.html">
+      <svg width="28" height="28" viewBox="0 0 28 28" aria-hidden="true">
+        <path d="M3 24 Q14 -6 25 24" fill="none" stroke="var(--ink)" stroke-width="2" stroke-dasharray="3 3"/>
+        <circle cx="14" cy="9" r="3.5" fill="var(--accent)"/>
+      </svg>
+      A Tal da Física
+    </a>
+    <nav class="links" aria-label="Seções">
+      <a href="../index.html#trilhas">Trilhas</a>
+      <a href="../index.html#licao">Lição</a>
+      <a href="../laboratorio.html" aria-current="page">Laboratório</a>
+      <a href="../graficos.html">Gráficos</a>
+      <a href="../formulas.html">Fórmulas</a>
+      <a href="../quiz.html">Quiz</a>
+      <a href="../enem.html">ENEM</a>
+      <a href="../fuvest.html">FUVEST</a>
+      <a href="../eletricidade.html">Eletricidade</a>
+      <a href="../game/index.html">Game</a>
+      <a href="../index.html#constantes">Constantes</a>
+    </nav>
+  </div>
+</header>
+
+<div class="wrap mt-intro">
+  <a class="mt-back" href="../laboratorio.html#termo">← Voltar ao laboratório</a>
+  <p class="label">Laboratório · Termodinâmica · Máquinas térmicas</p>
+  <nav class="mt-chips" aria-label="Ciclos de motores"><a href="carnot.html">Carnot</a><a href="otto.html">Otto (4 tempos)</a><a href="stirling.html">Stirling beta</a><a href="stirling-gama.html" aria-current="page">Stirling gama</a></nav>
+</div>
+<div class="wrap mt-wrap mt">
+  <div class="mt-head">
+    <div>
+      <h1>Motor Stirling tipo gama</h1>
+      <p class="mt-lede">O deslocador fica numa câmara larga entre uma fonte quente (embaixo) e uma placa fria (em cima). O pistão de potência fica num cilindro separado, ligado à câmara. É o arranjo dos motores de demonstração que giram com o calor de uma xícara de café. No diagrama P×V, a área roxa é o trabalho de cada ciclo.</p>
+    </div>
+    <div class="eta" aria-live="polite">
+      <div class="mt-lbl">Rendimento</div>
+      <div class="mt-val" id="etaVal">50,0%</div>
+      <div class="frm" id="etaFrm">com regenerador ideal: η = 1 − T<sub>F</sub>/T<sub>Q</sub></div>
+    </div>
+  </div>
+
+  <div class="stage-grid">
+    <section class="panel" aria-label="Animação do motor">
+      <h2>Motor Stirling tipo gama <span id="stageShort">1 → 2</span></h2>
+      <canvas id="engine" width="480" height="620" role="img" aria-label="Câmara do deslocador entre fonte quente e placa fria, com cilindro de potência separado em cima"></canvas>
+      <div class="mt-readout">
+        <div><b>Pressão</b><output id="oP">—</output></div>
+        <div><b>Volume</b><output id="oV">—</output></div>
+        <div><b>Temperatura</b><output id="oT">—</output></div>
+        <div><b>% quente</b><output id="oH">—</output></div>
+      </div>
+    </section>
+    <section class="panel" aria-label="Diagrama pressão por volume">
+      <h2>Diagrama P × V <span>P em kPa · V em L</span></h2>
+      <canvas id="pv" width="880" height="605" role="img" aria-label="Diagrama P por V do ciclo Stirling com o estado atual em destaque"></canvas>
+    </section>
+  </div>
+
+  <div class="mt-steps" role="group" aria-label="Etapas do ciclo">
+    <button class="step" data-k="0" type="button"><span class="tag">1 → 2</span><span class="name">Compressão isotérmica</span><span class="desc">Gás no lado frio, a T<sub>F</sub>. O pistão de potência desce e comprime; o gás cede Q<sub>F</sub> à placa fria.</span></button>
+    <button class="step" data-k="1" type="button"><span class="tag">2 → 3</span><span class="name">Aquecimento isocórico</span><span class="desc">Pistão parado. O deslocador sobe e o gás passa para o lado quente, embaixo; o regenerador devolve o calor guardado.</span></button>
+    <button class="step" data-k="2" type="button"><span class="tag">3 → 4</span><span class="name">Expansão isotérmica</span><span class="desc">Gás no lado quente, a T<sub>Q</sub>. Recebe Q<sub>Q</sub> da fonte e empurra o pistão de potência para cima: é aqui que sai o trabalho.</span></button>
+    <button class="step" data-k="3" type="button"><span class="tag">4 → 1</span><span class="name">Resfriamento isocórico</span><span class="desc">Pistão parado. O deslocador desce e o gás volta ao lado frio, em cima; o regenerador guarda o calor do gás.</span></button>
+  </div>
+
+  <section class="panel mt-controls" aria-label="Controles">
+    <div class="btns">
+      <button class="ctl primary" id="play" type="button">Pausar</button>
+      <button class="ctl" id="prev" type="button" aria-label="Etapa anterior">◀ Etapa</button>
+      <button class="ctl" id="next" type="button" aria-label="Próxima etapa">Etapa ▶</button>
+    </div>
+    <div class="slider"><label for="tq"><span>Fonte quente T<sub>Q</sub></span> <output id="tqO">600 K</output></label><input id="tq" type="range" min="400" max="900" step="10" value="600"></div>
+    <div class="slider"><label for="tf"><span>Fonte fria T<sub>F</sub></span> <output id="tfO">300 K</output></label><input id="tf" type="range" min="250" max="390" step="10" value="300"></div>
+    <div class="slider"><label for="spd"><span>Velocidade</span> <output id="spdO">1×</output></label><input id="spd" type="range" min="0.25" max="3" step="0.25" value="1"></div>
+    <label class="toggle" for="reg"><input id="reg" type="checkbox" checked> Regenerador ideal</label>
+  </section>
+
+  <section class="panel balance" aria-label="Balanço de energia">
+    <div class="tbl-wrap">
+      <h2>Balanço de energia por etapa <span>em joules</span></h2>
+      <table>
+        <thead><tr><th>Etapa</th><th>Q (calor)</th><th>De onde vem o calor</th><th>W (trabalho do gás)</th><th>ΔU</th></tr></thead>
+        <tbody id="tb"></tbody>
+        <tfoot><tr><td>Ciclo completo</td><td id="tQ"></td><td></td><td id="tW"></td><td>0</td></tr></tfoot>
+      </table>
+    </div>
+    <div class="notes">
+      <h2>Para a lousa</h2>
+      <p><strong>Ciclo ideal:</strong> duas isotermas (a T<sub>Q</sub> e a T<sub>F</sub>) e duas isocóricas. Só as isotermas trocam trabalho.</p>
+      <p><strong>Regenerador:</strong> guarda o calor do gás no resfriamento (4 → 1) e devolve no aquecimento (2 → 3). Com ele ideal, a fonte quente só paga Q<sub>Q</sub> e o rendimento é o de Carnot: η = 1 − T<sub>F</sub>/T<sub>Q</sub>.</p>
+      <p><strong>Sem regenerador:</strong> a fonte quente também precisa aquecer o gás em 2 → 3, e o rendimento cai bastante. Desmarque a caixa para comparar.</p>
+      <p class="foot">Modelo: 1 mol de hélio como gás ideal monoatômico (γ = 5/3), V entre 10 L e 22 L. Valores de um ciclo ideal; motores reais rendem menos.</p>
+    </div>
+  </section>
+</div>
+
+<script>
+(() => {
+  const R = 8.314, n = 1, Cv = 1.5 * R;
+  const Vmin = 10, Vmax = 22;
+  let Tq = 600, Tf = 300, speed = 1, regen = true;
+  const STAGE_SEC = 3.0;
+  let ph = 0.05;
+  let playing = !matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const $ = (id) => document.getElementById(id);
+  const fmt = (x, d = 0) => x.toLocaleString('pt-BR', { minimumFractionDigits: d, maximumFractionDigits: d });
+  const ease = (s) => 0.5 - 0.5 * Math.cos(Math.PI * s);
+
+  function state(p) {
+    const k = Math.min(3, Math.floor(p)), s = p - k; let V, T, hot;
+    if (k === 0) { V = Vmax + (Vmin - Vmax) * ease(s); T = Tf; hot = 0; }
+    else if (k === 1) { V = Vmin; T = Tf + (Tq - Tf) * ease(s); hot = ease(s); }
+    else if (k === 2) { V = Vmin + (Vmax - Vmin) * ease(s); T = Tq; hot = 1; }
+    else { V = Vmax; T = Tq + (Tf - Tq) * ease(s); hot = 1 - ease(s); }
+    return { k, s, V, T, hot, P: n * R * T / V };
+  }
+  function procs() {
+    const Qq = n * R * Tq * Math.log(Vmax / Vmin), Qf = -n * R * Tf * Math.log(Vmax / Vmin), Qv = n * Cv * (Tq - Tf);
+    return [
+      { name: '1 → 2 compressão isotérmica', Q: Qf, src: 'cede à placa fria', W: Qf, dU: 0 },
+      { name: '2 → 3 aquecimento isocórico', Q: Qv, src: regen ? 'regenerador' : 'fonte quente', W: 0, dU: Qv },
+      { name: '3 → 4 expansão isotérmica', Q: Qq, src: 'fonte quente', W: Qq, dU: 0 },
+      { name: '4 → 1 resfriamento isocórico', Q: -Qv, src: regen ? 'regenerador' : 'cede à placa fria', W: 0, dU: -Qv }];
+  }
+  const sg = (x) => (Math.abs(x) < 0.5 ? '0' : (x > 0 ? '+' : '−') + fmt(Math.abs(x)));
+  const cls = (x) => (Math.abs(x) < 0.5 ? '' : x > 0 ? 'pos' : 'neg');
+  function eta() { const r = procs(); const W = r[0].W + r[2].W; return W / (r[2].Q + (regen ? 0 : r[1].Q)); }
+  function recompute() {
+    $('tqO').textContent = Tq + ' K'; $('tfO').textContent = Tf + ' K';
+    $('etaVal').textContent = fmt(100 * eta(), 1) + '%';
+    $('etaFrm').innerHTML = regen ? 'com regenerador ideal: η = 1 − T<sub>F</sub>/T<sub>Q</sub>' : 'sem regenerador: η = W / (Q<sub>Q</sub> + Q<sub>aquecimento</sub>)';
+    const rows = procs();
+    $('tb').innerHTML = rows.map((r, i) => `<tr data-k="${i}"><td>${r.name}</td><td class="${cls(r.Q)}">${sg(r.Q)}</td><td>${r.src}</td><td>${sg(r.W)}</td><td>${sg(r.dU)}</td></tr>`).join('');
+    const W = rows.reduce((a, r) => a + r.W, 0);
+    $('tQ').textContent = sg(rows.reduce((a, r) => a + r.Q, 0)); $('tW').textContent = sg(W) + '  (η = ' + fmt(100 * eta(), 1) + '%)';
+    computeScale(); lastK = -1;
+  }
+
+  // ---------- colors ----------
+  let C = {};
+  function readColors() {
+    const cs = getComputedStyle(document.documentElement);
+    ['bg', 'panel', 'ink', 'muted', 'line', 'grid', 'hot', 'hot-soft', 'cold', 'cold-soft', 'regen', 'work', 'work-soft', 'metal', 'metal-dark', 'piston']
+      .forEach(t => C[t] = cs.getPropertyValue('--' + t).trim());
+  }
+  readColors();
+  matchMedia('(prefers-color-scheme: dark)').addEventListener('change', readColors);
+  new MutationObserver(readColors).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+  function hexToRgb(h) { h = h.replace('#', ''); if (h.length === 3) h = h.split('').map(c => c + c).join(''); const v = parseInt(h, 16); return [v >> 16 & 255, v >> 8 & 255, v & 255]; }
+  function mix(a, b, t) { t = Math.max(0, Math.min(1, t)); const A = hexToRgb(a), B = hexToRgb(b); return `rgb(${A.map((x, i) => Math.round(x + (B[i] - x) * t)).join(',')})`; }
+
+  // ---------- P-V ----------
+  const pv = $('pv'), px = pv.getContext('2d');
+  let sc = {};
+  function niceStep(range, target) { const raw = range / target, p = Math.pow(10, Math.floor(Math.log10(raw))), m = raw / p; return (m < 1.5 ? 1 : m < 3 ? 2 : m < 7 ? 5 : 10) * p; }
+  function computeScale() { const Pmax = n * R * Tq / Vmin, pStep = niceStep(Pmax, 5); sc = { vMax: 25, vStep: 5, pMax: Math.ceil(Pmax * 1.08 / pStep) * pStep, pStep }; }
+  const M = { l: 92, r: 24, t: 20, b: 52 };
+  const X = (V) => M.l + (V / sc.vMax) * (pv.width - M.l - M.r);
+  const Y = (P) => pv.height - M.b - (P / sc.pMax) * (pv.height - M.t - M.b);
+  function pathPh(a, b) { const N = 160; px.beginPath(); for (let j = 0; j <= N; j++) { const s = state(Math.min(3.9999, a + (b - a) * j / N)); j ? px.lineTo(X(s.V), Y(s.P)) : px.moveTo(X(s.V), Y(s.P)); } }
+  function drawPV(cur) {
+    const w = pv.width, h = pv.height; px.clearRect(0, 0, w, h);
+    px.font = '22px "JetBrains Mono", ui-monospace, monospace';
+    px.lineWidth = 1; px.strokeStyle = C.grid; px.fillStyle = C.muted; px.textAlign = 'center'; px.textBaseline = 'top';
+    for (let v = 0; v <= sc.vMax + 1e-9; v += sc.vStep) { px.beginPath(); px.moveTo(X(v), Y(0)); px.lineTo(X(v), Y(sc.pMax)); px.stroke(); px.fillText(fmt(v), X(v), Y(0) + 8); }
+    px.textAlign = 'right'; px.textBaseline = 'middle';
+    for (let p = 0; p <= sc.pMax + 1e-9; p += sc.pStep) { px.beginPath(); px.moveTo(X(0), Y(p)); px.lineTo(X(sc.vMax), Y(p)); px.stroke(); if (p > 0) px.fillText(fmt(p), X(0) - 10, Y(p)); }
+    px.strokeStyle = C.muted; px.lineWidth = 1.5; px.beginPath(); px.moveTo(X(0), Y(sc.pMax)); px.lineTo(X(0), Y(0)); px.lineTo(X(sc.vMax), Y(0)); px.stroke();
+    // legend
+    [[C.hot, 'Isoterma quente · ' + Tq + ' K', 0], [C.cold, 'Isoterma fria · ' + Tf + ' K', 1], [C.regen, 'Isocóricas (regenerador)', 2]].forEach(([col, label, i]) => {
+      const ly = M.t + 14 + i * 32, lx = pv.width - M.r - 12; px.font = '600 21px "Bricolage Grotesque", system-ui, sans-serif'; px.textAlign = 'right'; px.textBaseline = 'middle';
+      const tw = px.measureText(label).width; px.fillStyle = C.panel; px.globalAlpha = 0.85; px.fillRect(lx - tw - 54, ly - 15, tw + 62, 30); px.globalAlpha = 1;
+      px.strokeStyle = col; px.lineWidth = 3; px.beginPath(); px.moveTo(lx - tw - 46, ly); px.lineTo(lx - tw - 12, ly); px.stroke(); px.fillStyle = col; px.fillText(label, lx, ly);
+    });
+    // work area
+    pathPh(0, 3.9999); px.closePath(); px.fillStyle = C['work-soft']; px.fill();
+    const col = [C.cold, C.regen, C.hot, C.regen];
+    for (let k = 0; k < 4; k++) { pathPh(k, k + 0.9999); px.strokeStyle = col[k]; px.lineWidth = k === cur.k ? 5 : 2.5; px.globalAlpha = k === cur.k ? 1 : 0.55; px.stroke(); px.globalAlpha = 1; }
+    const c4 = [0, 1, 2, 3].map(state); px.fillStyle = C.work; px.font = '600 26px "Bricolage Grotesque", system-ui, sans-serif'; px.textAlign = 'center'; px.textBaseline = 'middle';
+    px.fillText('W', c4.reduce((a, s) => a + X(s.V), 0) / 4, c4.reduce((a, s) => a + Y(s.P), 0) / 4);
+    px.font = '600 22px "Bricolage Grotesque", system-ui, sans-serif';
+    [[0, '1', 16, 14], [1, '2', -18, 12], [2, '3', -18, -10], [3, '4', 18, -12]].forEach(([p, l, dx, dy]) => { const s = state(p); px.fillStyle = C.ink; px.beginPath(); px.arc(X(s.V), Y(s.P), 5, 0, 7); px.fill(); px.fillText(l, X(s.V) + dx, Y(s.P) + dy); });
+    px.beginPath(); px.arc(X(cur.V), Y(cur.P), 11, 0, 7); px.fillStyle = col[cur.k]; px.globalAlpha = 0.25; px.fill(); px.globalAlpha = 1;
+    px.beginPath(); px.arc(X(cur.V), Y(cur.P), 6.5, 0, 7); px.fillStyle = col[cur.k]; px.fill(); px.strokeStyle = C.panel; px.lineWidth = 2; px.stroke();
+    px.fillStyle = C.muted; px.font = '500 22px "Bricolage Grotesque", system-ui, sans-serif'; px.textAlign = 'center'; px.textBaseline = 'alphabetic';
+    px.fillText('V (L)', (X(0) + X(sc.vMax)) / 2, h - 6);
+    px.save(); px.translate(22, (Y(0) + Y(sc.pMax)) / 2); px.rotate(-Math.PI / 2); px.fillText('P (kPa)', 0, 0); px.restore();
+  }
+
+  // ---------- engine ----------
+  const en = $('engine'), ex = en.getContext('2d');
+  const E = { xL: 40, xR: 440, coldY: 300, hotY: 446, Ld: 46, pcL: 292, pcR: 372, pcTop: 64, pistonH: 30, pHigh: 84, pLow: 196 };
+  const parts = Array.from({ length: 64 }, (_, i) => ({ x: Math.random(), y: Math.random(), a: Math.random() * Math.PI * 2, r: i / 64, pc: (i * 7) % 10 < 3 }));
+  let flowT = 0;
+  function roundRect(c, x, y, w, h, r) { c.beginPath(); c.moveTo(x + r, y); c.arcTo(x + w, y, x + w, y + h, r); c.arcTo(x + w, y + h, x, y + h, r); c.arcTo(x, y + h, x, y, r); c.arcTo(x, y, x + w, y, r); c.closePath(); }
+  function arrow(c, x1, y1, x2, y2, col, lw) {
+    const a = Math.atan2(y2 - y1, x2 - x1), hl = 12; c.strokeStyle = col; c.fillStyle = col; c.lineWidth = lw; c.lineCap = 'round';
+    c.beginPath(); c.moveTo(x1, y1); c.lineTo(x2 - Math.cos(a) * hl * 0.6, y2 - Math.sin(a) * hl * 0.6); c.stroke();
+    c.beginPath(); c.moveTo(x2, y2); c.lineTo(x2 - hl * Math.cos(a - 0.45), y2 - hl * Math.sin(a - 0.45)); c.lineTo(x2 - hl * Math.cos(a + 0.45), y2 - hl * Math.sin(a + 0.45)); c.closePath(); c.fill();
+  }
+  function drawEngine(st, dt) {
+    const w = en.width, h = en.height; ex.clearRect(0, 0, w, h);
+    const { xL, xR, coldY, hotY, Ld, pcL, pcR, pcTop } = E, bw = xR - xL, pcx = (pcL + pcR) / 2;
+    // power piston: low = Vmin (compressed), high = Vmax
+    const pistonTop = E.pLow + (E.pHigh - E.pLow) * (st.V - Vmin) / (Vmax - Vmin), pistonBot = pistonTop + E.pistonH;
+    // displacer: dpos 0 = resting on the hot plate (gas on the cold side), 1 = against the cold plate (gas on the hot side)
+    const dpos = st.k === 0 ? 0 : st.k === 1 ? ease(st.s) : st.k === 2 ? 1 : 1 - ease(st.s);
+    const dTop = hotY - 6 - Ld - (hotY - 6 - Ld - (coldY + 6)) * dpos, dBot = dTop + Ld;
+    if (playing) flowT += dt;
+    // flames under the hot plate
+    for (let i = 0; i < 7; i++) {
+      const fx = xL + 40 + i * (bw - 80) / 6, fl = 22 + 8 * Math.sin(flowT * 9 + i * 1.7);
+      ex.globalAlpha = 0.85; ex.fillStyle = C.hot; ex.beginPath(); ex.moveTo(fx - 12, hotY + 52); ex.quadraticCurveTo(fx - 4, hotY + 52 - fl, fx, hotY + 46 - fl); ex.quadraticCurveTo(fx + 4, hotY + 52 - fl, fx + 12, hotY + 52); ex.closePath(); ex.fill();
+      ex.fillStyle = C.regen; ex.beginPath(); ex.moveTo(fx - 6, hotY + 52); ex.quadraticCurveTo(fx, hotY + 56 - fl * 0.6, fx, hotY + 52 - fl * 0.6); ex.quadraticCurveTo(fx, hotY + 56 - fl * 0.6, fx + 6, hotY + 52); ex.closePath(); ex.fill(); ex.globalAlpha = 1;
+    }
+    ex.fillStyle = C.hot; roundRect(ex, xL - 10, hotY, bw + 20, 18, 5); ex.fill();
+    ex.font = '600 19px "Bricolage Grotesque", system-ui, sans-serif'; ex.textAlign = 'left'; ex.textBaseline = 'middle';
+    ex.fillStyle = C.hot; ex.fillText('Fonte quente · ' + Tq + ' K', xL, hotY + 72);
+    // cold plate with fins
+    ex.fillStyle = C.cold; roundRect(ex, xL - 10, coldY - 18, bw + 20, 18, 5); ex.fill();
+    ex.strokeStyle = C.cold; ex.lineWidth = 6; ex.lineCap = 'butt';
+    for (let x = xL + 6; x < pcL - 20; x += 22) { ex.beginPath(); ex.moveTo(x, coldY - 18); ex.lineTo(x, coldY - 52); ex.stroke(); }
+    for (let x = pcR + 26; x < xR; x += 22) { ex.beginPath(); ex.moveTo(x, coldY - 18); ex.lineTo(x, coldY - 52); ex.stroke(); }
+    ex.fillStyle = C.cold; ex.fillText('Placa fria · ' + Tf + ' K', xL, coldY - 104);
+    // displacer chamber walls
+    ex.strokeStyle = C.metal; ex.lineWidth = 8; ex.beginPath(); ex.moveTo(xL - 4, coldY); ex.lineTo(xL - 4, hotY); ex.moveTo(xR + 4, coldY); ex.lineTo(xR + 4, hotY); ex.stroke();
+    // power cylinder (above the cold plate, opens into the chamber)
+    ex.fillStyle = C.bg; ex.fillRect(pcL, coldY - 20, pcR - pcL, 22);
+    ex.strokeStyle = C.metal; ex.lineWidth = 7; ex.beginPath(); ex.moveTo(pcL - 4, pcTop); ex.lineTo(pcL - 4, coldY - 18); ex.moveTo(pcR + 4, pcTop); ex.lineTo(pcR + 4, coldY - 18); ex.stroke();
+    // gas regions
+    const hotTop = dBot, hotBot = hotY, coldTop = coldY, coldBot = dTop, pcGasTop = pistonBot, pcGasBot = coldY;
+    ex.globalAlpha = 0.18;
+    ex.fillStyle = C.hot; ex.fillRect(xL, hotTop, bw, Math.max(0, hotBot - hotTop));
+    ex.fillStyle = C.cold; ex.fillRect(xL, coldTop, bw, Math.max(0, coldBot - coldTop));
+    ex.fillStyle = st.hot > 0.5 ? C.hot : C.cold; ex.fillRect(pcL, pcGasTop, pcR - pcL, pcGasBot - pcGasTop);
+    ex.globalAlpha = 1;
+    const vh = 0.25 + 0.8 * Math.sqrt(Tq / 600), vc = 0.25 + 0.8 * Math.sqrt(Tf / 600);
+    for (const p of parts) {
+      const isHot = p.r < st.hot;
+      let x0, x1, top, H;
+      if (p.pc) { x0 = pcL; x1 = pcR; top = pcGasTop; H = pcGasBot - pcGasTop; }
+      else if (isHot) { x0 = xL; x1 = xR; top = hotTop; H = hotBot - hotTop; }
+      else { x0 = xL; x1 = xR; top = coldTop; H = coldBot - coldTop; }
+      if (H < 10) continue;
+      if (playing) { const v = isHot ? vh : vc; p.x += Math.cos(p.a) * v * dt * 0.6; p.y += Math.sin(p.a) * v * dt * (120 / H);
+        if (p.x < 0) { p.x = -p.x; p.a = Math.PI - p.a; } if (p.x > 1) { p.x = 2 - p.x; p.a = Math.PI - p.a; } if (p.y < 0) { p.y = -p.y; p.a = -p.a; } if (p.y > 1) { p.y = 2 - p.y; p.a = -p.a; } }
+      ex.fillStyle = isHot ? C.hot : C.cold; ex.beginPath(); ex.arc(x0 + 7 + p.x * (x1 - x0 - 14), top + 6 + p.y * (H - 12), 4, 0, 7); ex.fill();
+    }
+    // displacer (porous, works as regenerator)
+    const gap = 16;
+    const grd = ex.createLinearGradient(0, dTop, 0, dBot); grd.addColorStop(0, C.cold); grd.addColorStop(1, C.hot);
+    ex.fillStyle = C['metal-dark']; roundRect(ex, xL + gap, dTop, bw - 2 * gap, Ld, 8); ex.fill();
+    ex.globalAlpha = 0.8; ex.fillStyle = grd; ex.fillRect(xL + gap + 8, dTop + 8, bw - 2 * gap - 16, Ld - 16); ex.globalAlpha = 1;
+    ex.strokeStyle = C.panel; ex.lineWidth = 1.2; ex.globalAlpha = 0.55;
+    for (let x = xL + gap + 14; x < xR - gap - 8; x += 12) { ex.beginPath(); ex.moveTo(x, dTop + 8); ex.lineTo(x, dBot - 8); ex.stroke(); }
+    ex.globalAlpha = 1;
+    ex.fillStyle = C.panel; ex.font = '600 16px "Bricolage Grotesque", system-ui, sans-serif'; ex.textAlign = 'center';
+    ex.fillText('deslocador (regenerador)', (xL + xR) / 2 - 40, dTop + Ld / 2);
+    // displacer rod through the cold plate
+    const rodX = pcL - 40;
+    ex.fillStyle = C.metal; ex.fillRect(rodX - 4, coldY - 120 + (dTop - (coldY + 6)), 8, 120 + 6);
+    // gas flow around the displacer edges in the isochoric steps
+    if (st.k === 1 || st.k === 3) {
+      const down = st.k === 1; // 2→3: gas goes from the cold side (top) to the hot side (bottom)
+      for (const sx of [xL + 8, xR - 8]) for (let j = 0; j < 2; j++) {
+        const o = (flowT * 1.4 + j * 0.5) % 1; ex.globalAlpha = 1 - Math.abs(o - 0.5) * 1.6;
+        const y = down ? dTop - 6 + o * (Ld + 12) : dBot + 6 - o * (Ld + 12);
+        arrow(ex, sx, y + (down ? -12 : 12), sx, y + (down ? 12 : -12), C.regen, 4); ex.globalAlpha = 1;
+      }
+      const L = regen ? ['Regenerador', down ? 'devolve calor ao gás' : 'guarda calor do gás'] : ['Sem regenerador:', down ? 'calor vem da fonte' : 'calor vai para a placa fria'];
+      ex.fillStyle = C.regen; ex.font = '600 18px "Bricolage Grotesque", system-ui, sans-serif'; ex.textAlign = 'left';
+      L.forEach((t, j) => ex.fillText(t, 6, h - 46 + j * 24));
+    }
+    // power piston + rod
+    ex.fillStyle = C.piston; roundRect(ex, pcL + 2, pistonTop, pcR - pcL - 4, E.pistonH, 4); ex.fill();
+    ex.fillStyle = C.metal; ex.fillRect(pcL + 2, pistonTop + 10, pcR - pcL - 4, 3);
+    ex.fillStyle = C.piston; ex.fillRect(pcx - 6, pistonTop - 60, 12, 60);
+    ex.fillStyle = C.muted; ex.font = '500 16px "Bricolage Grotesque", system-ui, sans-serif'; ex.textAlign = 'right';
+    ex.fillText('pistão de', pcL - 14, pcTop + 10); ex.fillText('potência', pcL - 14, pcTop + 30);
+    // heat arrows
+    if (st.k === 2) { for (let i = 0; i < 4; i++) { const o = (flowT * 1.2 + i / 4) % 1, x0 = xL + bw * (0.15 + 0.23 * i), y = hotY + 20 - o * 40; ex.globalAlpha = 1 - Math.abs(o - 0.5) * 1.4; arrow(ex, x0, y + 12, x0, y - 12, C.hot, 4); } ex.globalAlpha = 1; }
+    if (st.k === 0) { for (let i = 0; i < 3; i++) { const o = (flowT * 1.2 + i / 3) % 1, x0 = xL + 30 + i * 60, y = coldY - 30 - o * 40; ex.globalAlpha = 1 - Math.abs(o - 0.5) * 1.4; arrow(ex, x0, y + 12, x0, y - 12, C.cold, 4); } ex.globalAlpha = 1; }
+    // work arrow
+    if (st.k === 0 || st.k === 2) {
+      const up = st.k === 2, ax = pcR + 50, ay = (pistonTop + pistonBot) / 2;
+      arrow(ex, ax, ay + (up ? 35 : -35), ax, ay + (up ? -35 : 35), C.work, 5);
+      ex.fillStyle = C.work; ex.font = '600 19px "Bricolage Grotesque", system-ui, sans-serif'; ex.textAlign = 'center'; ex.textBaseline = 'middle';
+      ex.fillText(up ? 'W > 0' : 'W < 0', ax + 2, ay + (up ? 52 : -52));
+    }
+    // T badge in the larger gas region
+    const hotH = hotBot - hotTop, coldH = coldBot - coldTop, ty = hotH > coldH ? (hotTop + hotBot) / 2 : (coldTop + coldBot) / 2;
+    const bx = (xL + xR) / 2 + 90;
+    ex.fillStyle = C.panel; roundRect(ex, bx - 58, ty - 16, 116, 32, 16); ex.fill();
+    ex.fillStyle = C.ink; ex.textAlign = 'center'; ex.textBaseline = 'middle'; ex.font = '500 20px "JetBrains Mono", ui-monospace, monospace'; ex.fillText(fmt(st.T) + ' K', bx, ty);
+  }
+
+  // ---------- UI ----------
+  const stepsEls = [...document.querySelectorAll('.step')];
+  const shorts = ['1 → 2', '2 → 3', '3 → 4', '4 → 1'];
+  let lastK = -1;
+  function updateUI(st) {
+    $('oP').textContent = fmt(st.P) + ' kPa'; $('oV').textContent = fmt(st.V, 1) + ' L'; $('oT').textContent = fmt(st.T) + ' K'; $('oH').textContent = fmt(100 * st.hot) + '%';
+    if (st.k !== lastK) {
+      stepsEls.forEach((el, i) => { el.classList.toggle('on', i === st.k); el.setAttribute('aria-pressed', i === st.k); });
+      document.querySelectorAll('#tb tr').forEach((tr, i) => tr.classList.toggle('on', i === st.k));
+      $('stageShort').textContent = shorts[st.k]; lastK = st.k;
+    }
+  }
+  stepsEls.forEach((el, i) => el.addEventListener('click', () => { ph = i + 0.001; lastK = -1; render(0); }));
+  $('play').addEventListener('click', () => { playing = !playing; $('play').textContent = playing ? 'Pausar' : 'Animar'; });
+  $('next').addEventListener('click', () => { ph = (Math.floor(ph) + 1) % 4 + 0.001; lastK = -1; render(0); });
+  $('prev').addEventListener('click', () => { ph = (Math.floor(ph) + 3) % 4 + 0.001; lastK = -1; render(0); });
+  $('tq').addEventListener('input', (e) => { Tq = +e.target.value; recompute(); render(0); });
+  $('tf').addEventListener('input', (e) => { Tf = +e.target.value; recompute(); render(0); });
+  $('reg').addEventListener('change', (e) => { regen = e.target.checked; recompute(); render(0); });
+  $('spd').addEventListener('input', (e) => { speed = +e.target.value; $('spdO').textContent = String(speed).replace('.', ',') + '×'; });
+  $('play').textContent = playing ? 'Pausar' : 'Animar';
+  function fitPV() { const wv = pv.getBoundingClientRect().width; const W = wv && wv < 520 ? 600 : 880; if (pv.width !== W) { pv.width = W; pv.height = Math.round(W * 11 / 16); } }
+  addEventListener('resize', fitPV);
+
+  function render(dt) { const st = state(ph); drawPV(st); drawEngine(st, dt); updateUI(st); }
+  let last = performance.now();
+  function loop(t) { const dt = Math.min(0.05, (t - last) / 1000); last = t; if (playing) ph = (ph + dt * speed / STAGE_SEC) % 4; render(dt); requestAnimationFrame(loop); }
+  recompute(); fitPV(); render(0);
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => render(0));
+  requestAnimationFrame(loop);
+})();
+</script>
+
+<footer>
+  <div class="wrap">
+    <span>A Tal da Física · material de estudo gratuito</span>
+    <span class="mono">λ<sub>Na</sub> = 589 nm, a cor do nosso destaque</span>
+  </div>
+</footer>
+</body>
+</html>

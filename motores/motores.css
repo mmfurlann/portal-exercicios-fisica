@@ -1,0 +1,53 @@
+/* Ciclos de motores (Carnot, Otto, Stirling beta e gama) no padrão visual do site.
+   Carregado depois do estilo de cada simulação. Os nomes de cor abaixo são os que as simulações usam;
+   os valores são os do estilo.css (em hexadecimal, porque o desenho no canvas mistura cores a partir deles). */
+:root {
+  --bg: #2b3137;          /* fundo do site */
+  --panel: #343b42;       /* cartões */
+  --ink: #efe8dd;
+  --muted: #b7afa3;
+  --line: #464e57;
+  --grid: #3b4249;
+  --hot: #f2865a;
+  --hot-soft: #4a3327;
+  --cold: #93bde8;
+  --cold-soft: #2d3c4c;
+  --mix: #86cf9f;
+  --smoke: #a3aab2;
+  --spark: #ffd166;
+  --regen: #f2c14e;
+  --work: #b79cff;
+  --work-soft: rgba(183, 156, 255, 0.18);
+  --insul: #6f7883;
+  --metal: #7d8794;
+  --metal-dark: #a3acb8;
+  --piston: #c9d1dc;
+  --font-display: var(--display);
+  --font-body: var(--body);
+  --font-mono: var(--mono);
+}
+
+/* topo da página: voltar, rótulo e atalhos entre os quatro ciclos */
+.mt-intro { padding-block: 28px 4px; display: grid; gap: 10px; }
+.mt-back { font-family: var(--display); font-weight: 700; color: var(--accent-ink); text-decoration: none; justify-self: start; }
+.mt-back:hover { text-decoration: underline; }
+.mt-chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.mt-chips a { font-family: var(--display); font-weight: 700; font-size: .85rem; text-decoration: none; color: var(--ink);
+  border: 1px solid var(--grid); background: var(--card); border-radius: 99px; padding: 6px 12px; }
+.mt-chips a:hover { border-color: var(--ink-soft); }
+.mt-chips a[aria-current="page"] { background: var(--accent); border-color: var(--accent); color: #1a0d02; }
+
+/* área da simulação */
+.mt-wrap { padding-block: 16px 8px; }
+.mt-head h1 { font-weight: 800; }
+.mt .panel { border-radius: 10px; box-shadow: 0 1px 0 var(--line), 0 14px 32px -18px rgba(0, 0, 0, 0.55); }
+.mt .panel h2 { font-size: 1rem; font-weight: 700; }
+.mt table { min-width: 0; }
+.mt th { font-family: var(--mono); }
+.mt button.ctl { font-family: var(--display); border-radius: 6px; }
+.mt button.ctl.primary { background: var(--accent); border-color: var(--accent); color: #1a0d02; }
+.mt .step { border-radius: 10px; }
+.mt .step .name { font-family: var(--display); }
+.mt .notes h2 { margin-bottom: 0; }
+.mt input[type=range] { accent-color: var(--accent); }
+footer { margin-top: 32px; }

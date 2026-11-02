@@ -1,0 +1,231 @@
+/* Biblioteca de Fórmulas · C. ONDULATÓRIA
+   Campos: veja o comentário no topo de formulas/app.js. Texto com matemática entre $...$. */
+(function () {
+const T = String.raw;
+const F = window.FORMULAS = window.FORMULAS || { areas: [], formulas: [] };
+
+F.areas.push({
+  id: 'ondas', nome: 'Ondulatória', sym: 'λ',
+  intro: T`Oscilações e ondas transportam energia sem transportar matéria. A equação $v = \lambda f$ aparece em quase toda questão; lembre que a frequência é da fonte e a velocidade é do meio.`,
+  subs: [
+    { id: 'mhs', nome: 'Movimento harmônico simples (MHS)', topicos: ['Equações do MHS', 'Sistemas oscilantes', 'Energia no MHS'] },
+    { id: 'periodicas', nome: 'Ondas periódicas', topicos: ['Velocidade de propagação', 'Frequência e período', 'Comprimento de onda', 'Ondas transversais e longitudinais'] },
+    { id: 'reflexao-refracao', nome: 'Reflexão e refração de ondas', topicos: ['Reflexão', 'Refração'] },
+    { id: 'interferencia', nome: 'Difração e interferência', topicos: ['Interferência', 'Difração'] },
+    { id: 'estacionarias', nome: 'Ondas estacionárias', topicos: ['Cordas', 'Tubos sonoros'] },
+    { id: 'doppler', nome: 'Efeito Doppler', topicos: ['Efeito Doppler'] },
+    { id: 'acustica', nome: 'Acústica', topicos: ['Propriedades do som', 'Intensidade sonora e nível sonoro'] },
+  ],
+});
+
+const L = [
+/* ===================== MHS ===================== */
+{ id: 'mhs-posicao', sub: 'mhs', topico: 'Equações do MHS', top: true,
+  nome: 'Função horária do MHS', tex: T`x = A\cos(\omega t + \varphi_0)`,
+  alt: [[T`Velocidade`, T`v = -\,\omega A\sen(\omega t + \varphi_0)`], [T`Aceleração`, T`a = -\,\omega^2 A\cos(\omega t + \varphi_0) = -\,\omega^2 x`]],
+  vars: [[T`x`, 'elongação (posição em relação ao equilíbrio)', 'm'], [T`A`, 'amplitude', 'm'], [T`\omega`, T`pulsação, $2\pi/T$`, 'rad/s'], [T`\varphi_0`, 'fase inicial', 'rad']],
+  uso: T`Para posição, velocidade e aceleração de um oscilador em cada instante.`,
+  val: T`MHS: a força restauradora é proporcional ao deslocamento ($F = -kx$). O MHS é a projeção de um MCU sobre um diâmetro.`,
+  obs: T`A aceleração é máxima nos extremos e nula no centro; a velocidade é o contrário.`,
+  ex: [T`Um oscilador tem $A = 0{,}1$ m e $\omega = 10$ rad/s. Quais a velocidade e a aceleração máximas?`, T`$v_{máx} = \omega A = 1\ \text{m/s}; \quad a_{máx} = \omega^2 A = 10\ \text{m/s}^2$`],
+  tags: 'mhs movimento harmonico simples elongacao amplitude pulsacao' },
+
+{ id: 'mhs-velocidade-x', sub: 'mhs', topico: 'Equações do MHS',
+  nome: 'Velocidade em função da posição (MHS)', tex: T`v = \pm\,\omega\sqrt{A^2 - x^2}`,
+  alt: [[T`Valores máximos`, T`v_{máx} = \omega A \qquad a_{máx} = \omega^2 A`]],
+  vars: [[T`v`, 'velocidade na posição x', 'm/s'], [T`x`, 'elongação', 'm'], [T`A`, 'amplitude', 'm']],
+  uso: T`Quando o problema dá a posição e pede a velocidade, sem o tempo.`,
+  val: T`MHS. Sai da conservação da energia: $\tfrac{1}{2}kA^2 = \tfrac{1}{2}kx^2 + \tfrac{1}{2}mv^2$.`,
+  ex: [T`Com $A = 0{,}1$ m e $\omega = 10$ rad/s, qual a velocidade em $x = 0{,}06$ m?`, T`$v = 10\sqrt{0{,}01 - 0{,}0036} = 10 \cdot 0{,}08 = 0{,}8\ \text{m/s}$`],
+  tags: 'mhs velocidade posicao' },
+
+{ id: 'massa-mola', sub: 'mhs', topico: 'Sistemas oscilantes', top: true,
+  nome: 'Período do oscilador massa-mola', tex: T`T = 2\pi\sqrt{\dfrac{m}{k}}`,
+  alt: [[T`Pulsação`, T`\omega = \sqrt{\dfrac{k}{m}}`]],
+  vars: [[T`T`, 'período de oscilação', 's'], [T`m`, 'massa presa à mola', 'kg'], [T`k`, 'constante elástica', 'N/m']],
+  uso: T`Massas presas a molas, na horizontal ou na vertical; suspensões de carros.`,
+  val: T`Mola ideal e sem atrito. O período **não** depende da amplitude nem de $g$ (vale igual na vertical, na Lua ou em órbita).`,
+  ex: [T`Uma massa de 0,5 kg numa mola de 50 N/m.`, T`$T = 2\pi\sqrt{\dfrac{0{,}5}{50}} = 2\pi \cdot 0{,}1 \approx 0{,}63\ \text{s}$`],
+  tags: 'massa mola periodo oscilador' },
+
+{ id: 'pendulo-simples', sub: 'mhs', topico: 'Sistemas oscilantes', top: true,
+  nome: 'Período do pêndulo simples', tex: T`T = 2\pi\sqrt{\dfrac{L}{g}}`,
+  vars: [[T`T`, 'período', 's'], [T`L`, 'comprimento do fio (até o centro da massa)', 'm'], [T`g`, 'aceleração da gravidade local', 'm/s²']],
+  uso: T`Relógios de pêndulo, medição de $g$, balanços.`,
+  val: T`Pequenas oscilações (ângulo até uns 10°), fio ideal e sem resistência do ar. Não depende da massa nem da amplitude.`,
+  obs: T`Para quadruplicar o período, o fio precisa ficar 16 vezes maior. Em um elevador acelerado para cima, use $g + a$.`,
+  ex: [T`Um pêndulo de 2,5 m oscila onde $g = 10$ m/s².`, T`$T = 2\pi\sqrt{\dfrac{2{,}5}{10}} = 2\pi \cdot 0{,}5 \approx 3{,}1\ \text{s}$`],
+  ver: [['Pêndulo no laboratório', 'laboratorio.html#mecanica']], tags: 'pendulo simples periodo relogio' },
+
+{ id: 'energia-mhs', sub: 'mhs', topico: 'Energia no MHS',
+  nome: 'Energia mecânica no MHS', tex: T`E_m = \dfrac{k\,A^2}{2} = \dfrac{k\,x^2}{2} + \dfrac{m\,v^2}{2}`,
+  vars: [[T`E_m`, 'energia mecânica (constante)', 'J'], [T`A`, 'amplitude', 'm'], [T`x`, 'elongação', 'm'], [T`v`, 'velocidade', 'm/s']],
+  uso: T`Para trocar energia potencial por cinética ao longo da oscilação.`,
+  val: T`Sem atrito. Nos extremos a energia é toda potencial; no centro, toda cinética.`,
+  ex: [T`Uma mola de 200 N/m oscila com amplitude 0,1 m.`, T`$E_m = \dfrac{200 \cdot 0{,}01}{2} = 1\ \text{J}$`],
+  tags: 'energia mhs conservacao oscilador' },
+
+/* ===================== ONDAS PERIÓDICAS ===================== */
+{ id: 'equacao-fundamental', sub: 'periodicas', topico: 'Velocidade de propagação', top: true,
+  nome: 'Equação fundamental da ondulatória', tex: T`v = \lambda\,f = \dfrac{\lambda}{T}`,
+  vars: [[T`v`, 'velocidade de propagação', 'm/s'], [T`\lambda`, 'comprimento de onda', 'm'], [T`f`, 'frequência', 'Hz'], [T`T`, 'período', 's']],
+  uso: T`Em praticamente toda questão de ondas: som, luz, ondas em cordas e na água.`,
+  val: T`Ondas periódicas. A frequência depende só da **fonte**; a velocidade depende só do **meio**. Mudando de meio, muda $\lambda$.`,
+  ex: [T`Um som de 680 Hz no ar (340 m/s).`, T`$\lambda = \dfrac{340}{680} = 0{,}5\ \text{m}$`],
+  tags: 'equacao fundamental ondulatoria v lambda f comprimento de onda' },
+
+{ id: 'periodo-onda', sub: 'periodicas', topico: 'Frequência e período',
+  nome: 'Frequência e período de uma onda', tex: T`f = \dfrac{1}{T} = \dfrac{n}{\Delta t}`,
+  vars: [[T`f`, 'frequência: oscilações (ou cristas) por segundo', 'Hz'], [T`T`, 'período: tempo de uma oscilação', 's'], [T`n`, 'número de oscilações no intervalo', 'adimensional']],
+  uso: T`Para tirar a frequência de contagens (cristas que passam, vibrações por minuto).`,
+  val: T`Onda periódica. A frequência não muda na reflexão nem na refração.`,
+  ex: [T`Passam 30 cristas por um ponto em 10 s.`, T`$f = \dfrac{30}{10} = 3\ \text{Hz}; \quad T \approx 0{,}33\ \text{s}$`],
+  ver: [['Frequência e período (MCU)', '#f/periodo-frequencia']], tags: 'frequencia periodo onda hertz' },
+
+{ id: 'equacao-onda', sub: 'periodicas', topico: 'Comprimento de onda',
+  nome: 'Equação da onda harmônica', tex: T`y(x, t) = A\cos(\omega t - k x + \varphi_0)`,
+  alt: [[T`Número de onda`, T`k = \dfrac{2\pi}{\lambda}`], [T`Velocidade`, T`v = \dfrac{\omega}{k}`]],
+  vars: [[T`y`, 'deslocamento do ponto do meio', 'm'], [T`k`, 'número de onda', 'rad/m'], [T`\omega`, T`pulsação, $2\pi f$`, 'rad/s'], [T`x`, 'posição ao longo da propagação', 'm']],
+  uso: T`Para ler $\lambda$, $f$ e $v$ a partir de uma equação dada. Comum no ITA, IME e UNICAMP.`,
+  val: T`Onda harmônica propagando no sentido $+x$ (com $\omega t + kx$, propaga para $-x$).`,
+  ex: [T`Uma onda é $y = 0{,}02\cos(20\pi t - 4\pi x)$ (SI).`, T`$f = 10\ \text{Hz}; \quad \lambda = \dfrac{2\pi}{4\pi} = 0{,}5\ \text{m}; \quad v = 5\ \text{m/s}$`],
+  tags: 'equacao da onda numero de onda harmonica' },
+
+{ id: 'taylor-corda', sub: 'periodicas', topico: 'Velocidade de propagação',
+  nome: 'Velocidade de onda numa corda (fórmula de Taylor)', tex: T`v = \sqrt{\dfrac{F}{\mu}}`,
+  alt: [[T`Densidade linear`, T`\mu = \dfrac{m}{L}`]],
+  vars: [[T`v`, 'velocidade da onda na corda', 'm/s'], [T`F`, 'força de tração na corda', 'N'], [T`\mu`, 'densidade linear (massa por comprimento)', 'kg/m']],
+  uso: T`Instrumentos de corda, cordas esticadas no laboratório.`,
+  val: T`Corda flexível e homogênea, com pulsos de pequena amplitude. Mais tensa: onda mais rápida; mais grossa: mais lenta.`,
+  ex: [T`Uma corda de 2 m e 10 g é tracionada com 80 N.`, T`$\mu = \dfrac{0{,}01}{2} = 0{,}005\ \text{kg/m} \Rightarrow v = \sqrt{\dfrac{80}{0{,}005}} \approx 126\ \text{m/s}$`],
+  tags: 'taylor corda tracao densidade linear' },
+
+{ id: 'som-gases', sub: 'periodicas', topico: 'Ondas transversais e longitudinais',
+  nome: 'Velocidade do som em um gás (onda longitudinal)', tex: T`v = \sqrt{\dfrac{\gamma\,R\,T}{M}}`,
+  alt: [[T`Mesmo gás, temperaturas diferentes`, T`\dfrac{v_2}{v_1} = \sqrt{\dfrac{T_2}{T_1}}`]],
+  vars: [[T`\gamma`, 'expoente adiabático do gás (1,4 para o ar)', 'adimensional'], [T`T`, 'temperatura absoluta', 'K'], [T`M`, 'massa molar', 'kg/mol']],
+  uso: T`Para saber como a velocidade do som muda com a temperatura e com o gás (no hélio a voz fica mais aguda).`,
+  val: T`Gás ideal. Ondas **longitudinais** (som em fluidos) vibram na direção da propagação; ondas **transversais** (cordas, luz) vibram perpendicularmente. Só as transversais podem ser polarizadas.`,
+  ex: [T`O som anda a 340 m/s no ar a 289 K. E a 361 K?`, T`$v = 340\sqrt{\dfrac{361}{289}} = 340 \cdot \dfrac{19}{17} = 380\ \text{m/s}$`],
+  tags: 'velocidade do som gas temperatura longitudinal transversal polarizacao' },
+
+/* ===================== REFLEXÃO E REFRAÇÃO ===================== */
+{ id: 'reflexao-pulsos', sub: 'reflexao-refracao', topico: 'Reflexão',
+  nome: 'Reflexão de pulsos numa extremidade', tex: T`\text{fixa: } \Delta\varphi = \pi \ (\text{inverte}) \qquad \text{livre: } \Delta\varphi = 0`,
+  vars: [[T`\Delta\varphi`, 'mudança de fase na reflexão', 'rad']],
+  uso: T`Pulsos em cordas presas na parede ou em anéis livres; base das ondas estacionárias.`,
+  val: T`Na reflexão, velocidade, frequência e comprimento de onda não mudam. Ângulo de incidência = ângulo de reflexão.`,
+  obs: T`Na junção entre corda leve e pesada: indo para a mais densa, o pulso refletido inverte; indo para a menos densa, não inverte.`,
+  ex: [T`Um pulso "para cima" chega a uma extremidade presa numa parede.`, T`Volta "para baixo" (inversão de fase).`],
+  tags: 'reflexao pulso extremidade fixa livre inversao de fase' },
+
+{ id: 'refracao-ondas', sub: 'reflexao-refracao', topico: 'Refração', top: true,
+  nome: 'Refração de ondas', tex: T`\dfrac{\sen i}{\sen r} = \dfrac{v_1}{v_2} = \dfrac{\lambda_1}{\lambda_2}`,
+  alt: [[T`Frequência constante na refração`, T`f_1 = f_2 \Rightarrow \dfrac{v_1}{\lambda_1} = \dfrac{v_2}{\lambda_2}`]],
+  vars: [[T`i,\ r`, 'ângulos de incidência e de refração (com a normal)', '°'], [T`v_1, v_2`, 'velocidades nos meios 1 e 2', 'm/s'], [T`\lambda_1, \lambda_2`, 'comprimentos de onda nos meios', 'm']],
+  uso: T`Ondas do mar passando de águas fundas para rasas, som atravessando o ar e a água.`,
+  val: T`A frequência não muda. Onda que fica mais lenta se aproxima da normal. Na água, ondas são mais lentas em regiões rasas.`,
+  ex: [T`Uma onda passa de águas fundas (2 m/s, λ = 1 m) para rasas (1,5 m/s).`, T`$\lambda_2 = 1 \cdot \dfrac{1{,}5}{2} = 0{,}75\ \text{m}$; a frequência continua 2 Hz.`],
+  ver: [['Lei de Snell para a luz', '#f/snell']], tags: 'refracao ondas snell frequencia constante' },
+
+/* ===================== INTERFERÊNCIA E DIFRAÇÃO ===================== */
+{ id: 'interferencia', sub: 'interferencia', topico: 'Interferência', top: true,
+  nome: 'Condições de interferência (fontes em fase)', tex: T`\text{construtiva: } \Delta x = n\,\lambda \qquad \text{destrutiva: } \Delta x = (2n + 1)\,\dfrac{\lambda}{2}`,
+  vars: [[T`\Delta x`, 'diferença entre as distâncias do ponto às duas fontes', 'm'], [T`n`, 'número inteiro (0, 1, 2, …)', 'adimensional'], [T`\lambda`, 'comprimento de onda', 'm']],
+  uso: T`Dois alto-falantes, duas fontes na água, fones com cancelamento de ruído.`,
+  val: T`Fontes coerentes **em fase** e de mesma frequência. Se as fontes estiverem em oposição de fase, as condições se invertem.`,
+  ex: [T`Dois alto-falantes em fase emitem λ = 0,5 m. Um ponto está a 3,0 m de um e 3,75 m do outro.`, T`$\Delta x = 0{,}75\ \text{m} = 1{,}5\,\lambda = 3 \cdot \dfrac{\lambda}{2}$: interferência destrutiva.`],
+  tags: 'interferencia construtiva destrutiva diferenca de caminho' },
+
+{ id: 'young', sub: 'interferencia', topico: 'Interferência', top: true,
+  nome: 'Experiência de Young (fenda dupla)', tex: T`y_n = \dfrac{n\,\lambda\,D}{d}`,
+  alt: [[T`Distância entre franjas claras vizinhas`, T`\Delta y = \dfrac{\lambda\,D}{d}`], [T`Condição angular`, T`d\sen\theta = n\,\lambda`]],
+  vars: [[T`y_n`, 'posição da n-ésima franja clara a partir do centro', 'm'], [T`D`, 'distância das fendas ao anteparo', 'm'], [T`d`, 'distância entre as fendas', 'm']],
+  uso: T`Para medir o comprimento de onda da luz; prova do caráter ondulatório da luz.`,
+  val: T`Ângulos pequenos ($D \gg y$) e luz monocromática. Franjas escuras ficam no meio do caminho entre as claras.`,
+  ex: [T`Luz de 600 nm, fendas a 0,2 mm, anteparo a 2 m.`, T`$\Delta y = \dfrac{600 \cdot 10^{-9} \cdot 2}{2 \cdot 10^{-4}} = 6 \cdot 10^{-3}\ \text{m} = 6\ \text{mm}$`],
+  tags: 'young fenda dupla franjas interferencia luz' },
+
+{ id: 'rede-difracao', sub: 'interferencia', topico: 'Difração',
+  nome: 'Rede de difração e fenda simples', tex: T`d\sen\theta = n\,\lambda \quad \text{(máximos da rede)}`,
+  alt: [[T`Fenda simples (mínimos)`, T`a\sen\theta = n\,\lambda \quad (n = 1, 2, \ldots)`]],
+  vars: [[T`d`, 'distância entre fendas vizinhas da rede', 'm'], [T`a`, 'largura da fenda simples', 'm'], [T`\theta`, 'ângulo com a direção de incidência', '°'], [T`n`, 'ordem', 'adimensional']],
+  uso: T`CDs e DVDs (arco-íris), espectroscópios, difração por fendas.`,
+  val: T`Luz monocromática incidindo perpendicularmente. A difração é mais forte quando a abertura tem tamanho parecido com $\lambda$: por isso o som contorna muros e a luz quase não.`,
+  ex: [T`Uma rede com 500 fendas por mm é iluminada com luz de 500 nm.`, T`$d = 2 \cdot 10^{-6}\ \text{m} \Rightarrow \sen\theta_1 = \dfrac{5 \cdot 10^{-7}}{2 \cdot 10^{-6}} = 0{,}25 \Rightarrow \theta_1 \approx 14{,}5°$`],
+  tags: 'difracao rede fenda simples espectro' },
+
+/* ===================== ESTACIONÁRIAS ===================== */
+{ id: 'estacionaria-corda', sub: 'estacionarias', topico: 'Cordas', top: true,
+  nome: 'Harmônicos numa corda fixa nas extremidades', tex: T`f_n = \dfrac{n\,v}{2L} \qquad \lambda_n = \dfrac{2L}{n}`,
+  alt: [[T`Distância entre nós vizinhos`, T`d_{nós} = \dfrac{\lambda}{2}`]],
+  vars: [[T`f_n`, 'frequência do n-ésimo harmônico', 'Hz'], [T`n`, 'número do harmônico = número de ventres (1, 2, 3, …)', 'adimensional'], [T`v`, 'velocidade da onda na corda', 'm/s'], [T`L`, 'comprimento da corda', 'm']],
+  uso: T`Violão, piano, violino: as notas que uma corda pode tocar.`,
+  val: T`Corda com as duas pontas fixas (nós nas extremidades). Todos os harmônicos são possíveis. Combine com $v = \sqrt{F/\mu}$.`,
+  ex: [T`Uma corda de violão de 0,65 m, com ondas a 286 m/s.`, T`$f_1 = \dfrac{286}{1{,}3} = 220\ \text{Hz}$ (nota lá); $f_2 = 440$ Hz.`],
+  ver: [['Ondas estacionárias no laboratório', 'laboratorio.html#ondas']], tags: 'onda estacionaria corda harmonico frequencia fundamental violao' },
+
+{ id: 'tubo-aberto', sub: 'estacionarias', topico: 'Tubos sonoros',
+  nome: 'Tubo sonoro aberto', tex: T`f_n = \dfrac{n\,v}{2L} \quad (n = 1, 2, 3, \ldots)`,
+  vars: [[T`f_n`, 'frequência do harmônico', 'Hz'], [T`v`, 'velocidade do som no ar', 'm/s'], [T`L`, 'comprimento do tubo', 'm']],
+  uso: T`Flautas, tubos de órgão abertos.`,
+  val: T`Duas extremidades abertas (ventres de deslocamento nas pontas). Todos os harmônicos aparecem.`,
+  ex: [T`Um tubo aberto de 0,5 m, com som a 340 m/s.`, T`$f_1 = \dfrac{340}{1} = 340\ \text{Hz}$`],
+  tags: 'tubo sonoro aberto flauta harmonicos' },
+
+{ id: 'tubo-fechado', sub: 'estacionarias', topico: 'Tubos sonoros', top: true,
+  nome: 'Tubo sonoro fechado', tex: T`f_n = \dfrac{n\,v}{4L} \quad (n = 1, 3, 5, \ldots)`,
+  vars: [[T`f_n`, 'frequência do harmônico', 'Hz'], [T`n`, '**só ímpares**', 'adimensional'], [T`L`, 'comprimento do tubo', 'm']],
+  uso: T`Tubos com uma ponta fechada: garrafas sopradas, clarinete, o canal do ouvido.`,
+  val: T`Uma extremidade fechada (nó) e outra aberta (ventre). Só harmônicos ímpares; a fundamental é uma oitava abaixo da do tubo aberto de mesmo tamanho.`,
+  ex: [T`Um tubo fechado de 0,5 m, com som a 340 m/s.`, T`$f_1 = \dfrac{340}{2} = 170\ \text{Hz}; \quad f_3 = 510\ \text{Hz}$`],
+  tags: 'tubo sonoro fechado harmonicos impares' },
+
+/* ===================== DOPPLER ===================== */
+{ id: 'doppler', sub: 'doppler', topico: 'Efeito Doppler', top: true,
+  nome: 'Efeito Doppler (som)', tex: T`f' = f\,\dfrac{v \pm v_o}{v \mp v_f}`,
+  vars: [[T`f'`, 'frequência percebida pelo observador', 'Hz'], [T`f`, 'frequência emitida pela fonte', 'Hz'], [T`v`, 'velocidade do som no meio', 'm/s'], [T`v_o`, 'velocidade do observador', 'm/s'], [T`v_f`, 'velocidade da fonte', 'm/s']],
+  uso: T`Sirenes de ambulância, radares, ultrassom com Doppler, buzina de carro passando.`,
+  val: T`Velocidades menores que a do som, medidas em relação ao ar parado. **Sinais de cima quando há aproximação** (no numerador para o observador, no denominador para a fonte); de baixo no afastamento.`,
+  obs: T`Aproximação: som mais agudo. Afastamento: mais grave. A fonte muda o comprimento de onda; o observador muda o ritmo com que encontra as frentes.`,
+  ex: [T`Uma ambulância emite 680 Hz e se aproxima a 20 m/s de uma pessoa parada (som a 340 m/s).`, T`$f' = 680 \cdot \dfrac{340}{340 - 20} = 722{,}5\ \text{Hz}$; depois de passar, $680 \cdot \dfrac{340}{360} \approx 642\ \text{Hz}$`],
+  ver: [['Efeito Doppler no laboratório', 'laboratorio.html#ondas']], tags: 'doppler sirene ambulancia frequencia aparente' },
+
+/* ===================== ACÚSTICA ===================== */
+{ id: 'eco', sub: 'acustica', topico: 'Propriedades do som',
+  nome: 'Eco e sonar', tex: T`d = \dfrac{v\,\Delta t}{2}`,
+  vars: [[T`d`, 'distância até o obstáculo', 'm'], [T`v`, 'velocidade do som no meio (ar ≈ 340 m/s; água ≈ 1 500 m/s)', 'm/s'], [T`\Delta t`, 'tempo entre a emissão e a recepção do eco', 's']],
+  uso: T`Sonar de navios, ecolocalização de morcegos, ultrassonografia, medir distâncias com o eco.`,
+  val: T`Velocidade do som constante no trajeto. O "dividido por 2" vem da ida e volta. O ouvido humano só separa eco de som direto com $\Delta t \gtrsim 0{,}1$ s (obstáculo a 17 m ou mais).`,
+  ex: [T`Um sonar recebe o eco do fundo do mar após 0,8 s (som na água a 1 500 m/s).`, T`$d = \dfrac{1500 \cdot 0{,}8}{2} = 600\ \text{m}$`],
+  tags: 'eco sonar ecolocalizacao ultrassom distancia' },
+
+{ id: 'batimento', sub: 'acustica', topico: 'Propriedades do som',
+  nome: 'Batimentos', tex: T`f_{bat} = |f_1 - f_2|`,
+  vars: [[T`f_{bat}`, 'frequência dos batimentos (variações de volume por segundo)', 'Hz'], [T`f_1, f_2`, 'frequências próximas das duas fontes', 'Hz']],
+  uso: T`Afinação de instrumentos: os batimentos somem quando as notas ficam iguais.`,
+  val: T`Duas ondas de frequências próximas e amplitudes parecidas. O som ouvido tem frequência média $(f_1 + f_2)/2$.`,
+  ex: [T`Um diapasão de 440 Hz e uma corda de 443 Hz soam juntos.`, T`$f_{bat} = 3\ \text{Hz}$: o volume oscila 3 vezes por segundo.`],
+  tags: 'batimento afinacao frequencias proximas' },
+
+{ id: 'intensidade-sonora', sub: 'acustica', topico: 'Intensidade sonora e nível sonoro',
+  nome: 'Intensidade sonora', tex: T`I = \dfrac{P}{A} = \dfrac{P}{4\pi r^2}`,
+  vars: [[T`I`, 'intensidade (potência por unidade de área)', 'W/m²'], [T`P`, 'potência da fonte', 'W'], [T`r`, 'distância à fonte', 'm']],
+  uso: T`Para saber como o som (ou a luz) enfraquece com a distância.`,
+  val: T`Fonte pontual emitindo igualmente em todas as direções, sem absorção. Dobrar a distância divide a intensidade por 4.`,
+  ex: [T`Uma fonte de 4π W, a 10 m.`, T`$I = \dfrac{4\pi}{4\pi \cdot 100} = 0{,}01\ \text{W/m}^2$`],
+  tags: 'intensidade sonora potencia inverso do quadrado' },
+
+{ id: 'nivel-sonoro', sub: 'acustica', topico: 'Intensidade sonora e nível sonoro', top: true,
+  nome: 'Nível de intensidade sonora (decibéis)', tex: T`\beta = 10\,\log\dfrac{I}{I_0}`,
+  alt: [[T`Diferença entre dois níveis`, T`\beta_2 - \beta_1 = 10\,\log\dfrac{I_2}{I_1}`]],
+  vars: [[T`\beta`, 'nível sonoro', 'dB'], [T`I`, 'intensidade do som', 'W/m²'], [T`I_0`, 'limiar de audição: 10⁻¹²', 'W/m²']],
+  uso: T`Comparar sons: trânsito, shows, normas de ruído, perda auditiva.`,
+  val: T`Logaritmo na base 10. Cada +10 dB multiplica a intensidade por 10; +3 dB, aproximadamente por 2.`,
+  ex: [T`Qual o nível de um som de 0,01 W/m²?`, T`$\beta = 10\log\dfrac{10^{-2}}{10^{-12}} = 10 \cdot 10 = 100\ \text{dB}$`],
+  tags: 'nivel sonoro decibel db logaritmo ruido' },
+];
+
+L.forEach(f => { f.area = 'ondas'; });
+F.formulas.push(...L);
+})();
