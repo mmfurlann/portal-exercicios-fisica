@@ -1,0 +1,552 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>FUVEST 2027 · A Tal da Física</title>
+<meta name="description" content="Questões de Física da FUVEST 2027 (1ª fase, prova V1) com enunciado completo e resolução comentada.">
+<link rel="stylesheet" href="estilo.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Literata:ital,opsz,wght@0,7..72,400;0,7..72,600;1,7..72,400&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+/* Resolução da FUVEST: cartões de questão no padrão do site */
+.fv-intro { padding-block: 36px 8px; display: grid; gap: 10px; }
+.fv-intro h1 { font-size: clamp(1.9rem, 4vw, 2.7rem); font-weight: 800; letter-spacing: -0.01em; }
+.fv-intro > p:not(.label) { color: var(--ink-soft); max-width: 70ch; }
+.fv-main { display: grid; gap: 24px; padding-block: 20px 8px; }
+.fv-card { background: var(--card); border: 1px solid var(--grid); border-radius: 10px; padding: 24px; display: grid; gap: 16px; min-width: 0;
+  box-shadow: 0 1px 0 var(--grid), 0 14px 32px -18px rgba(0, 0, 0, 0.55); scroll-margin-top: 90px; }
+@media (max-width: 620px) { .fv-card { padding: 16px; } }
+
+/* gabarito e placar */
+.fv-top { display: grid; gap: 14px; }
+.fv-top h2 { font-size: clamp(1.4rem, 2.6vw, 1.8rem); }
+.fv-grid { display: grid; grid-template-columns: repeat(10, minmax(0, 1fr)); gap: 8px; }
+@media (max-width: 720px) { .fv-grid { grid-template-columns: repeat(5, minmax(0, 1fr)); } }
+.fv-grid a { display: grid; gap: 2px; justify-items: center; padding: 10px 4px; border: 1px solid var(--grid); border-radius: 8px;
+  background: var(--paper); text-decoration: none; color: var(--ink); }
+.fv-grid a:hover { border-color: var(--accent); }
+.fv-grid .n { font-family: var(--mono); font-size: .78rem; color: var(--ink-soft); }
+.fv-grid .r { font-family: var(--display); font-weight: 800; font-size: 1.3rem; color: var(--ink-soft); }
+.fv-grid a.done.ok { border-color: var(--ok); } .fv-grid a.done.bad { border-color: var(--bad); }
+.fv-gab .r { color: var(--accent-ink); }
+.fv-bar { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; justify-content: space-between; }
+.fv-score { font-family: var(--mono); color: var(--ink-soft); }
+.fv-score b { color: var(--ink); }
+
+/* questão */
+.fv-head { display: flex; flex-wrap: wrap; gap: 8px 14px; align-items: baseline; }
+.fv-head h2 { font-size: clamp(1.35rem, 2.4vw, 1.7rem); }
+.fv-topic { font-family: var(--mono); font-size: .78rem; color: var(--blue); }
+.fv-text { display: grid; gap: 10px; max-width: 75ch; }
+.fv-text blockquote { margin: 0; padding: 8px 14px; border-left: 3px solid var(--accent); color: var(--ink); font-style: italic; }
+.fv-text ul { margin: 0; padding-left: 20px; display: grid; gap: 6px; }
+.fv-note { display: block; font-size: .92rem; color: var(--ink-soft); border: 1px dashed var(--grid); border-radius: 8px; padding: 10px 12px; }
+.fv-note b { color: var(--ink); }
+.fv-fig { margin: 0; display: grid; gap: 6px; justify-items: center; }
+.fv-fig img { display: block; width: 100%; height: auto; background: #fff; border-radius: 8px; border: 1px solid var(--grid); }
+.fv-ship-img { width: 100%; background: #fff; border: 1px solid var(--grid); border-radius: 8px; overflow: hidden; }
+.fv-ship-img img { border: 0; border-radius: 0; }
+.fv-ship-labels { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; padding: 10px 10px 2px; color: #1e2a35;
+  font-family: var(--display); font-weight: 700; font-size: clamp(.78rem, 2.4vw, .95rem); text-align: center; line-height: 1.2; }
+.fv-fig figcaption { font-size: .82rem; color: var(--ink-soft); text-align: center; }
+.fv-table { width: 100%; min-width: 0; border-collapse: collapse; font-size: .95rem; }
+.fv-table th, .fv-table td { border: 1px solid var(--grid); padding: 8px 10px; text-align: left; vertical-align: top; }
+.fv-table th { font-family: var(--display); background: var(--paper-2, var(--paper)); }
+.fv-table td:nth-child(2) { font-family: var(--mono); white-space: nowrap; }
+@media (max-width: 620px) {
+  .fv-table { table-layout: fixed; font-size: .85rem; }
+  .fv-table th, .fv-table td { padding: 6px; }
+  .fv-table th { text-transform: none; letter-spacing: 0; font-size: .8rem; }
+  .fv-table th:nth-child(1) { width: 25%; } .fv-table th:nth-child(2) { width: 30%; }
+  .fv-table td:nth-child(2) { white-space: normal; }
+}
+
+/* alternativas */
+.fv-opts { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
+.fv-opt { width: 100%; text-align: left; display: grid; grid-template-columns: 30px minmax(0, 1fr); gap: 10px; align-items: start;
+  font: inherit; color: var(--ink); background: var(--paper); border: 1px solid var(--grid); border-radius: 8px; padding: 10px 12px; cursor: pointer; }
+.fv-opt:hover:not(:disabled) { border-color: var(--ink-soft); }
+.fv-opt:disabled { cursor: default; }
+.fv-opt .l { font-family: var(--display); font-weight: 800; color: var(--accent-ink); }
+.fv-opt.right { border-color: var(--ok); background: color-mix(in srgb, var(--ok) 14%, var(--paper)); }
+.fv-opt.wrong { border-color: var(--bad); background: color-mix(in srgb, var(--bad) 12%, var(--paper)); }
+.fv-opt.right .l { color: var(--ok); } .fv-opt.wrong .l { color: var(--bad); }
+
+/* resolução */
+.fv-res { border-top: 1px solid var(--grid); padding-top: 12px; }
+.fv-res summary { cursor: pointer; font-family: var(--display); font-weight: 700; color: var(--accent-ink); list-style: none; display: inline-flex; gap: 8px; align-items: center; }
+.fv-res summary::-webkit-details-marker { display: none; }
+.fv-res summary::before { content: "▸"; transition: transform .15s; }
+.fv-res[open] summary::before { transform: rotate(90deg); }
+.fv-res .fv-text { margin-top: 12px; }
+.fv-calc { font-family: var(--mono); font-size: .9rem; background: color-mix(in srgb, var(--accent) 9%, var(--card)); border-left: 3px solid var(--accent);
+  border-radius: 6px; padding: 10px 12px; display: grid; gap: 4px; overflow-x: auto; }
+.fv-ans { font-family: var(--display); font-weight: 800; color: var(--ok); }
+.fv-feedback { font-family: var(--display); font-weight: 700; min-height: 1.4em; }
+.fv-feedback.ok { color: var(--ok); } .fv-feedback.bad { color: var(--bad); }
+@media (prefers-reduced-motion: reduce) { .fv-res summary::before { transition: none; } }
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="wrap">
+    <a class="brand" href="index.html">
+      <svg width="28" height="28" viewBox="0 0 28 28" aria-hidden="true">
+        <path d="M3 24 Q14 -6 25 24" fill="none" stroke="var(--ink)" stroke-width="2" stroke-dasharray="3 3"/>
+        <circle cx="14" cy="9" r="3.5" fill="var(--accent)"/>
+      </svg>
+      A Tal da Física
+    </a>
+    <nav class="links" aria-label="Seções">
+      <a href="index.html#trilhas">Trilhas</a>
+      <a href="index.html#licao">Lição</a>
+      <a href="laboratorio.html">Laboratório</a>
+      <a href="graficos.html">Gráficos</a>
+      <a href="quiz.html">Quiz</a>
+      <a href="enem.html">ENEM</a>
+      <a href="fuvest.html" aria-current="page">FUVEST</a>
+      <a href="eletricidade.html">Eletricidade</a>
+      <a href="game/index.html">Game</a>
+      <a href="index.html#constantes">Constantes</a>
+    </nav>
+  </div>
+</header>
+
+<div class="wrap fv-intro">
+  <p class="label">Vestibular · FUVEST 2027 · 1ª fase, prova V1</p>
+  <h1>FUVEST 2027: Física resolvida</h1>
+  <p>As 10 questões de Física da prova aplicada em 01/11/2026, com enunciado completo e resolução comentada. Tente responder antes: clique numa alternativa e a resolução abre logo abaixo.</p>
+</div>
+
+<main class="wrap fv-main">
+<section class="fv-card fv-top" aria-labelledby="gab">
+  <div class="fv-bar">
+    <h2 id="gab">Suas respostas</h2>
+    <span class="fv-score" id="score" aria-live="polite"><b>0</b> de 10 respondidas</span>
+  </div>
+  <nav class="fv-grid" id="map" aria-label="Ir para a questão"></nav>
+  <div class="fv-bar">
+    <details class="fv-res" style="border:0;padding:0">
+      <summary>Mostrar o gabarito</summary>
+      <div class="fv-grid fv-gab" id="gabarito" style="margin-top:12px"></div>
+    </details>
+    <button class="btn ghost" id="reset" type="button">Limpar respostas</button>
+  </div>
+</section>
+
+<!-- ===================== Q22 ===================== -->
+<article class="fv-card" id="q22" data-ans="E">
+  <div class="fv-head"><h2>Questão 22</h2><span class="fv-topic">Hidrostática / estados físicos · interdisciplinar com Linguagens</span></div>
+  <div class="fv-text">
+    <p>Uma matéria publicada no começo de 2026 em um site de notícias apresentou o seguinte título:</p>
+    <blockquote>“Histórias do Mar: Carga mortal — fenômeno que transforma minério em líquido afunda navio.”</blockquote>
+    <p>Segundo a matéria, certos minérios com teor de umidade elevado, quando transportados a granel, podem sofrer um processo de fluidificação devido à vibração do navio. A água presente nos espaços entre os grãos, decorrente da própria umidade do minério, reduz o atrito entre eles, fazendo com que o conjunto passe a se comportar como um fluido, se movendo dentro do porão. Esse deslocamento da carga compromete a estabilidade da embarcação e pode levar ao seu naufrágio. A figura a seguir ilustra a situação.</p>
+  </div>
+  <figure class="fv-fig fv-ship" style="max-width:520px;justify-self:center">
+    <div class="fv-ship-img">
+      <div class="fv-ship-labels" aria-hidden="true"><span>Após o carregamento do minério</span><span>Durante o transporte</span></div>
+      <img src="fuvest/q22-navio.png" width="494" height="244" alt="Corte de um navio: à esquerda, após o carregamento, o minério fica assentado no porão; à direita, durante o transporte, o minério escoa para um lado e o navio inclina." loading="lazy">
+    </div>
+  </figure>
+  <p class="fv-text">Considerando o fenômeno apresentado, é correto afirmar que o título da reportagem emprega linguagem</p>
+  <ol class="fv-opts">
+    <li><button class="fv-opt" data-l="A"><span class="l">A</span><span>literal, pois o minério sofre fusão devido ao aquecimento provocado pelo atrito entre os grãos.</span></button></li>
+    <li><button class="fv-opt" data-l="B"><span class="l">B</span><span>denotativa, pois descreve uma mudança de estado físico provocada pela presença de água entre os grãos do minério.</span></button></li>
+    <li><button class="fv-opt" data-l="C"><span class="l">C</span><span>técnica adequada, pois refere-se à dissolução do minério na água presente na carga, formando uma solução líquida homogênea.</span></button></li>
+    <li><button class="fv-opt" data-l="D"><span class="l">D</span><span>de hipérbole científica, pois sugere a vaporização parcial devido ao aquecimento por atrito e posterior condensação do minério.</span></button></li>
+    <li><button class="fv-opt" data-l="E"><span class="l">E</span><span>figurada, pois o minério permanece sólido, embora passe a se comportar como um fluido.</span></button></li>
+  </ol>
+  <p class="fv-feedback" aria-live="polite"></p>
+  <details class="fv-res">
+    <summary>Ver resolução</summary>
+    <div class="fv-text">
+      <p>O texto explica o mecanismo: a água entre os grãos reduz o atrito entre eles e, com a vibração, o conjunto granular passa a escoar como um fluido. Não há fusão (não há aquecimento significativo), nem dissolução (o minério não forma solução homogênea), nem vaporização.</p>
+      <p>Fisicamente, os grãos continuam sólidos; muda apenas o comportamento mecânico do conjunto (perda de resistência ao cisalhamento, fenômeno conhecido como liquefação de carga). Logo, “transforma minério em líquido” é linguagem figurada.</p>
+      <p>(A), (B), (C) e (D) falham por atribuírem ao minério uma mudança de estado ou de natureza química que não ocorre.</p>
+      <p class="fv-ans">Resposta: alternativa E</p>
+    </div>
+  </details>
+</article>
+
+<!-- ===================== Q35 ===================== -->
+<article class="fv-card" id="q35" data-ans="A">
+  <div class="fv-head"><h2>Questão 35</h2><span class="fv-topic">Eletricidade · circuitos lineares (superposição)</span></div>
+  <p class="fv-text">Em um laboratório, um pesquisador realiza experimentos sobre um circuito elétrico composto por fios e resistores ideais não necessariamente iguais, conforme a imagem a seguir:</p>
+  <figure class="fv-fig" style="max-width:520px;justify-self:center">
+    <img src="fuvest/q35-circuito.png" width="513" height="288" alt="Rede de resistores com duas entradas de tensão, c1 à esquerda e c2 à direita, e duas tensões medidas, x embaixo à esquerda e y em cima à direita." loading="lazy">
+  </figure>
+  <p class="fv-text">Quando se colocam fontes de tensão tal que (c₁, c₂) = (5, 10) volts, verifica-se que (x, y) = (5, 3) volts. Repete-se o experimento com (c₁, c₂) = (3, 3) volts, para medir (x, y) = (1, 2) volts. Quando se coloca (c₁, c₂) = (2, 1) volts, quanto deve valer 5(x + y), em volts?</p>
+  <ol class="fv-opts">
+    <li><button class="fv-opt" data-l="A"><span class="l">A</span><span>7</span></button></li>
+    <li><button class="fv-opt" data-l="B"><span class="l">B</span><span>10</span></button></li>
+    <li><button class="fv-opt" data-l="C"><span class="l">C</span><span>1</span></button></li>
+    <li><button class="fv-opt" data-l="D"><span class="l">D</span><span>5</span></button></li>
+    <li><button class="fv-opt" data-l="E"><span class="l">E</span><span>2</span></button></li>
+  </ol>
+  <p class="fv-feedback" aria-live="polite"></p>
+  <details class="fv-res">
+    <summary>Ver resolução</summary>
+    <div class="fv-text">
+      <p>Um circuito formado apenas por fios e resistores ideais é <b>linear</b>: vale o princípio da superposição. Assim, as tensões medidas (x, y) são combinações lineares das fontes (c₁, c₂). Não é preciso conhecer os resistores.</p>
+      <p>Escrevemos a nova entrada como combinação das duas já conhecidas:</p>
+      <div class="fv-calc">
+        <span>(2, 1) = a·(5, 10) + b·(3, 3)</span>
+        <span>5a + 3b = 2 &nbsp;e&nbsp; 10a + 3b = 1</span>
+        <span>Subtraindo: 5a = −1 ⇒ a = −1/5. Então 3b = 2 + 1 = 3 ⇒ b = 1</span>
+        <span>(x, y) = −1/5·(5, 3) + 1·(1, 2) = (−1; −0,6) + (1; 2) = (0; 1,4) V</span>
+        <span>x + y = 1,4 V ⇒ 5(x + y) = 7 V</span>
+      </div>
+      <p class="fv-ans">Resposta: alternativa A</p>
+    </div>
+  </details>
+</article>
+
+<!-- ===================== Q36 ===================== -->
+<article class="fv-card" id="q36" data-ans="B">
+  <div class="fv-head"><h2>Questão 36</h2><span class="fv-topic">Energia · eletricidade e meio ambiente</span></div>
+  <div class="fv-text">
+    <p class="fv-note"><b>Texto para as questões 36 e 37.</b> No contexto de 2026, a substituição de frotas a combustão por frotas elétricas é uma estratégia central de descarbonização para alguns países. O Uruguai, por exemplo, lidera a expansão de veículos elétricos na América Latina. Desde 2010, converteu 99% de sua matriz elétrica para fontes renováveis e locais. Essa transição estratégica permitiu ao país reduzir a dependência de combustíveis fósseis importados e foi impulsionada por incentivos fiscais agressivos. Em termos físicos, um carro elétrico pode ser modelado como um sistema simples de corrente contínua, no qual a bateria fornece a tensão, o “acelerador” atua como um resistor variável que controla a corrente, e o motor converte essa energia em movimento. A eficiência desse sistema depende da conversão da energia da bateria em movimento pelo motor, com a menor perda possível por calor (efeito Joule).</p>
+    <p>Do ponto de vista da Física e da conservação ambiental, a afirmação de que um carro elétrico produz “poluição zero” deve ser analisada com cautela. Considerando os princípios de conservação de energia e os impactos ambientais associados, é correto afirmar:</p>
+  </div>
+  <ol class="fv-opts">
+    <li><button class="fv-opt" data-l="A"><span class="l">A</span><span>O carro elétrico elimina a pegada de carbono de um indivíduo, pois, como o circuito é fechado e opera por indução eletromagnética, não há troca de matéria ou energia com o meio ambiente externo.</span></button></li>
+    <li><button class="fv-opt" data-l="B"><span class="l">B</span><span>A eficiência ambiental de um veículo elétrico está diretamente ligada à matriz energética do país; se a corrente elétrica que carrega a bateria for obtida de termelétricas a carvão, o veículo funciona apenas como um “deslocador” de emissões de gases poluentes da cidade para a região da usina termelétrica.</span></button></li>
+    <li><button class="fv-opt" data-l="C"><span class="l">C</span><span>O calor dissipado pelo motor elétrico (efeito Joule) é a principal causa do aquecimento global nas cidades, sendo mais prejudicial ao meio ambiente do que a queima de combustíveis fósseis em motores a combustão interna.</span></button></li>
+    <li><button class="fv-opt" data-l="D"><span class="l">D</span><span>Por ser um sistema elétrico resistivo, a bateria de um carro elétrico pode ser descartada em lixo comum ao final de sua vida útil, uma vez que os seus componentes químicos são convertidos integralmente em energia mecânica durante o uso.</span></button></li>
+    <li><button class="fv-opt" data-l="E"><span class="l">E</span><span>Aumentar a voltagem do sistema de 400 V para 800 V serve principalmente para aumentar a velocidade final do carro, não possuindo qualquer relação com a preservação de recursos naturais ou redução de perdas energéticas no circuito.</span></button></li>
+  </ol>
+  <p class="fv-feedback" aria-live="polite"></p>
+  <details class="fv-res">
+    <summary>Ver resolução</summary>
+    <div class="fv-text">
+      <p>Pela conservação da energia, a energia que move o carro vem da rede elétrica; o impacto ambiental depende de como essa energia foi gerada. Com matriz renovável (caso do Uruguai) as emissões são baixas; com termelétricas a carvão, as emissões apenas são transferidas para a usina. Isso é a alternativa (B).</p>
+      <ul>
+        <li>(A) Falso: há troca de energia com o ambiente (recarga, dissipação térmica) e o carro não opera “por indução” em circuito isolado.</li>
+        <li>(C) Falso: o calor do efeito Joule é desprezível frente ao efeito estufa causado pela queima de combustíveis.</li>
+        <li>(D) Falso: baterias contêm metais pesados e reagentes que não se “convertem em energia”; exigem descarte e reciclagem adequados.</li>
+        <li>(E) Falso: para a mesma potência P = V·i, dobrar V reduz i à metade, e a perda Joule (P<sub>d</sub> = R·i²) cai a um quarto. Há relação direta com a eficiência.</li>
+      </ul>
+      <p class="fv-ans">Resposta: alternativa B</p>
+    </div>
+  </details>
+</article>
+
+<!-- ===================== Q37 ===================== -->
+<article class="fv-card" id="q37" data-ans="A">
+  <div class="fv-head"><h2>Questão 37</h2><span class="fv-topic">Potência e energia elétrica · análise de custo</span></div>
+  <div class="fv-text">
+    <p class="fv-note">Use o texto da <a href="#q36">questão 36</a>.</p>
+    <p>Um motorista está decidindo entre comprar um carro a gasolina ou um elétrico. No modelo elétrico, a ficha de especificação informa que, para manter uma velocidade constante de 100 km/h, o sistema opera com uma diferença de potencial de 400 V e uma corrente de 80 A.</p>
+    <p>Dados adicionais:</p>
+    <ul>
+      <li>preço do carro a gasolina: R$ 120.000,00;</li>
+      <li>preço do carro elétrico: R$ 160.000,00;</li>
+      <li>uso mensal: 2.000 km por mês, à velocidade média de 100 km/h;</li>
+      <li>custo da gasolina: R$ 0,50 por km rodado;</li>
+      <li>tarifa de energia elétrica: R$ 0,80 por kWh.</li>
+    </ul>
+    <p>Na comparação entre os dois modelos, considerando os dados apresentados e um tempo de posse do carro de 5 anos, é correto afirmar que, em termos financeiros,</p>
+    <p class="fv-note"><b>Note e adote:</b> P = ΔE/Δt = V·i. Desprezar variações no preço da gasolina e da energia no período.</p>
+  </div>
+  <ol class="fv-opts">
+    <li><button class="fv-opt" data-l="A"><span class="l">A</span><span>o carro elétrico é o mais atrativo com bônus governamental de pelo menos R$ 11.000,00.</span></button></li>
+    <li><button class="fv-opt" data-l="B"><span class="l">B</span><span>o carro elétrico é o mais atrativo com bônus governamental de pelo menos R$ 8.000,00.</span></button></li>
+    <li><button class="fv-opt" data-l="C"><span class="l">C</span><span>o carro elétrico é o mais atrativo com bônus governamental de pelo menos R$ 5.000,00.</span></button></li>
+    <li><button class="fv-opt" data-l="D"><span class="l">D</span><span>o carro elétrico é o mais atrativo, independentemente de bônus governamental.</span></button></li>
+    <li><button class="fv-opt" data-l="E"><span class="l">E</span><span>o carro elétrico não é o mais atrativo, independentemente de bônus governamental.</span></button></li>
+  </ol>
+  <p class="fv-feedback" aria-live="polite"></p>
+  <details class="fv-res">
+    <summary>Ver resolução</summary>
+    <div class="fv-text">
+      <div class="fv-calc">
+        <span>Potência: P = V·i = 400 × 80 = 32.000 W = 32 kW</span>
+        <span>Tempo de uso por mês: Δt = 2.000 km ÷ 100 km/h = 20 h</span>
+        <span>Energia por mês: E = 32 kW × 20 h = 640 kWh ⇒ custo = 640 × 0,80 = R$ 512,00/mês</span>
+        <span>Gasolina por mês: 2.000 × 0,50 = R$ 1.000,00/mês</span>
+        <span>Economia em 5 anos (60 meses): (1.000 − 512) × 60 = R$ 29.280,00</span>
+        <span>Diferença de preço de compra: 160.000 − 120.000 = R$ 40.000,00</span>
+      </div>
+      <p>Sem incentivo, o elétrico sai R$ 40.000 − 29.280 = R$ 10.720,00 mais caro. Ele só passa a ser vantajoso com bônus superior a R$ 10.720; entre as opções, apenas “pelo menos R$ 11.000,00” garante isso (R$ 8.000 ou R$ 5.000 não bastam).</p>
+      <p class="fv-ans">Resposta: alternativa A</p>
+    </div>
+  </details>
+</article>
+
+<!-- ===================== Q42 ===================== -->
+<article class="fv-card" id="q42" data-ans="C">
+  <div class="fv-head"><h2>Questão 42</h2><span class="fv-topic">Física moderna · equivalência massa-energia (E = mc²)</span></div>
+  <div class="fv-text">
+    <p>Em 2026, o cenário nuclear global é definido pela estagnação dos tratados de desarmamento e por uma nítida tendência de modernização dos arsenais. Compreender os riscos desse panorama exige uma análise técnica das “zonas de impacto”, que são áreas geográficas delimitadas onde os efeitos de uma detonação manifestam-se de forma previsível.</p>
+    <p>No contexto de uma explosão nuclear, essas zonas são classificadas conforme a intensidade dos danos físicos resultantes da energia liberada. O raio de uma zona de impacto específica é proporcional à raiz cúbica da energia do artefato, conforme a relação R ∝ ∛E. A tabela a seguir mostra as zonas de impacto para uma energia de referência de 9 × 10¹⁴ J.</p>
+  </div>
+  <div style="overflow-x:auto">
+    <table class="fv-table">
+      <thead><tr><th>Zona de impacto</th><th>Raio (aproximado)</th><th>O que acontece?</th></tr></thead>
+      <tbody>
+        <tr><td>Bola de fogo</td><td>0,5 km</td><td>Tudo dentro desse raio é instantaneamente vaporizado pela temperatura extremamente alta.</td></tr>
+        <tr><td>Destruição total</td><td>2 km</td><td>Prédios de concreto são demolidos pela onda de choque de alta pressão.</td></tr>
+        <tr><td>Danos por calor</td><td>5 km</td><td>Roupas pegam fogo e pessoas sofrem queimaduras de 3º grau na pele exposta.</td></tr>
+        <tr><td>Danos leves</td><td>10 km</td><td>Vidros quebram, causando ferimentos por estilhaços.</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="fv-text">Uma bomba atômica teórica contém 4 kg de urânio-235. Sabe-se que apenas 2% dessa massa é convertida efetivamente em energia de explosão por meio da fissão nuclear. Suponha que uma bomba desse tipo seja detonada no Burj Khalifa, o maior prédio do mundo, localizado no centro de Dubai. As distâncias de alguns pontos turísticos em relação ao Burj Khalifa (“ponto zero”) são: Dubai Mall: ~0,4 km; Business Bay: ~1,8 km; Port Rashid: ~8,2 km; Jumeirah Burj Al Arab: ~11,0 km.</p>
+  <figure class="fv-fig" style="max-width:540px;justify-self:center">
+    <img src="fuvest/q42-dubai.jpg" width="523" height="313" alt="Imagem de satélite de Dubai com setas a partir do Burj Khalifa: Dubai Mall a 0,4 km, Business Bay a 1,8 km, Port Rashid a 8,2 km e Jumeirah Burj Al Arab a 11,0 km." loading="lazy">
+  </figure>
+  <p class="fv-text fv-note"><b>Note e adote:</b> c = 3 × 10⁸ m/s; E = mc².</p>
+  <p class="fv-text">Com base nas informações apresentadas, é correto afirmar:</p>
+  <ol class="fv-opts">
+    <li><button class="fv-opt" data-l="A"><span class="l">A</span><span>O Jumeirah Burj Al Arab seria completamente vaporizado pela zona da bola de fogo.</span></button></li>
+    <li><button class="fv-opt" data-l="B"><span class="l">B</span><span>A zona de destruição total se estenderia até um raio de 2,0 km, atingindo a área de Business Bay.</span></button></li>
+    <li><button class="fv-opt" data-l="C"><span class="l">C</span><span>O Dubai Mall estaria dentro da zona de vaporização instantânea.</span></button></li>
+    <li><button class="fv-opt" data-l="D"><span class="l">D</span><span>Pessoas localizadas em Port Rashid estariam seguras de qualquer efeito térmico, sofrendo apenas com vidros quebrados.</span></button></li>
+    <li><button class="fv-opt" data-l="E"><span class="l">E</span><span>Nenhum dos pontos turísticos mencionados teria danos leves.</span></button></li>
+  </ol>
+  <p class="fv-feedback" aria-live="polite"></p>
+  <details class="fv-res">
+    <summary>Ver resolução</summary>
+    <div class="fv-text">
+      <div class="fv-calc">
+        <span>Massa convertida: m = 2% × 4 kg = 0,08 kg</span>
+        <span>Energia: E = mc² = 0,08 × (3 × 10⁸)² = 0,08 × 9 × 10¹⁶ = 7,2 × 10¹⁵ J</span>
+        <span>E / E<sub>ref</sub> = 7,2 × 10¹⁵ / 9 × 10¹⁴ = 8 ⇒ R / R<sub>ref</sub> = ∛8 = 2</span>
+      </div>
+      <p>Todos os raios dobram: bola de fogo 1 km · destruição total 4 km · danos por calor 10 km · danos leves 20 km.</p>
+      <ul>
+        <li>(A) Falso: 11 km está na zona de danos leves.</li>
+        <li>(B) Falso: o raio seria 4 km, não 2 km.</li>
+        <li>(C) Verdadeiro: 0,4 km &lt; 1 km ⇒ dentro da bola de fogo.</li>
+        <li>(D) Falso: 8,2 km &lt; 10 km ⇒ sofreriam queimaduras.</li>
+        <li>(E) Falso: o Burj Al Arab (11 km) teria danos leves.</li>
+      </ul>
+      <p class="fv-ans">Resposta: alternativa C</p>
+    </div>
+  </details>
+</article>
+
+<!-- ===================== Q54 ===================== -->
+<article class="fv-card" id="q54" data-ans="C">
+  <div class="fv-head"><h2>Questão 54</h2><span class="fv-topic">Cosmologia · natureza do conhecimento científico</span></div>
+  <div class="fv-text">
+    <p>Existe um conflito fundamental na cosmologia contemporânea sobre a taxa de expansão do universo, conhecido como a “Tensão de Hubble”. Ao ler um artigo de divulgação científica sobre o tema, um estudante descobriu que dois métodos científicos robustos e confiáveis apresentam resultados discrepantes para o valor dessa taxa, conhecida como Constante de Hubble (H₀):</p>
+    <ul>
+      <li><b>Método A (abordagem teórica fundamental):</b> baseia-se em deduções matemáticas estritas a partir das leis fundamentais da física aplicadas ao modelo cosmológico padrão. Utilizando como ponto de partida a Radiação Cósmica de Fundo em Micro-ondas (o eco do universo primitivo), esse método calcula, teoricamente, que H₀ ≈ 67,4 ± 0,5 km/s/Mpc.</li>
+      <li><b>Método B (abordagem observacional empírica):</b> baseia-se puramente em dados observacionais diretos do universo local e tardio. Medindo a distância e o afastamento real de objetos cósmicos, como estrelas variáveis Cefeidas e supernovas do tipo Ia, esse método fornece, empiricamente, H₀ ≈ 73,0 ± 1,7 km/s/Mpc.</li>
+    </ul>
+    <p>O artigo conclui que essa discrepância não configura um simples erro de calibração ou cálculo, mas sim uma “crise na cosmologia” que pode exigir o desenvolvimento de uma “Nova Física” para reconciliar os modelos teóricos fundamentais com as observações práticas.</p>
+    <p>Com base na interpretação dessas informações e nos princípios da divulgação científica confiável, assinale a alternativa que apresenta a análise mais coerente sobre a consistência dos argumentos e a natureza dos dados apresentados.</p>
+  </div>
+  <ol class="fv-opts">
+    <li><button class="fv-opt" data-l="A"><span class="l">A</span><span>A conclusão de que existe uma “crise na cosmologia” é um exagero dos cientistas, pois a diferença entre 67 e 73 é pequena e seria correto usar a média aritmética entre os dois valores.</span></button></li>
+    <li><button class="fv-opt" data-l="B"><span class="l">B</span><span>O método A é o único correto porque cálculos matemáticos não falham. O método B, por sua vez, deve ser descartado por ser baseado apenas em “olhar para o céu”, um processo sujeito a erros humanos e opiniões dos astrônomos.</span></button></li>
+    <li><button class="fv-opt" data-l="C"><span class="l">C</span><span>A existência de uma “tensão” sugere que o Modelo Padrão da Cosmologia pode estar incompleto, indicando que a ciência avança justamente por meio da identificação de lacunas entre previsões teóricas (método A) e observações diretas (método B).</span></button></li>
+    <li><button class="fv-opt" data-l="D"><span class="l">D</span><span>O texto perde sua credibilidade científica ao sugerir uma “Nova Física”, visto que as leis da natureza são imutáveis e qualquer diferença de dados deve ser interpretada como falha humana ou instrumental.</span></button></li>
+    <li><button class="fv-opt" data-l="E"><span class="l">E</span><span>A expansão do universo é um fenômeno teórico que não pode ser validado por medidas diretas. Dessa forma, não há relevância na abordagem observacional empírica, o que invalida o método B.</span></button></li>
+  </ol>
+  <p class="fv-feedback" aria-live="polite"></p>
+  <details class="fv-res">
+    <summary>Ver resolução</summary>
+    <div class="fv-text">
+      <p>A diferença não é “pequena” quando comparada às incertezas:</p>
+      <div class="fv-calc">
+        <span>73,0 − 67,4 = 5,6 km/s/Mpc</span>
+        <span>Incerteza combinada: √(0,5² + 1,7²) ≈ 1,8 km/s/Mpc</span>
+      </div>
+      <p>A discrepância vale cerca de 3 vezes a incerteza. Por isso não se pode simplesmente tirar a média (A é falsa).</p>
+      <p>Teoria e observação são igualmente necessárias: um modelo teórico só é válido se concorda com as medidas, e medidas confiáveis não podem ser descartadas (B, D e E são falsas). Quando dois métodos robustos discordam de forma sistemática, isso pode indicar que o modelo teórico está incompleto. É assim que a ciência avança.</p>
+      <p class="fv-ans">Resposta: alternativa C</p>
+    </div>
+  </details>
+</article>
+
+<!-- ===================== Q56 ===================== -->
+<article class="fv-card" id="q56" data-ans="B">
+  <div class="fv-head"><h2>Questão 56</h2><span class="fv-topic">Óptica / astrofísica · nebulosas</span></div>
+  <p class="fv-text">Em 1872, Narcisa Amália publica o livro intitulado <i>Nebulosas</i>, no qual a ideia de nebulosas é associada a algo difuso e distante. Do ponto de vista da Astrofísica, nebulosas são grandes nuvens de gás e poeira no espaço interestelar que, em certas condições, podem colapsar gravitacionalmente e formar estrelas. Uma nebulosa interestelar pode ser observada da Terra principalmente porque</p>
+  <ol class="fv-opts">
+    <li><button class="fv-opt" data-l="A"><span class="l">A</span><span>emite luz visível devido à fusão nuclear em seu interior.</span></button></li>
+    <li><button class="fv-opt" data-l="B"><span class="l">B</span><span>reflete a luz emitida por estrelas próximas e espalha essa radiação.</span></button></li>
+    <li><button class="fv-opt" data-l="C"><span class="l">C</span><span>produz luz por atrito entre partículas de poeira.</span></button></li>
+    <li><button class="fv-opt" data-l="D"><span class="l">D</span><span>emite radiação apenas na faixa do infravermelho.</span></button></li>
+    <li><button class="fv-opt" data-l="E"><span class="l">E</span><span>absorve completamente a luz incidente, tornando-se visível por contraste.</span></button></li>
+  </ol>
+  <p class="fv-feedback" aria-live="polite"></p>
+  <details class="fv-res">
+    <summary>Ver resolução</summary>
+    <div class="fv-text">
+      <p>Uma nebulosa não tem fonte própria de energia: não há fusão nuclear (A), pois ela é uma nuvem difusa, sem a densidade e a temperatura de um núcleo estelar. O brilho vem da radiação das estrelas vizinhas, que é <b>refletida e espalhada</b> pela poeira (nebulosas de reflexão) ou que ioniza o gás, que depois reemite luz.</p>
+      <ul>
+        <li>(C) Falso: não há “atrito” gerando luz.</li>
+        <li>(D) Falso: nebulosas emitem e espalham em várias faixas, inclusive no visível.</li>
+        <li>(E) Falso: nebulosas escuras existem, mas não são o caso geral, e não absorvem “completamente”.</li>
+      </ul>
+      <p class="fv-ans">Resposta: alternativa B</p>
+    </div>
+  </details>
+</article>
+
+<!-- ===================== Q73 ===================== -->
+<article class="fv-card" id="q73" data-ans="D">
+  <div class="fv-head"><h2>Questão 73</h2><span class="fv-topic">Mecânica · energia e trabalho de forças dissipativas</span></div>
+  <div class="fv-text">
+    <p class="fv-note"><b>Texto para as questões 73 e 74.</b> Em outubro de 2025, o skatista Sandro Dias (o “Mineirinho”) realizou o que foi considerado o maior drop de skate do mundo, descendo em uma rampa montada na lateral do Centro Administrativo Fernando Ferrari, em Porto Alegre (vide foto). Partindo do repouso de uma plataforma montada a 70 m do solo, o skatista desceu pela rampa, passando por uma parte curva (“transição”) até chegar ao ponto mais baixo da rampa, a uma altura de 9,70 m do solo. O percurso termina em um leve aclive (“flat”), conforme ilustrado na segunda figura. Considere que Sandro pesa 70 kg e que o trabalho das forças de atrito e arrasto do ar foi de 10.710 J durante a primeira parte do percurso (até o ponto mais baixo da rampa).</p>
+  </div>
+  <figure class="fv-fig" style="max-width:420px;justify-self:center">
+    <img src="fuvest/q73-drop.jpg" width="519" height="670" alt="Acima, foto da rampa montada na lateral de um prédio. Abaixo, esquema da rampa: parte vertical, transição com um ponto azul, ponto mais baixo a 9,7 m do solo, flat, e a largada a 70,0 m." loading="lazy">
+  </figure>
+  <p class="fv-text fv-note"><b>Note e adote:</b> g = 10 m/s².</p>
+  <p class="fv-text">Considerando os efeitos das forças dissipativas mencionadas, qual a velocidade, em km/h, que Sandro alcançou no ponto mais baixo da rampa?</p>
+  <ol class="fv-opts">
+    <li><button class="fv-opt" data-l="A"><span class="l">A</span><span>10</span></button></li>
+    <li><button class="fv-opt" data-l="B"><span class="l">B</span><span>30</span></button></li>
+    <li><button class="fv-opt" data-l="C"><span class="l">C</span><span>47</span></button></li>
+    <li><button class="fv-opt" data-l="D"><span class="l">D</span><span>108</span></button></li>
+    <li><button class="fv-opt" data-l="E"><span class="l">E</span><span>126</span></button></li>
+  </ol>
+  <p class="fv-feedback" aria-live="polite"></p>
+  <details class="fv-res">
+    <summary>Ver resolução</summary>
+    <div class="fv-text">
+      <p>Teorema da energia, com perdas: E<sub>p,inicial</sub> = E<sub>c,final</sub> + E<sub>p,final</sub> + |W<sub>dissipativas</sub>|.</p>
+      <div class="fv-calc">
+        <span>Desnível: Δh = 70 − 9,7 = 60,3 m ⇒ m·g·Δh = 70 × 10 × 60,3 = 42.210 J</span>
+        <span>Energia cinética no ponto mais baixo: E<sub>c</sub> = 42.210 − 10.710 = 31.500 J</span>
+        <span>½ · 70 · v² = 31.500 ⇒ v² = 900 ⇒ v = 30 m/s</span>
+        <span>30 m/s × 3,6 = 108 km/h</span>
+      </div>
+      <p class="fv-ans">Resposta: alternativa D</p>
+    </div>
+  </details>
+</article>
+
+<!-- ===================== Q74 ===================== -->
+<article class="fv-card" id="q74" data-ans="B">
+  <div class="fv-head"><h2>Questão 74</h2><span class="fv-topic">Dinâmica do movimento circular · força normal na transição</span></div>
+  <div class="fv-text">
+    <p class="fv-note">Use o texto e as figuras da <a href="#q73">questão 73</a>.</p>
+    <p>Quando Sandro está na zona de “transição”, marcada por um ponto azul na figura, antes do ponto mais baixo da rampa, é correto afirmar:</p>
+  </div>
+  <ol class="fv-opts">
+    <li><button class="fv-opt" data-l="A"><span class="l">A</span><span>O módulo da força normal que o skate exerce sobre Sandro é zero, fazendo com que o skatista tenha a sensação de “estar flutuando”.</span></button></li>
+    <li><button class="fv-opt" data-l="B"><span class="l">B</span><span>O módulo da força normal que o skate exerce sobre Sandro é maior que o módulo da componente radial da força peso, cujos efeitos incluem uma sobrecarga em seus joelhos.</span></button></li>
+    <li><button class="fv-opt" data-l="C"><span class="l">C</span><span>A única força atuando sobre Sandro é a força peso, uma vez que ele está em queda livre nesse trecho.</span></button></li>
+    <li><button class="fv-opt" data-l="D"><span class="l">D</span><span>O módulo da força normal que o skate exerce sobre Sandro é igual ao módulo da força peso, já que Sandro está em equilíbrio mecânico neste ponto do percurso.</span></button></li>
+    <li><button class="fv-opt" data-l="E"><span class="l">E</span><span>Sandro está em um movimento retilíneo uniformemente variável com aceleração constante nessa parte do trajeto.</span></button></li>
+  </ol>
+  <p class="fv-feedback" aria-live="polite"></p>
+  <details class="fv-res">
+    <summary>Ver resolução</summary>
+    <div class="fv-text">
+      <p>Na transição a trajetória é curva e côncava, com o centro de curvatura acima do skatista. Para que ele descreva essa curva, a resultante na direção radial (apontando para o centro) deve ser a força centrípeta:</p>
+      <div class="fv-calc">
+        <span>N − P·cos θ = m·v²/R ⇒ N = P·cos θ + m·v²/R &gt; P·cos θ</span>
+      </div>
+      <p>Aqui P·cos θ é a componente radial do peso. Como v é alta (≈ 30 m/s), a normal é bem maior que essa componente: sensação de “peso aumentado” e sobrecarga nos joelhos.</p>
+      <ul>
+        <li>(A) e (C) Falsos: há contato com a rampa, logo N ≠ 0 e não é queda livre.</li>
+        <li>(D) Falso: não há equilíbrio, pois existe aceleração centrípeta (e tangencial).</li>
+        <li>(E) Falso: a trajetória é curva, não retilínea.</li>
+      </ul>
+      <p class="fv-ans">Resposta: alternativa B</p>
+    </div>
+  </details>
+</article>
+
+<!-- ===================== Q75 ===================== -->
+<article class="fv-card" id="q75" data-ans="C">
+  <div class="fv-head"><h2>Questão 75</h2><span class="fv-topic">Calorimetria · equilíbrio térmico com mudança de fase</span></div>
+  <div class="fv-text">
+    <p>Para vender água no Carnaval, uma pessoa colocou em uma caixa de isopor 15 copinhos de água com 350 mL cada, à temperatura de 25 °C, e 1,0 kg de gelo em blocos. Para preencher todo o volume do isopor, acrescentou 0,5 kg de gelo triturado na caixa, que foi fechada e lacrada. Sabendo que o gelo, em blocos e triturado, estava à temperatura negativa de −15 °C, qual a temperatura do conteúdo dos copinhos após toda a mistura no interior do isopor atingir o equilíbrio térmico e qual o estado físico da água na caixa?</p>
+    <p class="fv-note"><b>Note e adote:</b> isopor é isolante ideal; embalagem dos copinhos é condutora ideal; variações de volume e pressão desprezíveis. Q = m·L (mudança de fase) e Q = m·c·ΔT. Densidade da água = 1 kg/L; c<sub>água</sub> = 1 cal/g·°C; c<sub>gelo</sub> = 0,5 cal/g·°C; L<sub>vaporização</sub> = 540 cal/g; L<sub>fusão</sub> = 80 cal/g.</p>
+  </div>
+  <ol class="fv-opts">
+    <li><button class="fv-opt" data-l="A"><span class="l">A</span><span>É menor que 0 °C. A água dos copinhos congelou, e o gelo não derreteu.</span></button></li>
+    <li><button class="fv-opt" data-l="B"><span class="l">B</span><span>É igual a 0 °C. O gelo derreteu parcialmente, e restou uma mistura de água líquida e gelo na caixa.</span></button></li>
+    <li><button class="fv-opt" data-l="C"><span class="l">C</span><span>É igual a 0 °C. Todo o gelo derreteu, e restou apenas água líquida na caixa.</span></button></li>
+    <li><button class="fv-opt" data-l="D"><span class="l">D</span><span>É maior que 0 °C e menor que 10 °C. Todo o gelo derreteu, e restou apenas água líquida na caixa.</span></button></li>
+    <li><button class="fv-opt" data-l="E"><span class="l">E</span><span>É igual ou maior que 10 °C. Todo o gelo derreteu, e restou apenas água líquida na caixa.</span></button></li>
+  </ol>
+  <p class="fv-feedback" aria-live="polite"></p>
+  <details class="fv-res">
+    <summary>Ver resolução</summary>
+    <div class="fv-text">
+      <div class="fv-calc">
+        <span>Água dos copinhos: 15 × 350 mL = 5.250 mL ⇒ 5.250 g</span>
+        <span>Calor que ela pode ceder até 0 °C: 5.250 × 1 × 25 = 131.250 cal</span>
+        <span>Gelo: 1,0 + 0,5 = 1,5 kg = 1.500 g</span>
+        <span>Aquecer de −15 °C a 0 °C: Q₁ = 1.500 × 0,5 × 15 = 11.250 cal</span>
+        <span>Fundir todo o gelo: Q₂ = 1.500 × 80 = 120.000 cal</span>
+        <span>Total para levar todo o gelo a água a 0 °C: Q₁ + Q₂ = 131.250 cal</span>
+      </div>
+      <p>O calor cedido pela água é exatamente igual ao necessário para aquecer e derreter todo o gelo. Portanto, o equilíbrio ocorre a 0 °C, com todo o gelo derretido e apenas água líquida (6,75 kg) na caixa.</p>
+      <p class="fv-ans">Resposta: alternativa C</p>
+    </div>
+  </details>
+</article>
+</main>
+
+<footer>
+  <div class="wrap">
+    <span>A Tal da Física · material de estudo gratuito</span>
+    <span class="mono">λ<sub>Na</sub> = 589 nm, a cor do nosso destaque</span>
+  </div>
+</footer>
+
+<script>
+(function(){
+const cards=[...document.querySelectorAll('article.fv-card')];
+const map=document.getElementById('map'), gab=document.getElementById('gabarito'), score=document.getElementById('score');
+const KEY='fuvest2027-respostas';
+let saved={};
+try{saved=JSON.parse(localStorage.getItem(KEY)||'{}')||{}}catch(e){saved={}}
+function store(){try{localStorage.setItem(KEY,JSON.stringify(saved))}catch(e){}}
+
+cards.forEach(c=>{
+  const n=c.id.slice(1);
+  map.insertAdjacentHTML('beforeend',`<a href="#${c.id}" data-q="${c.id}"><span class="n">Q${n}</span><span class="r">?</span></a>`);
+  gab.insertAdjacentHTML('beforeend',`<a href="#${c.id}"><span class="n">Q${n}</span><span class="r">${c.dataset.ans}</span></a>`);
+});
+
+function mark(card,letter,open){
+  const ans=card.dataset.ans, fb=card.querySelector('.fv-feedback');
+  card.querySelectorAll('.fv-opt').forEach(b=>{
+    b.disabled=true;
+    if(b.dataset.l===ans)b.classList.add('right');
+    else if(b.dataset.l===letter)b.classList.add('wrong');
+  });
+  const ok=letter===ans;
+  fb.textContent=ok?'Isso! Resposta certa.':`Você marcou ${letter}. A resposta é ${ans}: veja a resolução.`;
+  fb.className='fv-feedback '+(ok?'ok':'bad');
+  if(open)card.querySelector('.fv-res').open=true;
+  const tile=map.querySelector(`[data-q="${card.id}"]`);
+  tile.classList.add('done',ok?'ok':'bad');tile.querySelector('.r').textContent=letter;
+}
+function updateScore(){
+  const done=Object.keys(saved).length, right=cards.filter(c=>saved[c.id]===c.dataset.ans).length;
+  score.innerHTML=done?`<b>${right}</b> ${right===1?'acerto':'acertos'} em <b>${done}</b> de 10 ${done===1?'respondida':'respondidas'}`:'<b>0</b> de 10 respondidas';
+}
+cards.forEach(card=>{
+  card.querySelectorAll('.fv-opt').forEach(b=>b.addEventListener('click',()=>{
+    saved[card.id]=b.dataset.l;store();mark(card,b.dataset.l,true);updateScore();
+  }));
+  if(saved[card.id])mark(card,saved[card.id],false);
+});
+document.getElementById('reset').addEventListener('click',()=>{
+  saved={};store();
+  cards.forEach(card=>{
+    card.querySelectorAll('.fv-opt').forEach(b=>{b.disabled=false;b.classList.remove('right','wrong')});
+    const fb=card.querySelector('.fv-feedback');fb.textContent='';fb.className='fv-feedback';
+    card.querySelector('.fv-res').open=false;
+  });
+  map.querySelectorAll('a').forEach(a=>{a.className='';a.querySelector('.r').textContent='?'});
+  updateScore();
+});
+updateScore();
+})();
+</script>
+</body>
+</html>
