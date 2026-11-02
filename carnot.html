@@ -1,0 +1,429 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Ciclo de Carnot · A Tal da Física</title>
+<link rel="stylesheet" href="../estilo.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Literata:ital,opsz,wght@0,7..72,400;0,7..72,600;1,7..72,400&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+/* Simulação trazida do artefato "Ciclo de Carnot"; as cores e fontes do site estão em motores.css */
+.mt-wrap { max-width: 1120px; margin: 0 auto; display: grid; gap: 18px; }
+.mt-head { display: flex; flex-wrap: wrap; align-items: end; justify-content: space-between; gap: 12px 24px; }
+.mt-head h1 { font-family: var(--font-display); font-weight: 800; font-size: clamp(28px, 5vw, 44px); line-height: 1.05; margin: 0; letter-spacing: -0.01em; text-wrap: balance; }
+.mt-lede { margin: 6px 0 0; color: var(--muted); max-width: 62ch; }
+.eta { font-family: var(--font-mono); text-align: right; }
+.eta .mt-lbl { font-family: var(--font-body); font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+.eta .mt-val { font-size: 34px; font-weight: 500; color: var(--work); font-variant-numeric: tabular-nums; }
+.eta .frm { font-size: 13px; color: var(--muted); }
+
+.stage-grid { display: grid; grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.4fr); gap: 18px; }
+.panel { background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 14px; min-width: 0; }
+.panel h2 { font-family: var(--font-display); font-weight: 600; font-size: 15px; margin: 0 0 8px; letter-spacing: 0.01em; display: flex; justify-content: space-between; gap: 8px; }
+.panel h2 span { font-family: var(--font-mono); font-weight: 400; font-size: 13px; color: var(--muted); }
+canvas { display: block; width: 100%; height: auto; }
+#engine { aspect-ratio: 4 / 5; max-width: 100%; }
+#pv { aspect-ratio: 16 / 11; max-width: 100%; }
+
+.mt-readout { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; margin-top: 10px; }
+.mt-readout div { background: var(--bg); border-radius: 8px; padding: 6px 10px; }
+.mt-readout b { display: block; font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); font-weight: 500; }
+.mt-readout output { font-family: var(--font-mono); font-size: 17px; font-variant-numeric: tabular-nums; }
+
+.mt-steps { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; }
+.step {
+  text-align: left; font: inherit; color: inherit; background: var(--panel); border: 1px solid var(--line); border-radius: 12px;
+  padding: 10px 12px; cursor: pointer; display: grid; gap: 2px; min-width: 0; transition: border-color .2s, box-shadow .2s;
+}
+.step:hover { border-color: var(--muted); }
+.step:focus-visible, button:focus-visible, input:focus-visible { outline: 2px solid var(--work); outline-offset: 2px; }
+.step .tag { font-family: var(--font-mono); font-size: 12px; color: var(--muted); }
+.step .name { font-weight: 600; }
+.step .desc { font-size: 13px; color: var(--muted); }
+.step.on { border-color: currentColor; box-shadow: 0 0 0 1px currentColor inset; }
+.step[data-k="0"].on { color: var(--hot); } .step[data-k="2"].on { color: var(--cold); } .step[data-k="1"].on, .step[data-k="3"].on { color: var(--work); }
+.step.on .name { color: inherit; } .step.on .desc { color: var(--ink); }
+
+.mt-controls { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 22px; }
+.btns { display: flex; gap: 8px; }
+button.ctl {
+  font: 600 14px var(--font-body); color: var(--ink); background: var(--bg); border: 1px solid var(--line); border-radius: 999px;
+  padding: 8px 16px; cursor: pointer;
+}
+button.ctl.primary { background: var(--ink); color: var(--panel); border-color: var(--ink); min-width: 104px; }
+.slider { display: grid; gap: 2px; min-width: 180px; flex: 1 1 180px; }
+.slider label { font-size: 13px; color: var(--muted); display: flex; justify-content: space-between; gap: 8px; }
+.slider label output { font-family: var(--font-mono); color: var(--ink); }
+input[type=range] { width: 100%; }
+#tq { accent-color: var(--hot); } #tf { accent-color: var(--cold); } #spd { accent-color: var(--work); }
+
+.balance { display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr); gap: 18px; }
+.tbl-wrap { overflow-x: auto; }
+.mt table { border-collapse: collapse; width: 100%; font-size: 14px; }
+th, td { padding: 7px 8px; text-align: right; border-bottom: 1px solid var(--grid); white-space: nowrap; }
+th:first-child, td:first-child { text-align: left; }
+th { font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); font-weight: 500; }
+td { font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
+td:first-child { font-family: var(--font-body); }
+tr.on td { background: var(--bg); }
+tfoot td { font-weight: 500; border-bottom: 0; }
+.pos { color: var(--hot); } .neg { color: var(--cold); }
+.notes { font-size: 14px; color: var(--muted); display: grid; gap: 8px; align-content: start; }
+.notes p { margin: 0; }
+.notes strong { color: var(--ink); }
+.foot { font-size: 12px; color: var(--muted); }
+
+@media (max-width: 820px) {
+  .stage-grid, .balance { grid-template-columns: minmax(0, 1fr); }
+  .mt-steps { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  #engine { aspect-ratio: 5 / 4; }
+}
+@media (max-width: 420px) { .mt-readout { grid-template-columns: repeat(3, minmax(0, 1fr)); } .mt-readout output { font-size: 15px; } }
+</style>
+<link rel="stylesheet" href="motores.css">
+</head>
+<body>
+<header class="top">
+  <div class="wrap">
+    <a class="brand" href="../index.html">
+      <svg width="28" height="28" viewBox="0 0 28 28" aria-hidden="true">
+        <path d="M3 24 Q14 -6 25 24" fill="none" stroke="var(--ink)" stroke-width="2" stroke-dasharray="3 3"/>
+        <circle cx="14" cy="9" r="3.5" fill="var(--accent)"/>
+      </svg>
+      A Tal da Física
+    </a>
+    <nav class="links" aria-label="Seções">
+      <a href="../index.html#trilhas">Trilhas</a>
+      <a href="../index.html#licao">Lição</a>
+      <a href="../laboratorio.html" aria-current="page">Laboratório</a>
+      <a href="../graficos.html">Gráficos</a>
+      <a href="../formulas.html">Fórmulas</a>
+      <a href="../quiz.html">Quiz</a>
+      <a href="../enem.html">ENEM</a>
+      <a href="../fuvest.html">FUVEST</a>
+      <a href="../eletricidade.html">Eletricidade</a>
+      <a href="../game/index.html">Game</a>
+      <a href="../index.html#constantes">Constantes</a>
+    </nav>
+  </div>
+</header>
+
+<div class="wrap mt-intro">
+  <a class="mt-back" href="../laboratorio.html#termo">← Voltar ao laboratório</a>
+  <p class="label">Laboratório · Termodinâmica · Máquinas térmicas</p>
+  <nav class="mt-chips" aria-label="Ciclos de motores"><a href="carnot.html" aria-current="page">Carnot</a><a href="otto.html">Otto (4 tempos)</a><a href="stirling.html">Stirling beta</a><a href="stirling-gama.html">Stirling gama</a></nav>
+</div>
+<div class="wrap mt-wrap mt">
+  <div class="mt-head">
+    <div>
+      <h1>Ciclo de Carnot</h1>
+      <p class="mt-lede">Um gás ideal (1 mol, monoatômico) passa por duas isotermas e duas adiabáticas. Acompanhe o pistão e o ponto no diagrama P×V: a área roxa é o trabalho líquido realizado em cada ciclo.</p>
+    </div>
+    <div class="eta" aria-live="polite">
+      <div class="mt-lbl">Rendimento</div>
+      <div class="mt-val" id="etaVal">50,0%</div>
+      <div class="frm">η = 1 − T<sub>F</sub>/T<sub>Q</sub></div>
+    </div>
+  </div>
+
+  <div class="stage-grid">
+    <section class="panel" aria-label="Animação do cilindro">
+      <h2>Máquina térmica <span id="stageShort">1 → 2</span></h2>
+      <canvas id="engine" width="480" height="600" role="img" aria-label="Cilindro com pistão sobre fonte quente, isolante ou fonte fria, conforme a etapa"></canvas>
+      <div class="mt-readout">
+        <div><b>Pressão</b><output id="oP">—</output></div>
+        <div><b>Volume</b><output id="oV">—</output></div>
+        <div><b>Temperatura</b><output id="oT">—</output></div>
+      </div>
+    </section>
+    <section class="panel" aria-label="Diagrama pressão por volume">
+      <h2>Diagrama P × V <span>P em kPa · V em L</span></h2>
+      <canvas id="pv" width="880" height="605" role="img" aria-label="Diagrama P por V do ciclo de Carnot com o estado atual em destaque"></canvas>
+    </section>
+  </div>
+
+  <div class="mt-steps" role="group" aria-label="Etapas do ciclo">
+    <button class="step" data-k="0" type="button"><span class="tag">1 → 2</span><span class="name">Expansão isotérmica</span><span class="desc">Em contato com a fonte quente, a T<sub>Q</sub>. O gás recebe Q<sub>Q</sub> e realiza trabalho.</span></button>
+    <button class="step" data-k="1" type="button"><span class="tag">2 → 3</span><span class="name">Expansão adiabática</span><span class="desc">Isolado (Q = 0). O gás continua expandindo e esfria de T<sub>Q</sub> até T<sub>F</sub>.</span></button>
+    <button class="step" data-k="2" type="button"><span class="tag">3 → 4</span><span class="name">Compressão isotérmica</span><span class="desc">Em contato com a fonte fria, a T<sub>F</sub>. O gás cede Q<sub>F</sub> enquanto é comprimido.</span></button>
+    <button class="step" data-k="3" type="button"><span class="tag">4 → 1</span><span class="name">Compressão adiabática</span><span class="desc">Isolado (Q = 0). A compressão aquece o gás de T<sub>F</sub> de volta a T<sub>Q</sub>.</span></button>
+  </div>
+
+  <section class="panel mt-controls" aria-label="Controles">
+    <div class="btns">
+      <button class="ctl primary" id="play" type="button">Pausar</button>
+      <button class="ctl" id="prev" type="button" aria-label="Etapa anterior">◀ Etapa</button>
+      <button class="ctl" id="next" type="button" aria-label="Próxima etapa">Etapa ▶</button>
+    </div>
+    <div class="slider"><label for="tq"><span>Fonte quente T<sub>Q</sub></span> <output id="tqO">600 K</output></label><input id="tq" type="range" min="400" max="900" step="10" value="600"></div>
+    <div class="slider"><label for="tf"><span>Fonte fria T<sub>F</sub></span> <output id="tfO">300 K</output></label><input id="tf" type="range" min="200" max="390" step="10" value="300"></div>
+    <div class="slider"><label for="spd"><span>Velocidade</span> <output id="spdO">1×</output></label><input id="spd" type="range" min="0.25" max="3" step="0.25" value="1"></div>
+  </section>
+
+  <section class="panel balance" aria-label="Balanço de energia">
+    <div class="tbl-wrap">
+      <h2>Balanço de energia por etapa <span>em joules</span></h2>
+      <table>
+        <thead><tr><th>Etapa</th><th>Q (calor)</th><th>W (trabalho do gás)</th><th>ΔU</th></tr></thead>
+        <tbody id="tb"></tbody>
+        <tfoot><tr><td>Ciclo completo</td><td id="tQ"></td><td id="tW"></td><td>0</td></tr></tfoot>
+      </table>
+    </div>
+    <div class="notes">
+      <h2>Para a lousa</h2>
+      <p><strong>1ª lei:</strong> Q = W + ΔU. Nas isotermas ΔU = 0, então Q = W. Nas adiabáticas Q = 0, então W = −ΔU.</p>
+      <p><strong>Trabalho líquido:</strong> W = Q<sub>Q</sub> − |Q<sub>F</sub>|, igual à área dentro do ciclo.</p>
+      <p><strong>Rendimento máximo:</strong> η = W/Q<sub>Q</sub> = 1 − T<sub>F</sub>/T<sub>Q</sub>, com temperaturas em kelvin. Nenhuma máquina entre as mesmas fontes rende mais que a de Carnot.</p>
+      <p class="foot">Modelo: gás ideal monoatômico (γ = 5/3), n = 1 mol, V₁ = 10 L, V₂ = 22 L. As isotermas seguem PV = nRT; as adiabáticas, TV<sup>γ−1</sup> = constante.</p>
+    </div>
+  </section>
+</div>
+
+<script>
+(() => {
+  const R = 8.314, n = 1, g = 5 / 3, Cv = 1.5 * R;
+  const V1 = 10, V2 = 22;
+  let Tq = 600, Tf = 300, speed = 1;
+  let V3, V4;
+  const STAGE_SEC = 3.2;
+  let phase = 0; // 0..4
+  let playing = !matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  const $ = (id) => document.getElementById(id);
+  const fmt = (x, d = 0) => x.toLocaleString('pt-BR', { minimumFractionDigits: d, maximumFractionDigits: d });
+
+  function recompute() {
+    const r = Math.pow(Tq / Tf, 1 / (g - 1));
+    V3 = V2 * r; V4 = V1 * r;
+    $('etaVal').textContent = fmt(100 * (1 - Tf / Tq), 1) + '%';
+    $('tqO').textContent = Tq + ' K'; $('tfO').textContent = Tf + ' K';
+    buildTable(); computeScale();
+  }
+  // state along cycle
+  function state(ph) {
+    const k = Math.min(3, Math.floor(ph)), u = ph - k;
+    let V, T;
+    if (k === 0) { V = V1 + (V2 - V1) * u; T = Tq; }
+    else if (k === 1) { V = V2 + (V3 - V2) * u; T = Tq * Math.pow(V2 / V, g - 1); }
+    else if (k === 2) { V = V3 + (V4 - V3) * u; T = Tf; }
+    else { V = V4 + (V1 - V4) * u; T = Tf * Math.pow(V4 / V, g - 1); }
+    return { k, u, V, T, P: n * R * T / V };
+  }
+  function stageQW() {
+    const Qq = n * R * Tq * Math.log(V2 / V1), Qf = -n * R * Tf * Math.log(V3 / V4), Wad = n * Cv * (Tq - Tf);
+    return [
+      { name: '1 → 2 isotérmica', Q: Qq, W: Qq, dU: 0 },
+      { name: '2 → 3 adiabática', Q: 0, W: Wad, dU: -Wad },
+      { name: '3 → 4 isotérmica', Q: Qf, W: Qf, dU: 0 },
+      { name: '4 → 1 adiabática', Q: 0, W: -Wad, dU: Wad }];
+  }
+  const sg = (x) => (Math.abs(x) < 0.5 ? '0' : (x > 0 ? '+' : '−') + fmt(Math.abs(x)));
+  const cls = (x) => (Math.abs(x) < 0.5 ? '' : x > 0 ? 'pos' : 'neg');
+  function buildTable() {
+    const rows = stageQW();
+    $('tb').innerHTML = rows.map((r, i) => `<tr data-k="${i}"><td>${r.name}</td><td class="${cls(r.Q)}">${sg(r.Q)}</td><td>${sg(r.W)}</td><td>${sg(r.dU)}</td></tr>`).join('');
+    const Q = rows.reduce((a, r) => a + r.Q, 0), W = rows.reduce((a, r) => a + r.W, 0);
+    $('tQ').textContent = sg(Q); $('tW').textContent = sg(W) + '  (η = ' + fmt(100 * W / rows[0].Q, 1) + '%)';
+  }
+
+  // ---------- colors from tokens ----------
+  let C = {};
+  function readColors() {
+    const cs = getComputedStyle(document.documentElement);
+    ['bg', 'panel', 'ink', 'muted', 'line', 'grid', 'hot', 'hot-soft', 'cold', 'cold-soft', 'work', 'work-soft', 'insul', 'metal', 'piston']
+      .forEach(t => C[t] = cs.getPropertyValue('--' + t).trim());
+  }
+  readColors();
+  matchMedia('(prefers-color-scheme: dark)').addEventListener('change', readColors);
+  new MutationObserver(readColors).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+  function hexToRgb(h) { h = h.replace('#', ''); if (h.length === 3) h = h.split('').map(c => c + c).join(''); const v = parseInt(h, 16); return [v >> 16 & 255, v >> 8 & 255, v & 255]; }
+  function mix(a, b, t) { const A = hexToRgb(a), B = hexToRgb(b); return `rgb(${A.map((x, i) => Math.round(x + (B[i] - x) * t)).join(',')})`; }
+
+  // ---------- P-V diagram ----------
+  const pv = $('pv'), px = pv.getContext('2d');
+  let sc = {};
+  function niceStep(range, target) { const raw = range / target, p = Math.pow(10, Math.floor(Math.log10(raw))), m = raw / p; return (m < 1.5 ? 1 : m < 3 ? 2 : m < 7 ? 5 : 10) * p; }
+  function computeScale() {
+    const Pmax = n * R * Tq / V1, Vmax = V3;
+    const vStep = niceStep(Vmax, 6), pStep = niceStep(Pmax, 5);
+    sc = { vMax: Math.ceil(Vmax * 1.08 / vStep) * vStep, pMax: Math.ceil(Pmax * 1.08 / pStep) * pStep, vStep, pStep };
+  }
+  const M = { l: 92, r: 24, t: 20, b: 52 };
+  const X = (V) => M.l + (V / sc.vMax) * (pv.width - M.l - M.r);
+  const Y = (P) => pv.height - M.b - (P / sc.pMax) * (pv.height - M.t - M.b);
+  function pathCycle(ctx, from = 0, to = 4) {
+    const steps = 240; ctx.beginPath();
+    for (let i = 0; i <= steps; i++) { const ph = from + (to - from) * i / steps; const s = state(Math.min(ph, 3.9999)); i ? ctx.lineTo(X(s.V), Y(s.P)) : ctx.moveTo(X(s.V), Y(s.P)); }
+  }
+  function drawPV(cur) {
+    const w = pv.width, h = pv.height; px.clearRect(0, 0, w, h);
+    px.font = '22px "JetBrains Mono", ui-monospace, monospace';
+    // grid & ticks
+    px.lineWidth = 1; px.strokeStyle = C.grid; px.fillStyle = C.muted; px.textAlign = 'center'; px.textBaseline = 'top';
+    for (let v = 0; v <= sc.vMax + 1e-9; v += sc.vStep) { px.beginPath(); px.moveTo(X(v), Y(0)); px.lineTo(X(v), Y(sc.pMax)); px.stroke(); px.fillText(fmt(v), X(v), Y(0) + 8); }
+    px.textAlign = 'right'; px.textBaseline = 'middle';
+    for (let p = 0; p <= sc.pMax + 1e-9; p += sc.pStep) { px.beginPath(); px.moveTo(X(0), Y(p)); px.lineTo(X(sc.vMax), Y(p)); px.stroke(); if (p > 0) px.fillText(fmt(p), X(0) - 10, Y(p)); }
+    px.strokeStyle = C.muted; px.lineWidth = 1.5; px.beginPath(); px.moveTo(X(0), Y(sc.pMax)); px.lineTo(X(0), Y(0)); px.lineTo(X(sc.vMax), Y(0)); px.stroke();
+    // reference isotherms
+    const iso = (T, col, label) => {
+      px.save(); px.setLineDash([6, 8]); px.strokeStyle = col; px.globalAlpha = 0.55; px.lineWidth = 2; px.beginPath();
+      let first = true; for (let V = V1 * 0.8; V <= sc.vMax; V += 0.1) { const P = n * R * T / V; if (P > sc.pMax) continue; first ? px.moveTo(X(V), Y(P)) : px.lineTo(X(V), Y(P)); first = false; }
+      px.stroke(); px.restore();
+      const ly = M.t + 14 + (T === Tq ? 0 : 32), lx = pv.width - M.r - 12;
+      px.font = '600 22px "Bricolage Grotesque", system-ui, sans-serif'; px.textAlign = 'right'; px.textBaseline = 'middle';
+      const tw = px.measureText(label).width; px.fillStyle = C.panel; px.globalAlpha = 0.85; px.fillRect(lx - tw - 54, ly - 15, tw + 62, 30); px.globalAlpha = 1;
+      px.save(); px.setLineDash([6, 6]); px.strokeStyle = col; px.lineWidth = 2.5; px.beginPath(); px.moveTo(lx - tw - 46, ly); px.lineTo(lx - tw - 12, ly); px.stroke(); px.restore();
+      px.fillStyle = col; px.fillText(label, lx, ly);
+    };
+    iso(Tq, C.hot, 'Isoterma quente · ' + Tq + ' K'); iso(Tf, C.cold, 'Isoterma fria · ' + Tf + ' K');
+    // work area
+    pathCycle(px); px.closePath(); px.fillStyle = C['work-soft']; px.fill();
+    // full cycle outline by stage color
+    const stCol = [C.hot, C.work, C.cold, C.work];
+    for (let k = 0; k < 4; k++) { pathCycle(px, k, k + 0.9999); px.strokeStyle = stCol[k]; px.lineWidth = k === cur.k ? 5 : 2.5; px.globalAlpha = k === cur.k ? 1 : 0.55; px.stroke(); px.globalAlpha = 1; }
+    // W label
+    const cs4 = [0, 1, 2, 3].map(state); px.fillStyle = C.work; px.font = '600 26px "Bricolage Grotesque", system-ui, sans-serif'; px.textAlign = 'center'; px.textBaseline = 'middle';
+    px.fillText('W', cs4.reduce((a, s) => a + X(s.V), 0) / 4 - 12, cs4.reduce((a, s) => a + Y(s.P), 0) / 4 + 4);
+    // corner states
+    px.font = '600 22px "Bricolage Grotesque", system-ui, sans-serif';
+    [[0, '1', -18, -16], [1, '2', 12, -18], [2, '3', 14, 18], [3, '4', -16, 20]].forEach(([ph, l, dx, dy]) => { const s = state(ph); px.fillStyle = C.ink; px.beginPath(); px.arc(X(s.V), Y(s.P), 5, 0, 7); px.fill(); px.fillText(l, X(s.V) + dx, Y(s.P) + dy); });
+    // current point
+    px.beginPath(); px.arc(X(cur.V), Y(cur.P), 11, 0, 7); px.fillStyle = stCol[cur.k]; px.globalAlpha = 0.25; px.fill(); px.globalAlpha = 1;
+    px.beginPath(); px.arc(X(cur.V), Y(cur.P), 6.5, 0, 7); px.fillStyle = stCol[cur.k]; px.fill(); px.strokeStyle = C.panel; px.lineWidth = 2; px.stroke();
+    // axis titles
+    px.fillStyle = C.muted; px.font = '500 22px "Bricolage Grotesque", system-ui, sans-serif'; px.textAlign = 'center'; px.textBaseline = 'alphabetic';
+    px.fillText('V (L)', (X(0) + X(sc.vMax)) / 2, h - 6);
+    px.save(); px.translate(22, (Y(0) + Y(sc.pMax)) / 2); px.rotate(-Math.PI / 2); px.fillText('P (kPa)', 0, 0); px.restore();
+  }
+
+  // ---------- engine ----------
+  const en = $('engine'), ex = en.getContext('2d');
+  const parts = Array.from({ length: 70 }, () => ({ x: Math.random(), y: Math.random(), a: Math.random() * Math.PI * 2 }));
+  let flowT = 0;
+  function drawEngine(cur, dt) {
+    const w = en.width, h = en.height; ex.clearRect(0, 0, w, h);
+    const portrait = h > w;
+    const baseH = portrait ? 90 : 70, cylX = w * 0.26, cylW = w * 0.48, cylBottom = h - baseH - 14, cylTop = portrait ? 70 : 40;
+    const maxGas = cylBottom - cylTop - 40;
+    const gasH = 40 + maxGas * (cur.V / (V3 * 1.04));
+    const pistonY = cylBottom - gasH;
+    // reservoir / base
+    const res = cur.k === 0 ? 'hot' : cur.k === 2 ? 'cold' : 'insul';
+    const resCol = res === 'hot' ? C.hot : res === 'cold' ? C.cold : C.insul;
+    const resSoft = res === 'hot' ? C['hot-soft'] : res === 'cold' ? C['cold-soft'] : C.grid;
+    ex.fillStyle = resSoft; ex.strokeStyle = resCol; ex.lineWidth = 2.5;
+    roundRect(ex, w * 0.08, h - baseH, w * 0.84, baseH - 8, 12); ex.fill(); ex.stroke();
+    ex.fillStyle = resCol; ex.font = '600 22px "Bricolage Grotesque", system-ui, sans-serif'; ex.textAlign = 'center'; ex.textBaseline = 'middle';
+    ex.fillText(res === 'hot' ? 'Fonte quente · ' + Tq + ' K' : res === 'cold' ? 'Fonte fria · ' + Tf + ' K' : 'Base isolante (Q = 0)', w / 2, h - baseH / 2 - 4);
+    // gas
+    const tNorm = Math.max(0, Math.min(1, (cur.T - 200) / 700));
+    const gasCol = mix(C.cold, C.hot, Math.max(0, Math.min(1, (cur.T - Tf) / Math.max(1, Tq - Tf))));
+    ex.fillStyle = gasCol; ex.globalAlpha = 0.16; ex.fillRect(cylX, pistonY, cylW, gasH); ex.globalAlpha = 1;
+    const vel = 0.25 + 0.9 * Math.sqrt(cur.T / 600);
+    ex.fillStyle = gasCol;
+    for (const p of parts) {
+      if (playing) {
+        p.x += Math.cos(p.a) * vel * dt * 0.9; p.y += Math.sin(p.a) * vel * dt * 0.9 * (300 / gasH);
+        if (p.x < 0) { p.x = -p.x; p.a = Math.PI - p.a; } if (p.x > 1) { p.x = 2 - p.x; p.a = Math.PI - p.a; }
+        if (p.y < 0) { p.y = -p.y; p.a = -p.a; } if (p.y > 1) { p.y = 2 - p.y; p.a = -p.a; }
+      }
+      ex.beginPath(); ex.arc(cylX + 8 + p.x * (cylW - 16), pistonY + 8 + p.y * (gasH - 16), 4.2, 0, 7); ex.fill();
+    }
+    // cylinder walls
+    ex.strokeStyle = C.metal; ex.lineWidth = 8; ex.lineCap = 'round';
+    ex.beginPath(); ex.moveTo(cylX - 4, cylTop); ex.lineTo(cylX - 4, cylBottom + 4); ex.lineTo(cylX + cylW + 4, cylBottom + 4); ex.lineTo(cylX + cylW + 4, cylTop); ex.stroke();
+    // base contact strip (conducting vs insulated)
+    ex.fillStyle = resCol; ex.fillRect(cylX - 8, cylBottom + 8, cylW + 16, 6);
+    // piston + rod
+    ex.fillStyle = C.piston; roundRect(ex, cylX + 2, pistonY - 22, cylW - 4, 22, 4); ex.fill();
+    ex.fillRect(w / 2 - 7, cylTop - 40, 14, pistonY - 22 - cylTop + 40);
+    // work arrow on rod
+    const exp = cur.k < 2;
+    arrow(ex, w * 0.86, pistonY - 10 + (exp ? 30 : -40), w * 0.86, pistonY - 10 + (exp ? -40 : 30), C.work, 4);
+    ex.fillStyle = C.work; ex.textAlign = 'center'; ex.font = '600 20px "Bricolage Grotesque", system-ui, sans-serif';
+    ex.fillText(exp ? 'W > 0' : 'W < 0', w * 0.86, pistonY - 10 + (exp ? 56 : -60));
+    ex.font = '500 17px "Bricolage Grotesque", system-ui, sans-serif'; ex.fillStyle = C.muted;
+    ex.fillText(exp ? 'gás empurra' : 'gás é', w * 0.86, pistonY - 10 + (exp ? 78 : -98));
+    ex.fillText(exp ? 'o pistão' : 'comprimido', w * 0.86, pistonY - 10 + (exp ? 98 : -78));
+    // heat flow
+    if (res !== 'insul') {
+      if (playing) flowT += dt;
+      const dir = res === 'hot' ? -1 : 1; // -1 upward into gas
+      for (let i = 0; i < 3; i++) {
+        const x0 = cylX + cylW * (0.25 + 0.25 * i);
+        const off = ((flowT * 0.9 + i * 0.33) % 1);
+        const yA = cylBottom - 40, yB = cylBottom + 10;
+        const y = dir < 0 ? yB - off * (yB - yA) : yA + off * (yB - yA);
+        ex.globalAlpha = 1 - Math.abs(off - 0.5) * 1.4;
+        arrow(ex, x0, y + (dir < 0 ? 14 : -14), x0, y + (dir < 0 ? -14 : 14), resCol, 4);
+        ex.globalAlpha = 1;
+      }
+      ex.fillStyle = resCol; ex.textAlign = 'right'; ex.font = '600 20px "Bricolage Grotesque", system-ui, sans-serif';
+      ex.fillText(res === 'hot' ? 'calor' : 'calor', cylX - 18, cylBottom - 34); ex.fillText(res === 'hot' ? 'entra ↑' : 'sai ↓', cylX - 18, cylBottom - 10);
+    }
+    // T label in gas
+    const ty = Math.max(pistonY + 26, Math.min(cylBottom - 18, pistonY + gasH / 2));
+    ex.fillStyle = C.panel; roundRect(ex, cylX + cylW / 2 - 50, ty - 17, 100, 34, 17); ex.fill();
+    ex.fillStyle = C.ink; ex.textAlign = 'center'; ex.textBaseline = 'middle'; ex.font = '500 22px "JetBrains Mono", ui-monospace, monospace';
+    ex.fillText(fmt(cur.T) + ' K', cylX + cylW / 2, ty);
+  }
+  function roundRect(c, x, y, w, h, r) { c.beginPath(); c.moveTo(x + r, y); c.arcTo(x + w, y, x + w, y + h, r); c.arcTo(x + w, y + h, x, y + h, r); c.arcTo(x, y + h, x, y, r); c.arcTo(x, y, x + w, y, r); c.closePath(); }
+  function arrow(c, x1, y1, x2, y2, col, lw) {
+    const a = Math.atan2(y2 - y1, x2 - x1), hl = 12; c.strokeStyle = col; c.fillStyle = col; c.lineWidth = lw; c.lineCap = 'round';
+    c.beginPath(); c.moveTo(x1, y1); c.lineTo(x2 - Math.cos(a) * hl * 0.6, y2 - Math.sin(a) * hl * 0.6); c.stroke();
+    c.beginPath(); c.moveTo(x2, y2); c.lineTo(x2 - hl * Math.cos(a - 0.45), y2 - hl * Math.sin(a - 0.45)); c.lineTo(x2 - hl * Math.cos(a + 0.45), y2 - hl * Math.sin(a + 0.45)); c.closePath(); c.fill();
+  }
+
+  // engine canvas aspect follows CSS (portrait on desktop, landscape on narrow)
+  function fitEngine() {
+    const r = en.getBoundingClientRect(); if (!r.width) return;
+    const ratio = r.height / r.width; const W = 480; const H = Math.round(W * ratio);
+    if (en.height !== H) en.height = H;
+  }
+  function fitPV() { const w = pv.getBoundingClientRect().width; const W = w && w < 520 ? 600 : 880; if (pv.width !== W) { pv.width = W; pv.height = Math.round(W * 11 / 16); } }
+  addEventListener('resize', () => { fitEngine(); fitPV(); });
+
+  // ---------- UI ----------
+  const stepsEls = [...document.querySelectorAll('.step')];
+  const shorts = ['1 → 2', '2 → 3', '3 → 4', '4 → 1'];
+  let lastK = -1;
+  function updateUI(cur) {
+    $('oP').textContent = fmt(cur.P) + ' kPa'; $('oV').textContent = fmt(cur.V, 1) + ' L'; $('oT').textContent = fmt(cur.T) + ' K';
+    if (cur.k !== lastK) {
+      stepsEls.forEach((el, i) => { el.classList.toggle('on', i === cur.k); el.setAttribute('aria-pressed', i === cur.k); });
+      document.querySelectorAll('#tb tr').forEach((tr, i) => tr.classList.toggle('on', i === cur.k));
+      $('stageShort').textContent = shorts[cur.k]; lastK = cur.k;
+    }
+  }
+  stepsEls.forEach((el, i) => el.addEventListener('click', () => { phase = i + 0.001; lastK = -1; render(0); }));
+  $('play').addEventListener('click', () => { playing = !playing; $('play').textContent = playing ? 'Pausar' : 'Animar'; });
+  $('next').addEventListener('click', () => { phase = (Math.floor(phase) + 1) % 4 + 0.001; lastK = -1; render(0); });
+  $('prev').addEventListener('click', () => { phase = (Math.floor(phase) + 3) % 4 + 0.001; lastK = -1; render(0); });
+  $('tq').addEventListener('input', (e) => { Tq = +e.target.value; recompute(); lastK = -1; render(0); });
+  $('tf').addEventListener('input', (e) => { Tf = +e.target.value; recompute(); lastK = -1; render(0); });
+  $('spd').addEventListener('input', (e) => { speed = +e.target.value; $('spdO').textContent = fmt(speed, speed % 1 ? 2 : 0).replace(/,?0+$/, '') + '×'; });
+  $('play').textContent = playing ? 'Pausar' : 'Animar';
+
+  function render(dt) { const cur = state(phase); drawPV(cur); drawEngine(cur, dt); updateUI(cur); }
+  let last = performance.now();
+  function loop(t) {
+    const dt = Math.min(0.05, (t - last) / 1000); last = t;
+    if (playing) { phase = (phase + dt * speed / STAGE_SEC) % 4; }
+    render(dt); requestAnimationFrame(loop);
+  }
+  recompute(); fitEngine(); fitPV(); phase = 0.35; render(0);
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => render(0));
+  requestAnimationFrame(loop);
+})();
+</script>
+
+<footer>
+  <div class="wrap">
+    <span>A Tal da Física · material de estudo gratuito</span>
+    <span class="mono">λ<sub>Na</sub> = 589 nm, a cor do nosso destaque</span>
+  </div>
+</footer>
+</body>
+</html>

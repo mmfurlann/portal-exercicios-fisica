@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="Simulador de vetores para o ensino médio: soma, subtração, variação de um vetor e decomposição em componentes, com plano cartesiano interativo e contas passo a passo.">
+<title>Vetores · A Tal da Física</title>
+<link rel="stylesheet" href="estilo.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Literata:ital,opsz,wght@0,7..72,400;0,7..72,600;1,7..72,400&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+  .vt { background: var(--card); border: 1px solid var(--grid); border-radius: 10px; overflow: hidden; display: grid; grid-template-columns: minmax(0, 1fr) 360px; }
+  .vt-board { min-width: 0; border-right: 1px dashed var(--grid); }
+  .vt-board canvas { display: block; width: 100%; height: auto; aspect-ratio: 9 / 7; touch-action: none; }
+  .vt-side { display: grid; align-content: start; min-width: 0; }
+  .vt-side > div { padding: 14px 16px; border-bottom: 1px dashed var(--grid); display: grid; gap: 10px; }
+  .vt-side .label { font-size: .7rem; }
+  .tabs { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 4px; background: var(--paper); border: 1px solid var(--grid); border-radius: 8px; padding: 4px; }
+  .tabs button { font: inherit; font-family: var(--display); font-weight: 600; font-size: .86rem; padding: 7px 2px; border: 0; border-radius: 5px; background: transparent; color: var(--ink-soft); cursor: pointer; }
+  .tabs button[aria-selected="true"] { background: var(--accent); color: #1a0d02; }
+  .vrows { display: grid; gap: 6px; }
+  .vrow { display: grid; grid-template-columns: 34px repeat(4, minmax(0, 1fr)); gap: 6px; align-items: center; }
+  .vrow.head span { font-family: var(--mono); font-size: .7rem; color: var(--ink-soft); text-align: center; }
+  .vrow b { font-family: var(--mono); font-size: 1rem; text-align: center; }
+  .vrow input, .opt input[type="number"] { font: inherit; font-family: var(--mono); font-size: .85rem; padding: 5px 4px; border-radius: 6px; border: 1px solid var(--grid); background: var(--paper); color: var(--ink); width: 100%; min-width: 0; text-align: center; }
+  .opt { display: flex; flex-wrap: wrap; gap: 8px 14px; align-items: center; font-family: var(--mono); font-size: .8rem; color: var(--ink-soft); }
+  .opt label { display: inline-flex; align-items: center; gap: 6px; cursor: pointer; }
+  .opt input[type="checkbox"], .opt input[type="radio"] { accent-color: var(--accent); width: 16px; height: 16px; }
+  .opt select { width: auto; }
+  .opt input[type="number"] { width: 70px; }
+  .opt input[type="range"] { width: 140px; }
+  .chip { font: inherit; font-family: var(--mono); font-size: .76rem; padding: 4px 10px; border-radius: 99px; border: 1px solid var(--grid); background: transparent; color: var(--ink); cursor: pointer; }
+  .chip:hover { border-color: var(--accent); }
+  .vt-res { grid-column: 1 / -1; border-top: 1px solid var(--grid); padding: 16px 20px 20px; display: grid; gap: 6px; font-family: var(--mono); font-size: .9rem; color: var(--ink); }
+  .vt-res .step { color: var(--ink-soft); }
+  .vt-res .big { font-size: 1.25rem; font-weight: 600; color: var(--ok); }
+  .vt-res .note { font-family: var(--body); font-size: 1rem; color: var(--ink-soft); max-width: 75ch; }
+  .vt-res .hl { color: var(--accent-ink); }
+  @media (max-width: 900px) {
+    .vt { grid-template-columns: minmax(0, 1fr); }
+    .vt-board { border-right: 0; }
+    .vt-board canvas { aspect-ratio: 1 / 1; }
+  }
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="wrap">
+    <a class="brand" href="index.html">
+      <svg width="28" height="28" viewBox="0 0 28 28" aria-hidden="true">
+        <path d="M3 24 Q14 -6 25 24" fill="none" stroke="var(--ink)" stroke-width="2" stroke-dasharray="3 3"/>
+        <circle cx="14" cy="9" r="3.5" fill="var(--accent)"/>
+      </svg>
+      A Tal da Física
+    </a>
+    <nav class="links" aria-label="Seções">
+      <a href="index.html#trilhas">Trilhas</a>
+      <a href="laboratorio.html">Laboratório</a>
+      <a href="graficos.html">Gráficos</a>
+      <a href="calculo-vetorial.html" aria-current="page">Vetores</a>
+      <a href="formulas.html">Fórmulas</a>
+      <a href="quiz.html">Quiz</a>
+      <a href="enem.html">ENEM</a>
+      <a href="fuvest.html">FUVEST</a>
+      <a href="index.html#constantes">Constantes</a>
+    </nav>
+  </div>
+</header>
+
+<main id="inicio">
+  <section style="padding-block: 48px 24px;">
+    <div class="wrap">
+      <div class="section-head">
+        <p class="label">Simulador de vetores</p>
+        <h2>Soma, subtração, variação e decomposição</h2>
+        <p>Arraste a ponta de cada vetor no plano ou digite os valores na tabela: componentes (x, y) ou módulo e ângulo. As contas aparecem passo a passo embaixo do gráfico.</p>
+      </div>
+    </div>
+  </section>
+
+  <section style="padding-top: 0;">
+    <div class="wrap">
+      <div class="vt">
+        <div class="vt-board">
+          <canvas id="v-cv" width="900" height="700" role="img" aria-label="Plano cartesiano com os vetores e o resultado da operação escolhida"></canvas>
+        </div>
+
+        <div class="vt-side">
+          <div>
+            <div class="tabs" role="tablist" aria-label="Operação">
+              <button role="tab" data-mode="soma" aria-selected="true">Soma</button>
+              <button role="tab" data-mode="sub" aria-selected="false">Subtração</button>
+              <button role="tab" data-mode="var" aria-selected="false">Variação</button>
+              <button role="tab" data-mode="dec" aria-selected="false">Decompor</button>
+            </div>
+          </div>
+
+          <div id="opt-soma" class="opt">
+            <span class="label" style="width:100%">Método</span>
+            <label><input type="radio" name="met" value="poli" checked> polígono</label>
+            <label><input type="radio" name="met" value="para"> paralelogramo</label>
+            <label><input type="checkbox" id="useC"> somar também C</label>
+          </div>
+          <div id="opt-var" class="opt" hidden>
+            <span class="label" style="width:100%">Exemplos (velocidades em m/s)</span>
+            <button class="chip" data-ex="curva">curva</button>
+            <button class="chip" data-ex="freada">freada</button>
+            <button class="chip" data-ex="rebote">bola na parede</button>
+            <button class="chip" data-ex="lanc">lançamento oblíquo</button>
+            <label>Δt (s) <input type="number" id="dt" value="2" min="0.1" step="0.1"></label>
+          </div>
+          <div id="opt-dec" class="opt" hidden>
+            <label><input type="checkbox" id="rot"> eixos inclinados (rampa)</label>
+            <label id="alpha-wrap" hidden>α <input type="range" id="alpha" min="5" max="60" step="1" value="30"> <output id="alpha-o">30°</output></label>
+            <button class="chip" id="ex-rampa">peso na rampa</button>
+          </div>
+
+          <div>
+            <span class="label">Vetores</span>
+            <div class="vrows" id="vrows"></div>
+          </div>
+
+          <div class="opt">
+            <label>Grade
+              <select id="snap">
+                <option value="1">de 1 em 1</option>
+                <option value="0.5" selected>de 0,5 em 0,5</option>
+                <option value="0.1">de 0,1 em 0,1</option>
+                <option value="0.01">livre</option>
+              </select>
+            </label>
+            <label>Zoom
+              <select id="zoom">
+                <option value="5">±5</option>
+                <option value="8" selected>±8</option>
+                <option value="15">±15</option>
+              </select>
+            </label>
+            <label><input type="checkbox" id="coords" checked> coordenadas</label>
+          </div>
+        </div>
+
+        <div class="vt-res" id="res" aria-live="polite"></div>
+      </div>
+    </div>
+  </section>
+
+  <section style="padding-top: 0;">
+    <div class="wrap">
+      <div class="rule-box">
+        <p class="label">Resumo para a prova</p>
+        <p class="rule-eq mono">Componentes: Ax = |A|·cos θ · Ay = |A|·sen θ · |A| = √(Ax² + Ay²)</p>
+        <p class="rule-eq mono">Soma: |R|² = |A|² + |B|² + 2·|A|·|B|·cos θ · Diferença: |D|² = |A|² + |B|² − 2·|A|·|B|·cos θ</p>
+        <p>θ é o ângulo entre A e B quando os dois saem do mesmo ponto. Casos especiais: mesmo sentido, |R| = |A| + |B| (o maior possível); sentidos opostos, |R| = |A| − |B| (o menor); perpendiculares, Pitágoras. Para somar ou subtrair, o caminho mais seguro é sempre o das componentes: x com x, y com y.</p>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <span>A Tal da Física · material de estudo gratuito</span>
+    <span class="mono">λ<sub>Na</sub> = 589 nm, a cor do nosso destaque</span>
+  </div>
+</footer>
+
+<script src="calculo-vetorial.js"></script>
+</body>
+</html>
