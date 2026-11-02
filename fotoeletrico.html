@@ -1,0 +1,394 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Efeito fotoelétrico · A Tal da Física</title>
+<meta name="description" content="Simulador do efeito fotoelétrico: fótons, função trabalho, frequência de corte, tensão de corte e a equação de Einstein.">
+<link rel="stylesheet" href="estilo.css">
+<link rel="stylesheet" href="simulacao.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Literata:ital,opsz,wght@0,7..72,400;0,7..72,600;1,7..72,400&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+.rd { --rd-sky: #1d2227; }
+.fe-chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.fe-chips button { padding: 7px 10px; font-size: .85rem; }
+.rd button.on { background: var(--blue); border-color: var(--blue); color: #14273a; }
+.fe-strip { height: 8px; border-radius: 4px; margin-top: 6px; }
+.fe-bars { margin-top: 12px; }
+.fe-bars .rd-bar { grid-template-columns: 112px minmax(0, 1fr) 70px; }
+.fe-bars .rd-fill { transition: none; }
+.fe-bars .rd-fill.phi { background: var(--rd-ground); }
+.fe-bars .rd-fill.k { background: var(--ok); }
+.fe-graph { width: 100%; aspect-ratio: 4/3; display: block; background: var(--rd-sky); border-radius: 8px; margin-top: 8px; }
+.fe-gh { font-size: 1.05rem; }
+.fe-gh + p { color: var(--ink-soft); font-size: .92rem; margin-top: 4px; }
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="wrap">
+    <a class="brand" href="index.html">
+      <svg width="28" height="28" viewBox="0 0 28 28" aria-hidden="true">
+        <path d="M3 24 Q14 -6 25 24" fill="none" stroke="var(--ink)" stroke-width="2" stroke-dasharray="3 3"/>
+        <circle cx="14" cy="9" r="3.5" fill="var(--accent)"/>
+      </svg>
+      A Tal da Física
+    </a>
+    <nav class="links" aria-label="Seções">
+      <a href="index.html#trilhas">Trilhas</a>
+      <a href="index.html#licao">Lição</a>
+      <a href="laboratorio.html" aria-current="page">Laboratório</a>
+      <a href="graficos.html">Gráficos</a>
+      <a href="quiz.html">Quiz</a>
+      <a href="enem.html">ENEM</a>
+      <a href="fuvest.html">FUVEST</a>
+      <a href="eletricidade.html">Eletricidade</a>
+      <a href="game/index.html">Game</a>
+      <a href="index.html#constantes">Constantes</a>
+    </nav>
+  </div>
+</header>
+
+<div class="rd">
+<div class="wrap rd-intro">
+  <a class="rd-back" href="laboratorio.html#moderna">← Voltar ao laboratório</a>
+  <p class="label">Laboratório · Física moderna · Luz e matéria</p>
+  <h1>Efeito fotoelétrico</h1>
+  <p class="rd-lede">Luz arranca elétrons de um metal, mas não de qualquer jeito: luz vermelha muito forte pode não arrancar nenhum, e luz violeta bem fraca arranca na hora. Foi explicando isso, em 1905, que Einstein mostrou que a luz chega em pacotes de energia, os fótons.</p>
+</div>
+
+<main class="wrap rd-main">
+<div class="rd-grid">
+  <div class="rd-panel">
+    <div class="rd-stage"><canvas id="scene" aria-label="Lâmpada iluminando o cátodo de um tubo a vácuo, com elétrons indo até o ânodo em um circuito com bateria e amperímetro"></canvas></div>
+    <div class="rd-hud">
+      <div><span class="rd-lab">Energia do fóton</span><b id="hE">—</b></div>
+      <div><span class="rd-lab">K máxima</span><b id="hK">—</b></div>
+      <div><span class="rd-lab">Tensão de corte</span><b id="hV">—</b></div>
+      <div><span class="rd-lab">Corrente</span><b id="hI">—</b></div>
+    </div>
+    <div class="rd-bars fe-bars" aria-label="Comparação entre a energia do fóton, a função trabalho e a energia cinética máxima">
+      <div class="rd-bar"><span>Fóton (h·f)</span><div class="rd-track"><div class="rd-fill" id="bE"></div></div><span id="tE"></span></div>
+      <div class="rd-bar"><span>Função trabalho</span><div class="rd-track"><div class="rd-fill phi" id="bP"></div></div><span id="tP"></span></div>
+      <div class="rd-bar"><span>K máxima</span><div class="rd-track"><div class="rd-fill k" id="bK"></div></div><span id="tK"></span></div>
+    </div>
+    <div class="rd-msg" id="msg"></div>
+  </div>
+
+  <div class="rd-panel rd-ctrl">
+    <div>
+      <p class="rd-lab" style="margin-bottom:6px">Metal do cátodo</p>
+      <div class="fe-chips" id="metals">
+        <button data-phi="2.14" data-n="Césio">Césio</button>
+        <button data-phi="2.28" data-n="Sódio">Sódio</button>
+        <button data-phi="2.87" data-n="Cálcio">Cálcio</button>
+        <button data-phi="4.08" data-n="Alumínio">Alumínio</button>
+        <button data-phi="4.33" data-n="Zinco">Zinco</button>
+        <button data-phi="4.70" data-n="Cobre">Cobre</button>
+        <button data-phi="6.35" data-n="Platina">Platina</button>
+      </div>
+    </div>
+    <div class="rd-row"><label for="lam">Comprimento de onda da luz<output id="oL"></output></label>
+      <input type="range" id="lam" min="150" max="800" step="1" value="400">
+      <div class="fe-strip" id="strip" aria-hidden="true"></div>
+      <div class="rd-hint">Luz visível: de 380 a 750 nm. À esquerda, ultravioleta; à direita, infravermelho.</div>
+    </div>
+    <div class="fe-chips" id="colors">
+      <button data-l="650">Vermelho</button>
+      <button data-l="530">Verde</button>
+      <button data-l="400">Violeta</button>
+      <button data-l="250">Ultravioleta</button>
+    </div>
+    <div class="rd-row"><label for="pow">Potência da luz (intensidade)<output id="oP"></output></label>
+      <input type="range" id="pow" min="0" max="2" step="0.05" value="1"></div>
+    <div class="rd-row"><label for="volt">Tensão no ânodo<output id="oV"></output></label>
+      <input type="range" id="volt" min="-7" max="4" step="0.05" value="0">
+      <div class="rd-hint">Negativa, ela freia os elétrons; positiva, ela os atrai</div></div>
+    <div class="rd-sep"></div>
+    <div class="rd-readout" id="readout"></div>
+  </div>
+</div>
+
+<div class="rd-panel">
+  <p class="rd-eyebrow">Os dois gráficos do experimento</p>
+  <h2>O que se mede no laboratório</h2>
+  <div class="rd-acc">
+    <div>
+      <h3 class="fe-gh">Corrente × tensão</h3>
+      <p>A curva cai a zero na tensão de corte −V₀. Fixe uma curva e mude a potência: a altura muda, V₀ não.</p>
+      <canvas class="fe-graph" id="gIV" aria-label="Gráfico da corrente em função da tensão"></canvas>
+      <div class="rd-btns">
+        <button class="rd-primary" id="pin">Fixar curva</button>
+        <button id="clear">Limpar curvas</button>
+      </div>
+    </div>
+    <div>
+      <h3 class="fe-gh">Energia cinética máxima × frequência</h3>
+      <p>Uma reta para cada metal. Todas têm a mesma inclinação, a constante de Planck; só muda onde cortam o eixo.</p>
+      <canvas class="fe-graph" id="gKF" aria-label="Gráfico da energia cinética máxima em função da frequência"></canvas>
+    </div>
+  </div>
+</div>
+
+<div class="rd-panel">
+  <p class="rd-eyebrow">Experimente</p>
+  <h2>Quatro testes para fazer</h2>
+  <ul class="rd-limits">
+    <li><b>Luz forte não basta.</b> Com sódio e luz vermelha, leve a potência ao máximo: nenhum elétron sai. Cada fóton continua com pouca energia.</li>
+    <li><b>Luz fraca basta.</b> Com sódio e luz violeta, baixe a potência quase a zero: ainda saem elétrons, só que menos.</li>
+    <li><b>Intensidade ou cor?</b> Fixe a curva com 1 mW e suba para 2 mW: a corrente dobra e V₀ não muda. Agora mude a cor: V₀ muda.</li>
+    <li><b>Ache o limiar.</b> Escolha um metal e aumente o comprimento de onda devagar. Confira se a emissão para em λ₀ = h·c / φ.</li>
+  </ul>
+</div>
+
+<div class="rd-panel">
+  <p class="rd-eyebrow">As equações do modelo</p>
+  <h2>A explicação de Einstein</h2>
+  <div class="rd-eqs">
+    <div class="rd-eq"><h3>1. Energia do fóton</h3>
+      <div class="rd-formula">E = h · f = h · c / λ</div>
+      <p>A luz chega em pacotes. A energia de cada um depende só da frequência. Com h = 4,14 × 10⁻¹⁵ eV·s e h·c ≈ 1 240 eV·nm, a luz de 400 nm tem fótons de 3,1 eV.</p></div>
+    <div class="rd-eq"><h3>2. Função trabalho</h3>
+      <div class="rd-formula">φ = energia mínima para soltar um elétron</div>
+      <p>Cada metal segura seus elétrons com uma energia própria. Um fóton entrega toda a sua energia a um único elétron: ou basta, ou o elétron fica.</p></div>
+    <div class="rd-eq"><h3>3. Equação de Einstein</h3>
+      <div class="rd-formula">K<sub>máx</sub> = h · f − φ</div>
+      <p>O que sobra depois de pagar φ vira energia cinética. Os elétrons mais presos gastam mais para sair, por isso K<sub>máx</sub> é o limite, não o valor de todos.</p></div>
+    <div class="rd-eq"><h3>4. Frequência de corte</h3>
+      <div class="rd-formula">f₀ = φ / h &nbsp;&nbsp; λ₀ = h · c / φ</div>
+      <p>Abaixo de f₀ não há emissão, seja qual for a intensidade. A física clássica previa o contrário: luz forte, de qualquer cor, acabaria soltando elétrons.</p></div>
+    <div class="rd-eq"><h3>5. Tensão de corte</h3>
+      <div class="rd-formula">e · V₀ = K<sub>máx</sub></div>
+      <p>Uma tensão contrária freia os elétrons. V₀ é a que para até os mais rápidos. É assim que se mede K<sub>máx</sub>: em volts, K<sub>máx</sub> em eV tem o mesmo número.</p></div>
+    <div class="rd-eq"><h3>6. Corrente de saturação</h3>
+      <div class="rd-formula">I<sub>sat</sub> = η · e · P / E<sub>fóton</sub></div>
+      <p>Mais potência, mais fótons por segundo, mais elétrons. Com a mesma potência, luz de fóton mais energético traz menos fótons. Aqui η = 1% dos fótons solta um elétron.</p></div>
+  </div>
+</div>
+
+<div class="rd-panel">
+  <p class="rd-eyebrow">Onde o modelo simplifica</p>
+  <h2>Limites</h2>
+  <ul class="rd-limits">
+    <li>Os valores de φ são típicos de livros didáticos. Na prática, variam com a limpeza e o estado da superfície do metal.</li>
+    <li>Os elétrons saem com energia distribuída por igual entre 0 e K<sub>máx</sub>, e todos vão em direção ao ânodo. Por isso a curva é reta entre −V₀ e 0; a curva real é arredondada.</li>
+    <li>A fração η de fótons que soltam elétrons é fixa. Na realidade, ela depende do metal e da frequência.</li>
+    <li>Os fótons e elétrons desenhados são só uma amostra: de verdade são trilhões por segundo. As velocidades da animação também estão muito reduzidas.</li>
+  </ul>
+</div>
+</main>
+</div>
+
+<footer>
+  <div class="wrap">
+    <span>A Tal da Física · material de estudo gratuito</span>
+    <span class="mono">λ<sub>Na</sub> = 589 nm, a cor do nosso destaque</span>
+  </div>
+</footer>
+
+<script>
+(function(){
+const H=4.1357e-15, C_L=2.998e8, HC=1239.84, ETA=0.01, TAU=0.5;
+const $=id=>document.getElementById(id);
+const nf=(x,d=0)=>x.toLocaleString('pt-BR',{minimumFractionDigits:d,maximumFractionDigits:d});
+const SUP={'-':'⁻','0':'⁰','1':'¹','2':'²','3':'³','4':'⁴','5':'⁵','6':'⁶','7':'⁷','8':'⁸','9':'⁹'};
+function sci(x,d=2){if(!isFinite(x)||x===0)return '0';const e=Math.floor(Math.log10(Math.abs(x)));const m=x/10**e;
+  return nf(m,d)+' × 10'+String(e).split('').map(c=>SUP[c]).join('')}
+const root=document.querySelector('.rd');
+function css(v){return getComputedStyle(root).getPropertyValue(v).trim()}
+const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+/* cor aproximada de cada comprimento de onda; fora do visível, cores convencionais */
+function rgbOf(l){
+  if(l<380)return [201,179,255]; if(l>750)return [201,107,90];
+  let r=0,g=0,b=0;
+  if(l<440){r=(440-l)/60;b=1} else if(l<490){g=(l-440)/50;b=1} else if(l<510){g=1;b=(510-l)/20}
+  else if(l<580){r=(l-510)/70;g=1} else if(l<645){r=1;g=(645-l)/65} else r=1;
+  return [r,g,b].map(v=>Math.round(255*Math.pow(v,0.8)));
+}
+const col=(l,a=1)=>{const c=rgbOf(l);return `rgba(${c[0]},${c[1]},${c[2]},${a})`};
+
+/* ---------- modelo ---------- */
+const P={metal:'Sódio',phi:2.28};
+function current(V,Isat,V0){if(V0<=0)return 0;if(V>=0)return Isat;if(V<=-V0)return 0;return Isat*(1+V/V0)}
+function compute(){
+  P.lam=+$('lam').value; P.pow=+$('pow').value; P.V=+$('volt').value;
+  P.E=HC/P.lam; P.f=C_L/(P.lam*1e-9); P.K=Math.max(0,P.E-P.phi); P.V0=P.K;
+  P.Isat=P.K>0?ETA*1000*P.pow/P.E:0; // µA, com P em mW e E em eV
+  P.I=current(P.V,P.Isat,P.V0);
+  P.f0=P.phi/H; P.l0=HC/P.phi; P.nph=P.pow*1e-3/(P.E*1.602e-19);
+}
+function update(){
+  compute();
+  const band=P.lam<380?'ultravioleta':P.lam>750?'infravermelho':'visível';
+  $('oL').textContent=P.lam+' nm · '+band; $('oP').textContent=nf(P.pow,2)+' mW';
+  $('oV').textContent=(P.V>0?'+':'')+nf(P.V,2)+' V';
+  $('hE').textContent=nf(P.E,2)+' eV'; $('hK').textContent=nf(P.K,2)+' eV';
+  $('hV').textContent=P.K>0?nf(P.V0,2)+' V':'—'; $('hI').textContent=nf(P.I,2)+' µA';
+  const mx=Math.max(P.E,P.phi);
+  $('bE').style.width=(P.E/mx*100).toFixed(1)+'%'; $('bE').style.background=col(P.lam);
+  $('bP').style.width=(P.phi/mx*100).toFixed(1)+'%'; $('bK').style.width=(P.K/mx*100).toFixed(1)+'%';
+  $('tE').textContent=nf(P.E,2)+' eV'; $('tP').textContent=nf(P.phi,2)+' eV'; $('tK').textContent=nf(P.K,2)+' eV';
+  const rows=[
+    ['Frequência',sci(P.f)+' Hz'],
+    ['Frequência de corte (f₀)',sci(P.f0)+' Hz','hl'],
+    ['Comprimento de onda de corte (λ₀)',nf(P.l0)+' nm','hl'],
+    ['Velocidade máxima do elétron',P.K>0?nf(593*Math.sqrt(P.K))+' km/s':'—'],
+    ['Fótons por segundo',P.pow>0?sci(P.nph):'0'],
+    ['Corrente de saturação',nf(P.Isat,2)+' µA'],
+  ];
+  $('readout').innerHTML=rows.map(r=>`<span class="${r[2]||''}">${r[0]}</span><span class="${r[2]||''}">${r[1]}</span>`).join('');
+  document.querySelectorAll('#metals button').forEach(b=>b.classList.toggle('on',b.dataset.n===P.metal));
+  document.querySelectorAll('#colors button').forEach(b=>b.classList.toggle('on',+b.dataset.l===P.lam));
+  const m=$('msg'), say=(t,c)=>{m.textContent=t;m.className='rd-msg '+c};
+  if(P.pow===0) say('Luz desligada: sem fótons, sem elétrons.','');
+  else if(P.K<=0) say(`Abaixo do limiar: cada fóton traz ${nf(P.E,2)} eV, menos que os ${nf(P.phi,2)} eV que o ${P.metal.toLowerCase()} exige. Nenhum elétron sai, por mais forte que seja a luz.`,'bad');
+  else if(P.V<=-P.V0) say(`Tensão de corte atingida: o campo freia até os elétrons mais rápidos (${nf(P.K,2)} eV), e a corrente é zero.`,'warn');
+  else if(P.V<0) say(`O campo freia os elétrons: só chegam ao ânodo os que saem com mais de ${nf(-P.V,2)} eV.`,'warn');
+  else say(`Cada fóton paga ${nf(P.phi,2)} eV para soltar o elétron, e sobram até ${nf(P.K,2)} eV de energia cinética. Todos os elétrons chegam ao ânodo: corrente de saturação.`,'good');
+}
+
+/* ---------- partículas da animação ---------- */
+let photons=[], electrons=[], spawn=0, clock=0;
+function tick(dt){
+  clock+=dt;
+  if(!reduce&&P.pow>0){
+    spawn+=dt*Math.min(70,22*P.pow*(P.lam/400));
+    while(spawn>=1){spawn-=1;photons.push({t:0,y:Math.random()})}
+  }
+  photons.forEach(p=>p.t+=dt*1.5);
+  photons=photons.filter(p=>{
+    if(p.t<1)return true;
+    if(P.K>0&&Math.random()<0.6&&electrons.length<160){
+      const K=Math.random()*P.K;
+      electrons.push({x:0,y:p.y,v:TAU*Math.sqrt(2*K),dy:(Math.random()-.5)*0.05,age:0});
+    }
+    return false;
+  });
+  const a=TAU*TAU*P.V;
+  electrons.forEach(e=>{e.v+=a*dt;e.x+=e.v*dt;e.y+=e.dy*dt;e.age+=dt});
+  electrons=electrons.filter(e=>e.x>=0&&e.x<1&&e.age<6);
+}
+
+/* ---------- desenho ---------- */
+function fit(c){const r=c.getBoundingClientRect(),d=window.devicePixelRatio||1;
+  if(c.width!==Math.round(r.width*d)||c.height!==Math.round(r.height*d)){c.width=Math.round(r.width*d);c.height=Math.round(r.height*d)}
+  return {w:c.width,h:c.height,d}}
+const cv=$('scene'),cx=cv.getContext('2d'),gi=$('gIV'),gx=gi.getContext('2d'),gk=$('gKF'),kx=gk.getContext('2d');
+function colors(){return {ac:css('--accent'),bl:css('--blue'),ink:css('--ink'),mu:css('--ink-soft'),ln:css('--grid'),ok:css('--ok'),bad:css('--bad'),sky:css('--rd-sky'),gr:css('--rd-ground'),mono:css('--f-mono')}}
+function drawScene(C){
+  const {w,h,d}=fit(cv); if(w<60*d||h<60*d)return;
+  cx.fillStyle=C.sky;cx.fillRect(0,0,w,h);
+  const x1=.2*w,x2=.84*w,y1=.2*h,y2=.64*h, cX=.28*w, aX=.76*w, py1=.27*h, py2=.57*h, wy=.84*h, bX=.46*w, mX=.63*w;
+  const lx=.56*w, ly=.08*h;
+  // fios
+  cx.strokeStyle=C.mu;cx.lineWidth=2*d;cx.beginPath();cx.moveTo(cX,py2);cx.lineTo(cX,wy);cx.lineTo(bX-8*d,wy);cx.moveTo(bX+8*d,wy);cx.lineTo(aX,wy);cx.lineTo(aX,py2);cx.stroke();
+  // tubo a vácuo
+  cx.fillStyle='rgba(147,189,232,.06)';cx.strokeStyle=C.mu;cx.lineWidth=1.5*d;cx.beginPath();cx.roundRect(x1,y1,x2-x1,y2-y1,24*d);cx.fill();cx.stroke();
+  // feixe
+  if(P.pow>0){cx.fillStyle=col(P.lam,.06+.12*P.pow/2);cx.beginPath();cx.moveTo(lx-10*d,ly+8*d);cx.lineTo(lx+10*d,ly+8*d);cx.lineTo(cX+5*d,py2);cx.lineTo(cX+5*d,py1);cx.closePath();cx.fill()}
+  // placas
+  cx.fillStyle=C.ink;cx.fillRect(cX-4*d,py1,8*d,py2-py1);cx.fillStyle=C.gr;cx.fillRect(aX-4*d,py1,8*d,py2-py1);
+  // lâmpada
+  if(P.pow>0){const g=cx.createRadialGradient(lx,ly,0,lx,ly,34*d);g.addColorStop(0,col(P.lam,.25+.3*P.pow/2));g.addColorStop(1,col(P.lam,0));cx.fillStyle=g;cx.beginPath();cx.arc(lx,ly,34*d,0,Math.PI*2);cx.fill()}
+  cx.fillStyle=C.gr;cx.beginPath();cx.roundRect(lx-16*d,ly-8*d,32*d,16*d,4*d);cx.fill();
+  cx.fillStyle=P.pow>0?col(P.lam):C.ln;cx.fillRect(lx-12*d,ly+5*d,24*d,3*d);
+  // fótons: ondinha cujo comprimento acompanha o da luz
+  const wl=Math.max(5,P.lam/45)*d, sx=lx, sy=ly+8*d, ex=cX+5*d;
+  cx.strokeStyle=col(P.lam);cx.lineWidth=1.6*d;
+  photons.forEach(p=>{
+    const ey=py1+p.y*(py2-py1), dx=ex-sx, dy=ey-sy, L=Math.hypot(dx,dy), ux=dx/L, uy=dy/L;
+    cx.beginPath();
+    for(let i=0;i<=16;i++){const s=p.t*L-i*1.6*d; if(s<0)break; const off=Math.sin(s/wl*2*Math.PI)*3*d, X=sx+ux*s-uy*off, Y=sy+uy*s+ux*off; i?cx.lineTo(X,Y):cx.moveTo(X,Y)}
+    cx.stroke();
+  });
+  // elétrons
+  cx.fillStyle=C.ok;
+  electrons.forEach(e=>{const X=cX+4*d+e.x*(aX-cX-8*d),Y=py1+Math.max(0,Math.min(1,e.y))*(py2-py1);cx.beginPath();cx.arc(X,Y,3.2*d,0,Math.PI*2);cx.fill()});
+  // bateria
+  cx.strokeStyle=C.ink;
+  if(Math.abs(P.V)<0.005){cx.lineWidth=2*d;cx.strokeStyle=C.mu;cx.beginPath();cx.moveTo(bX-8*d,wy);cx.lineTo(bX+8*d,wy);cx.stroke()}
+  else{const side=P.V>0?1:-1;cx.lineWidth=2.5*d;cx.beginPath();cx.moveTo(bX+8*d*side,wy-13*d);cx.lineTo(bX+8*d*side,wy+13*d);cx.stroke();cx.lineWidth=4*d;cx.beginPath();cx.moveTo(bX-8*d*side,wy-7*d);cx.lineTo(bX-8*d*side,wy+7*d);cx.stroke()}
+  // amperímetro
+  cx.fillStyle=C.sky;cx.strokeStyle=C.ink;cx.lineWidth=2*d;cx.beginPath();cx.arc(mX,wy,13*d,0,Math.PI*2);cx.fill();cx.stroke();
+  cx.textAlign='center';cx.fillStyle=C.ink;cx.font=`700 ${13*d}px ${C.mono}`;cx.fillText('A',mX,wy+5*d);
+  cx.font=`${11*d}px ${C.mono}`;
+  cx.fillStyle=C.ac;cx.fillText(nf(P.I,2)+' µA',mX,wy+29*d);
+  cx.fillStyle=C.ink;cx.fillText((P.V>0?'+':'')+nf(P.V,2)+' V',bX,wy+29*d);
+  cx.fillStyle=C.mu;
+  cx.textAlign='left';cx.fillText(P.metal.toLowerCase(),cX+7*d,y2+15*d);
+  cx.textAlign='right';cx.fillText('ânodo',aX-7*d,y2+15*d);
+  cx.textAlign='left';cx.fillStyle=P.pow>0?col(P.lam):C.mu;cx.fillText(P.lam+' nm',lx+24*d,ly+4*d);
+  cx.textAlign='left';
+}
+function axis(c,w,h,d,C,o){
+  const L=38*d,R=w-10*d,T=22*d,B=h-28*d,X=v=>L+(v-o.x0)/(o.x1-o.x0)*(R-L),Y=v=>B-(v-o.y0)/(o.y1-o.y0)*(B-T);
+  c.fillStyle=C.sky;c.fillRect(0,0,w,h);
+  c.font=`${10*d}px ${C.mono}`;c.lineWidth=1*d;
+  for(let v=o.x0;v<=o.x1+1e-6;v+=o.xs){c.strokeStyle=C.ln;c.globalAlpha=.5;c.beginPath();c.moveTo(X(v),T);c.lineTo(X(v),B);c.stroke();c.globalAlpha=1;c.fillStyle=C.mu;c.textAlign='center';c.fillText(nf(v),X(v),B+13*d)}
+  for(let v=o.y0;v<=o.y1+1e-6;v+=o.ys){c.strokeStyle=C.ln;c.globalAlpha=.5;c.beginPath();c.moveTo(L,Y(v));c.lineTo(R,Y(v));c.stroke();c.globalAlpha=1;c.fillStyle=C.mu;c.textAlign='right';c.fillText(nf(v),L-5*d,Y(v)+3*d)}
+  c.strokeStyle=C.mu;c.lineWidth=1.5*d;c.beginPath();c.moveTo(o.xz===undefined?L:X(o.xz),T);c.lineTo(o.xz===undefined?L:X(o.xz),B);c.moveTo(L,Y(0));c.lineTo(R,Y(0));c.stroke();
+  c.fillStyle=C.mu;c.textAlign='right';c.fillText(o.xl,R,h-3*d);c.textAlign='left';c.fillText(o.yl,4*d,13*d);
+  return {X,Y,L,R,T,B};
+}
+let pins=[];
+const PIN_COL=['--blue','--ok','--bad','--ink-soft'];
+function drawIV(C){
+  const {w,h,d}=fit(gi); if(w<60*d||h<60*d)return;
+  const A=axis(gx,w,h,d,C,{x0:-7,x1:4,xs:1,y0:0,y1:10,ys:2,xz:0,xl:'V (volts)',yl:'I (µA)'});
+  const curve=(Is,V0,c,lw)=>{gx.strokeStyle=c;gx.lineWidth=lw;gx.beginPath();gx.moveTo(A.X(-7),A.Y(0));if(V0>0&&Is>0){gx.lineTo(A.X(-Math.min(V0,7)),A.Y(0));gx.lineTo(A.X(0),A.Y(Is))}else gx.lineTo(A.X(0),A.Y(0));gx.lineTo(A.X(4),A.Y(Is));gx.stroke()};
+  gx.font=`${10*d}px ${C.mono}`;gx.textAlign='left';
+  pins.forEach((p,i)=>{const c=css(PIN_COL[i%4]);curve(p.Is,p.V0,c,1.8*d);gx.fillStyle=c;gx.fillText(p.t,A.L+6*d,A.T+11*d+i*13*d)});
+  curve(P.Isat,P.V0,C.ac,3*d);
+  if(P.K>0&&P.V0<=7){gx.strokeStyle=C.ac;gx.setLineDash([4*d,4*d]);gx.lineWidth=1*d;gx.beginPath();gx.moveTo(A.X(-P.V0),A.Y(0));gx.lineTo(A.X(-P.V0),A.Y(Math.max(P.Isat,1)));gx.stroke();gx.setLineDash([]);
+    gx.fillStyle=C.ac;gx.textAlign='center';gx.fillText('−V₀',A.X(-P.V0),A.Y(Math.max(P.Isat,1))-4*d);gx.textAlign='left'}
+  gx.fillStyle=C.ink;gx.beginPath();gx.arc(A.X(P.V),A.Y(P.I),5*d,0,Math.PI*2);gx.fill();
+}
+const METALS=[...document.querySelectorAll('#metals button')].map(b=>({n:b.dataset.n,phi:+b.dataset.phi}));
+function drawKF(C){
+  const {w,h,d}=fit(gk); if(w<60*d||h<60*d)return;
+  const A=axis(kx,w,h,d,C,{x0:0,x1:21,xs:3,y0:-8,y1:8,ys:2,xl:'f (× 10¹⁴ Hz)',yl:'K (eV)'});
+  const KF=(f,phi)=>H*f*1e14-phi;
+  kx.save();kx.beginPath();kx.rect(A.L,A.T,A.R-A.L,A.B-A.T);kx.clip();
+  // faixa da luz visível sobre o eixo das frequências
+  for(let f=4;f<7.89;f+=.05){kx.fillStyle=col(C_L/(f*1e14)*1e9,.8);kx.fillRect(A.X(f),A.Y(0)-3*d,A.X(f+.05)-A.X(f)+1,6*d)}
+  METALS.forEach(m=>{if(m.n===P.metal)return;kx.strokeStyle=C.ln;kx.lineWidth=1.2*d;const f0=m.phi/H/1e14;kx.beginPath();kx.moveTo(A.X(f0),A.Y(0));kx.lineTo(A.X(21),A.Y(KF(21,m.phi)));kx.stroke()});
+  const f0=P.f0/1e14;
+  kx.strokeStyle=C.ac;kx.lineWidth=1.5*d;kx.setLineDash([4*d,4*d]);kx.beginPath();kx.moveTo(A.X(0),A.Y(-P.phi));kx.lineTo(A.X(f0),A.Y(0));kx.stroke();kx.setLineDash([]);
+  kx.lineWidth=3*d;kx.beginPath();kx.moveTo(A.X(f0),A.Y(0));kx.lineTo(A.X(21),A.Y(KF(21,P.phi)));kx.stroke();
+  kx.restore();
+  kx.font=`${10*d}px ${C.mono}`;kx.fillStyle=C.ac;kx.textAlign='left';
+  kx.fillText('−φ',A.X(0)+5*d,A.Y(-P.phi)+4*d);kx.fillText('f₀',A.X(f0)-3*d,A.Y(0)+15*d);
+  const fx=P.f/1e14, ky=Math.max(0,KF(fx,P.phi));
+  kx.fillStyle=P.K>0?C.ink:C.sky;kx.strokeStyle=C.ink;kx.lineWidth=2*d;kx.beginPath();kx.arc(A.X(Math.min(fx,21)),A.Y(ky),5*d,0,Math.PI*2);kx.fill();kx.stroke();
+}
+
+/* ---------- laço ---------- */
+let last=performance.now();
+function loop(now){
+  const dt=Math.min(0.05,(now-last)/1000);last=now;
+  tick(dt);
+  const C=colors();
+  drawScene(C);drawIV(C);drawKF(C);
+  requestAnimationFrame(loop);
+}
+
+/* ---------- controles ---------- */
+['lam','pow','volt'].forEach(id=>$(id).addEventListener('input',update));
+document.querySelectorAll('#metals button').forEach(b=>b.addEventListener('click',()=>{P.metal=b.dataset.n;P.phi=+b.dataset.phi;update()}));
+document.querySelectorAll('#colors button').forEach(b=>b.addEventListener('click',()=>{$('lam').value=b.dataset.l;update()}));
+$('pin').addEventListener('click',()=>{
+  if(pins.length>=4)pins.shift();
+  pins.push({Is:P.Isat,V0:P.V0,t:nf(P.pow,2)+' mW · '+P.lam+' nm · '+P.metal});
+});
+$('clear').addEventListener('click',()=>{pins=[]});
+const stops=[];for(let l=150;l<=800;l+=10)stops.push(col(l)+' '+((l-150)/6.5).toFixed(1)+'%');
+$('strip').style.background='linear-gradient(to right,'+stops.join(',')+')';
+
+update();requestAnimationFrame(loop);
+})();
+</script>
+</body>
+</html>
