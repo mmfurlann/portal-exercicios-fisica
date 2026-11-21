@@ -8,30 +8,26 @@
 <link rel="stylesheet" href="estilo.css">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Literata:ital,opsz,wght@0,7..72,400;0,7..72,600;1,7..72,400&family=JetBrains+Mono:wght@400;600&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Young+Serif&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400;1,700&family=JetBrains+Mono:wght@400;600&display=swap">
 </head>
 <body>
 <header class="top">
   <div class="wrap">
-    <a class="brand" href="index.html">
-      <svg width="28" height="28" viewBox="0 0 28 28" aria-hidden="true">
-        <path d="M3 24 Q14 -6 25 24" fill="none" stroke="var(--ink)" stroke-width="2" stroke-dasharray="3 3"/>
-        <circle cx="14" cy="9" r="3.5" fill="var(--accent)"/>
-      </svg>
-      A Tal da Física
-    </a>
-    <nav class="links" aria-label="Seções">
+    <a class="brand" href="index.html"><img src="marca/logo-180.jpg" width="58" height="46" alt=""><span>A Tal da Física</span></a>
+    <button class="menu-btn" type="button" aria-expanded="false" aria-controls="menu"><span aria-hidden="true"></span>Menu</button>
+    <nav class="links" id="menu" aria-label="Seções">
       <a href="index.html#trilhas">Trilhas</a>
-      <a href="index.html#licao">Lição</a>
+      <a href="licao.html">Lição</a>
       <a href="laboratorio.html" aria-current="page">Laboratório</a>
       <a href="graficos.html">Gráficos</a>
-      <a href="formulas.html">Fórmulas</a>
+      <!-- link desativado temporariamente: <a href="formulas.html">Fórmulas</a> -->
       <a href="quiz.html">Quiz</a>
       <a href="enem.html">ENEM</a>
       <a href="fuvest.html">FUVEST</a>
       <a href="eletricidade.html">Eletricidade</a>
       <a href="game/index.html">Game</a>
-      <a href="index.html#constantes">Constantes</a>
+      <!-- link desativado temporariamente: <a href="quest.html">Quest</a> -->
+      <a href="constantes.html">Constantes</a>
     </nav>
   </div>
 </header>
@@ -45,7 +41,7 @@
         <p>Cada experimento tem a ideia principal ao lado e os números calculados na hora. Mexa nos controles, faça a conta no papel e confira.</p>
       </div>
       <nav class="area-nav" aria-label="Áreas do laboratório">
-        <a href="#mecanica"><span class="sym mono">F</span>Mecânica <small>5 bancadas e 2 simulações</small></a>
+        <a href="#mecanica"><span class="sym mono"><span class="vec">F</span></span>Mecânica <small>5 bancadas e 2 simulações</small></a>
         <a href="#optica"><span class="sym mono">n</span>Óptica <small>3 bancadas</small></a>
         <a href="#ondas"><span class="sym mono">λ</span>Ondulatória <small>Doppler e ondas estacionárias</small></a>
         <a href="#termo"><span class="sym mono">Q</span>Termodinâmica <small>1 bancada e 4 simulações</small></a>
@@ -60,7 +56,7 @@
   <section class="area" id="mecanica">
     <div class="wrap">
       <div class="area-head">
-        <span class="area-sym mono">F</span>
+        <span class="area-sym mono"><span class="vec">F</span></span>
         <div><p class="label">Área 1</p><h2>Mecânica</h2></div>
       </div>
       <div class="lab">
@@ -239,6 +235,7 @@
               <li>Nenhuma máquina simples economiza trabalho: o que se ganha em força se paga em distância.</li>
               <li>Conta Plutarco que Arquimedes puxou sozinho um navio carregado usando um sistema de polias.</li>
             </ul>
+            <p><a href="animacao-polias.html">Ver a talha em 3D: animação de 8 s →</a></p>
           </div>
           <div class="bench" aria-label="Simulador de polias de Arquimedes">
             <div class="bench-head">
@@ -672,5 +669,6 @@
 </footer>
 
 <script src="bancadas.js"></script>
+<script src="site.js"></script>
 </body>
 </html>

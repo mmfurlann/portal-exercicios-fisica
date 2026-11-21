@@ -8,15 +8,15 @@
 <link rel="stylesheet" href="estilo.css">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Literata:ital,opsz,wght@0,7..72,400;0,7..72,600;1,7..72,400&family=JetBrains+Mono:wght@400;600&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Young+Serif&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400;1,700&family=JetBrains+Mono:wght@400;600&display=swap">
 <style>
 /* Resolução da FUVEST: cartões de questão no padrão do site */
 .fv-intro { padding-block: 36px 8px; display: grid; gap: 10px; }
 .fv-intro h1 { font-size: clamp(1.9rem, 4vw, 2.7rem); font-weight: 800; letter-spacing: -0.01em; }
 .fv-intro > p:not(.label) { color: var(--ink-soft); max-width: 70ch; }
 .fv-main { display: grid; gap: 24px; padding-block: 20px 8px; }
-.fv-card { background: var(--card); border: 1px solid var(--grid); border-radius: 10px; padding: 24px; display: grid; gap: 16px; min-width: 0;
-  box-shadow: 0 1px 0 var(--grid), 0 14px 32px -18px rgba(0, 0, 0, 0.55); scroll-margin-top: 90px; }
+.fv-card { background: var(--card); border: 1px solid var(--grid); border-radius: var(--radius); padding: 24px; display: grid; gap: 16px; min-width: 0;
+  box-shadow: none; scroll-margin-top: 90px; }
 @media (max-width: 620px) { .fv-card { padding: 16px; } }
 
 /* gabarito e placar */
@@ -24,7 +24,7 @@
 .fv-top h2 { font-size: clamp(1.4rem, 2.6vw, 1.8rem); }
 .fv-grid { display: grid; grid-template-columns: repeat(10, minmax(0, 1fr)); gap: 8px; }
 @media (max-width: 720px) { .fv-grid { grid-template-columns: repeat(5, minmax(0, 1fr)); } }
-.fv-grid a { display: grid; gap: 2px; justify-items: center; padding: 10px 4px; border: 1px solid var(--grid); border-radius: 8px;
+.fv-grid a { display: grid; gap: 2px; justify-items: center; padding: 10px 4px; border: 1px solid var(--grid); border-radius: var(--radius);
   background: var(--paper); text-decoration: none; color: var(--ink); }
 .fv-grid a:hover { border-color: var(--accent); }
 .fv-grid .n { font-family: var(--mono); font-size: .78rem; color: var(--ink-soft); }
@@ -42,11 +42,11 @@
 .fv-text { display: grid; gap: 10px; max-width: 75ch; }
 .fv-text blockquote { margin: 0; padding: 8px 14px; border-left: 3px solid var(--accent); color: var(--ink); font-style: italic; }
 .fv-text ul { margin: 0; padding-left: 20px; display: grid; gap: 6px; }
-.fv-note { display: block; font-size: .92rem; color: var(--ink-soft); border: 1px dashed var(--grid); border-radius: 8px; padding: 10px 12px; }
+.fv-note { display: block; font-size: .92rem; color: var(--ink-soft); border: 1px dashed var(--grid); border-radius: var(--radius); padding: 10px 12px; }
 .fv-note b { color: var(--ink); }
 .fv-fig { margin: 0; display: grid; gap: 6px; justify-items: center; }
-.fv-fig img { display: block; width: 100%; height: auto; background: #fff; border-radius: 8px; border: 1px solid var(--grid); }
-.fv-ship-img { width: 100%; background: #fff; border: 1px solid var(--grid); border-radius: 8px; overflow: hidden; }
+.fv-fig img { display: block; width: 100%; height: auto; background: #fff; border-radius: var(--radius); border: 1px solid var(--grid); }
+.fv-ship-img { width: 100%; background: #fff; border: 1px solid var(--grid); border-radius: var(--radius); overflow: hidden; }
 .fv-ship-img img { border: 0; border-radius: 0; }
 .fv-ship-labels { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; padding: 10px 10px 2px; color: #1e2a35;
   font-family: var(--display); font-weight: 700; font-size: clamp(.78rem, 2.4vw, .95rem); text-align: center; line-height: 1.2; }
@@ -66,7 +66,7 @@
 /* alternativas */
 .fv-opts { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
 .fv-opt { width: 100%; text-align: left; display: grid; grid-template-columns: 30px minmax(0, 1fr); gap: 10px; align-items: start;
-  font: inherit; color: var(--ink); background: var(--paper); border: 1px solid var(--grid); border-radius: 8px; padding: 10px 12px; cursor: pointer; }
+  font: inherit; color: var(--ink); background: var(--paper); border: 1px solid var(--grid); border-radius: var(--radius); padding: 10px 12px; cursor: pointer; }
 .fv-opt:hover:not(:disabled) { border-color: var(--ink-soft); }
 .fv-opt:disabled { cursor: default; }
 .fv-opt .l { font-family: var(--display); font-weight: 800; color: var(--accent-ink); }
@@ -82,7 +82,7 @@
 .fv-res[open] summary::before { transform: rotate(90deg); }
 .fv-res .fv-text { margin-top: 12px; }
 .fv-calc { font-family: var(--mono); font-size: .9rem; background: color-mix(in srgb, var(--accent) 9%, var(--card)); border-left: 3px solid var(--accent);
-  border-radius: 6px; padding: 10px 12px; display: grid; gap: 4px; overflow-x: auto; }
+  border-radius: var(--radius); padding: 10px 12px; display: grid; gap: 4px; overflow-x: auto; }
 .fv-ans { font-family: var(--display); font-weight: 800; color: var(--ok); }
 .fv-feedback { font-family: var(--display); font-weight: 700; min-height: 1.4em; }
 .fv-feedback.ok { color: var(--ok); } .fv-feedback.bad { color: var(--bad); }
@@ -92,25 +92,21 @@
 <body>
 <header class="top">
   <div class="wrap">
-    <a class="brand" href="index.html">
-      <svg width="28" height="28" viewBox="0 0 28 28" aria-hidden="true">
-        <path d="M3 24 Q14 -6 25 24" fill="none" stroke="var(--ink)" stroke-width="2" stroke-dasharray="3 3"/>
-        <circle cx="14" cy="9" r="3.5" fill="var(--accent)"/>
-      </svg>
-      A Tal da Física
-    </a>
-    <nav class="links" aria-label="Seções">
+    <a class="brand" href="index.html"><img src="marca/logo-180.jpg" width="58" height="46" alt=""><span>A Tal da Física</span></a>
+    <button class="menu-btn" type="button" aria-expanded="false" aria-controls="menu"><span aria-hidden="true"></span>Menu</button>
+    <nav class="links" id="menu" aria-label="Seções">
       <a href="index.html#trilhas">Trilhas</a>
-      <a href="index.html#licao">Lição</a>
+      <a href="licao.html">Lição</a>
       <a href="laboratorio.html">Laboratório</a>
       <a href="graficos.html">Gráficos</a>
-      <a href="formulas.html">Fórmulas</a>
+      <!-- link desativado temporariamente: <a href="formulas.html">Fórmulas</a> -->
       <a href="quiz.html">Quiz</a>
       <a href="enem.html">ENEM</a>
       <a href="fuvest.html" aria-current="page">FUVEST</a>
       <a href="eletricidade.html">Eletricidade</a>
       <a href="game/index.html">Game</a>
-      <a href="index.html#constantes">Constantes</a>
+      <!-- link desativado temporariamente: <a href="quest.html">Quest</a> -->
+      <a href="constantes.html">Constantes</a>
     </nav>
   </div>
 </header>
@@ -549,5 +545,6 @@ document.getElementById('reset').addEventListener('click',()=>{
 updateScore();
 })();
 </script>
+<script src="site.js"></script>
 </body>
 </html>

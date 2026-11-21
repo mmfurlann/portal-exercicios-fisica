@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="As três leis de Newton explicadas, com exercício resolvido e um pêndulo simples para experimentar.">
+<title>Leis de Newton · A Tal da Física</title>
+<link rel="stylesheet" href="estilo.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Young+Serif&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400;1,700&family=JetBrains+Mono:wght@400;600&display=swap">
+</head>
+<body>
+<header class="top">
+  <div class="wrap">
+    <a class="brand" href="index.html"><img src="marca/logo-180.jpg" width="58" height="46" alt=""><span>A Tal da Física</span></a>
+    <button class="menu-btn" type="button" aria-expanded="false" aria-controls="menu"><span aria-hidden="true"></span>Menu</button>
+    <nav class="links" id="menu" aria-label="Seções">
+      <a href="index.html#trilhas">Trilhas</a>
+      <a href="licao.html" aria-current="page">Lição</a>
+      <a href="laboratorio.html">Laboratório</a>
+      <a href="graficos.html">Gráficos</a>
+      <!-- link desativado temporariamente: <a href="formulas.html">Fórmulas</a> -->
+      <a href="quiz.html">Quiz</a>
+      <a href="enem.html">ENEM</a>
+      <a href="fuvest.html">FUVEST</a>
+      <a href="eletricidade.html">Eletricidade</a>
+      <a href="game/index.html">Game</a>
+      <!-- link desativado temporariamente: <a href="quest.html">Quest</a> -->
+      <a href="constantes.html">Constantes</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+<section id="licao">
+    <div class="wrap">
+      <div class="section-head">
+        <p class="label">Lição · Mecânica</p>
+        <h2>As três leis de Newton</h2>
+      </div>
+      <div class="lesson">
+        <div class="prose">
+          <div class="law">
+            <span class="n">1ª</span>
+            <div><h3>Inércia</h3><p>Um corpo mantém seu estado de repouso ou de movimento retilíneo uniforme enquanto a força resultante sobre ele for nula. É por isso que você é jogado para a frente quando o ônibus freia.</p></div>
+          </div>
+          <div class="law">
+            <span class="n">2ª</span>
+            <div><h3>Princípio fundamental</h3><p>A força resultante é igual à massa vezes a aceleração: <span class="mono">F<sub>R</sub> = m·a</span>. Dobrar a força dobra a aceleração; dobrar a massa a reduz pela metade.</p></div>
+          </div>
+          <div class="law">
+            <span class="n">3ª</span>
+            <div><h3>Ação e reação</h3><p>Toda ação tem uma reação de mesma intensidade, mesma direção e sentido oposto, aplicada no <em>outro</em> corpo. O foguete empurra os gases para baixo e os gases empurram o foguete para cima.</p></div>
+          </div>
+
+          <div class="worked">
+            <p class="label">Exercício resolvido</p>
+            <p>Um carrinho de 2 kg é puxado por uma força horizontal de 10 N. O atrito com o chão vale 4 N. Qual a aceleração?</p>
+            <ol>
+              <li>Força resultante: <span class="mono">F<sub>R</sub> = 10 − 4 = 6 N</span></li>
+              <li>Segunda lei: <span class="mono">a = F<sub>R</sub> / m = 6 / 2</span></li>
+              <li>Resposta: <span class="mono"><strong>a = 3 m/s²</strong></span></li>
+            </ol>
+          </div>
+        </div>
+
+        <div class="bench pend-box" aria-label="Simulador de pêndulo simples">
+          <div class="bench-head">
+            <span class="label">Bancada · Pêndulo simples</span>
+            <span class="mono" id="pT" style="font-weight:600">T = —</span>
+          </div>
+          <canvas id="pend" width="480" height="600" role="img" aria-label="Pêndulo oscilando"></canvas>
+          <div class="controls">
+            <div class="ctrl">
+              <label for="len">Comprimento <output id="leno">1,00 m</output></label>
+              <input type="range" id="len" min="0.2" max="2.5" step="0.05" value="1">
+            </div>
+            <div class="ctrl">
+              <label for="pg">Gravidade</label>
+              <select id="pg">
+                <option value="9.81">Terra · 9,81</option>
+                <option value="1.62">Lua · 1,62</option>
+                <option value="3.71">Marte · 3,71</option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <span>A Tal da Física · material de estudo gratuito · <a href="restrito/">Área do aluno 🔒</a></span>
+    <p class="autor">Autor: Marcelo Furlan, físico e geofísico · professor de Física nos ensinos superior, médio e fundamental II</p>
+  </div>
+</footer>
+
+<script src="bancadas.js"></script>
+<script src="site.js"></script>
+</body>
+</html>

@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="Animação 3D de oito segundos da talha de polias de Arquimedes: a força cai pela metade a cada polia móvel, e a corda puxada dobra.">
+<title>Polias de Arquimedes em 3D · A Tal da Física</title>
+<link rel="stylesheet" href="estilo.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Young+Serif&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400;1,700&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+/* Cena 3D das polias: o cartão é o fundo da bancada, sem sombras borradas nem gradientes. */
+.cena { position: relative; background: var(--card); border: var(--line-w) solid var(--ink); border-radius: var(--radius); overflow: hidden; }
+.cena canvas { display: block; width: 100%; height: auto; aspect-ratio: 4 / 3; }
+.cena-legenda { font-family: var(--mono); font-size: .8rem; color: var(--ink-soft); margin: 10px 0 0; }
+.cena-ctl { display: grid; gap: 14px; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); margin-top: 16px; }
+.cena-ctl label { display: flex; justify-content: space-between; font-family: var(--mono); font-size: .85rem; }
+.cena-ctl input { width: 100%; accent-color: var(--ribbon-deep); }
+.cena-leit { display: grid; gap: 10px; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); margin-top: 16px; }
+.cena-leit div { border-top: 1.5px solid var(--ink); padding-top: 8px; }
+.cena-leit .v { display: block; font-family: var(--mono); font-size: 1.15rem; font-weight: 600; }
+.cena-leit .label { display: block; }
+.cena-acoes { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; margin-top: 16px; }
+.cena-acoes button { font-family: var(--display); font-size: 1rem; border: 1.5px solid var(--ink); border-radius: var(--radius); background: var(--ribbon); color: var(--ink); padding: 8px 16px; box-shadow: var(--sticker); cursor: pointer; }
+.cena-acoes button:focus-visible { outline: 3px solid var(--blue); outline-offset: 3px; }
+.cena-fase { font-family: var(--mono); font-size: .85rem; color: var(--ink-soft); }
+.cena-nota { font-size: .92rem; color: var(--ink-soft); max-width: 70ch; }
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="wrap">
+    <a class="brand" href="index.html"><img src="marca/logo-180.jpg" width="58" height="46" alt=""><span>A Tal da Física</span></a>
+    <button class="menu-btn" type="button" aria-expanded="false" aria-controls="menu"><span aria-hidden="true"></span>Menu</button>
+    <nav class="links" id="menu" aria-label="Seções">
+      <a href="index.html#trilhas">Trilhas</a>
+      <a href="licao.html">Lição</a>
+      <a href="laboratorio.html" aria-current="page">Laboratório</a>
+      <a href="graficos.html">Gráficos</a>
+      <a href="quiz.html">Quiz</a>
+      <a href="enem.html">ENEM</a>
+      <a href="fuvest.html">FUVEST</a>
+      <a href="eletricidade.html">Eletricidade</a>
+      <a href="game/index.html">Game</a>
+      <!-- link desativado temporariamente: <a href="quest.html">Quest</a> -->
+      <a href="constantes.html">Constantes</a>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap" style="padding-block: 40px 56px">
+  <section aria-labelledby="titulo-polias">
+    <div class="section-head">
+      <p class="label">Laboratório · Mecânica · Animação 3D</p>
+      <h1 id="titulo-polias">Polias de Arquimedes em 3D</h1>
+      <p class="cena-nota">Um ciclo de oito segundos: a mão puxa a corda, a carga sobe e depois desce de volta. A mesma talha do laboratório, com as mesmas contas: F = P/2ⁿ, corda puxada = 2ⁿ·h e trabalho igual nos dois lados.</p>
+    </div>
+
+    <div class="cena" aria-label="Cena 3D da talha com polias móveis em série">
+      <canvas id="cena3d" role="img" aria-label="Talha de polias levantando uma carga, com as forças peso e força da mão"></canvas>
+    </div>
+    <p class="cena-legenda">Setas proporcionais às forças (800 N = 0,35 m). A altura da carga é reduzida na tela para caber; as contas usam h = 1,0 m.</p>
+
+    <div class="cena-acoes">
+      <button id="cena-play" type="button" aria-pressed="false">Pausar</button>
+      <span class="cena-fase" id="cena-fase" aria-live="polite">repouso</span>
+      <span class="cena-fase" id="cena-tempo">t = 0,0 s de 8 s</span>
+    </div>
+
+    <div class="cena-ctl">
+      <div>
+        <label for="cena-n">Polias móveis <output id="cena-no">2</output></label>
+        <input type="range" id="cena-n" min="0" max="4" step="1" value="2">
+      </div>
+      <div>
+        <label for="cena-m">Massa da carga <output id="cena-mo">80 kg</output></label>
+        <input type="range" id="cena-m" min="10" max="200" step="5" value="80">
+      </div>
+    </div>
+
+    <div class="cena-leit" aria-live="polite">
+      <div><span class="label">Força na mão</span><span class="v" id="cena-F">—</span></div>
+      <div><span class="label">Corda puxada</span><span class="v" id="cena-d">—</span></div>
+      <div><span class="label">Trabalho da mão</span><span class="v" id="cena-W">—</span></div>
+      <div><span class="label">Trabalho do peso</span><span class="v" id="cena-Wp">—</span></div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <span>A Tal da Física · material de estudo gratuito · <a href="restrito/">Área do aluno 🔒</a></span>
+    <p class="autor">Autor: Marcelo Furlan, físico e geofísico · professor de Física nos ensinos superior, médio e fundamental II</p>
+  </div>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="site.js"></script>
+<script>
+(function () {
+  /* Talha de Arquimedes em série: a mesma geometria e as mesmas contas do simulador do laboratório.
+     Coordenadas da planta em px (1 px = 1 cm); a cena 3D usa metros. Pulley k sobe 2^(k−1)·H,
+     a corda da mão anda 2ⁿ·H, e a força da mão vale P/2ⁿ. */
+  const cv = document.getElementById('cena3d');
+  if (!cv || !window.THREE) return;
+  const G = 9.81, RP = 22, TOP = 40, YF = 90, SC = 0.01, DUR = 8, H_REAL = 1.0;
+  const PAL = { ink: 0x16142a, paper: 0xfbf6ec, card: 0xfffdf8, rope: 0xa95300, ribbon: 0xf99f29, ocean: 0x1fa9c6, bad: 0xb83a2b, leaf: 0x4d7a12 };
+  const WX = px => (px - 380) * SC, WY = py => (560 - py) * SC;
+  const ueh = c => {                                  // 0–0,6 repouso · 0,6–4,4 puxa · 4,4–5,2 segura · 5,2–7,4 solta · 7,4–8 repouso
+    const sm = a => { a = Math.min(1, Math.max(0, a)); return a * a * (3 - 2 * a); };
+    if (c < 0.6) return 0;
+    if (c < 4.4) return sm((c - 0.6) / 3.8);
+    if (c < 5.2) return 1;
+    if (c < 7.4) return 1 - sm((c - 5.2) / 2.2);
+    return 0;
+  };
+  const faseDe = c => c < 0.6 ? 'repouso' : c < 4.4 ? 'puxando a corda' : c < 5.2 ? 'segurando' : c < 7.4 ? 'soltando' : 'repouso';
+
+  const renderer = new THREE.WebGLRenderer({ canvas: cv, antialias: true, alpha: true });
+  renderer.setPixelRatio(Math.min(2, window.devicePixelRatio || 1));
+  const scene = new THREE.Scene();
+  const cam = new THREE.PerspectiveCamera(34, 4 / 3, 0.1, 100);
+  scene.add(new THREE.AmbientLight(0xffffff, 0.85));
+  const sol = new THREE.DirectionalLight(0xffffff, 0.55); sol.position.set(2, 6, 8); scene.add(sol);
+
+  const mat = (c, extra) => new THREE.MeshStandardMaterial(Object.assign({ color: c, roughness: 0.6, metalness: 0.05 }, extra || {}));
+  const matRope = new THREE.MeshBasicMaterial({ color: PAL.rope });
+  const UP = new THREE.Vector3(0, 1, 0);
+  const RW = RP * SC;                                 // raio do disco em metros
+
+  function roda(fixa) {                               // disco com aro laranja (a corda envolve o aro) e raio
+    const g = new THREE.Group();
+    const disco = new THREE.Mesh(new THREE.CylinderGeometry(RW, RW, 0.07, 40), mat(PAL.card)); disco.rotation.x = Math.PI / 2; g.add(disco);
+    g.add(new THREE.Mesh(new THREE.TorusGeometry(RW, 0.014, 8, 48), new THREE.MeshBasicMaterial({ color: PAL.rope })));
+    const raio = new THREE.Group(); raio.add(new THREE.Mesh(new THREE.BoxGeometry(2 * RW * 0.9, 0.018, 0.09), mat(PAL.ink))); g.add(raio);
+    const eixo = new THREE.Mesh(new THREE.CylinderGeometry(0.03, 0.03, 0.11, 16), mat(fixa ? PAL.ocean : PAL.ribbon)); eixo.rotation.x = Math.PI / 2; g.add(eixo);
+    return { g, raio };
+  }
+  function corda() { return new THREE.Mesh(new THREE.CylinderGeometry(0.016, 0.016, 1, 8), matRope); }
+  function ajusta(mesh, A, B) {                       // segmento A→B como cilindro esticado
+    const d = new THREE.Vector3().subVectors(B, A), L = Math.max(d.length(), 1e-4);
+    mesh.position.copy(A).add(B).multiplyScalar(0.5);
+    mesh.quaternion.setFromUnitVectors(UP, d.clone().normalize());
+    mesh.scale.set(1, L, 1);
+  }
+  function rotulo(texto, cor) {
+    const c = document.createElement('canvas'); c.width = 320; c.height = 84;
+    const x = c.getContext('2d'); x.font = 'bold 40px "Atkinson Hyperlegible", sans-serif'; x.textAlign = 'center'; x.textBaseline = 'middle';
+    x.fillStyle = '#' + cor.toString(16).padStart(6, '0'); x.fillText(texto, 160, 42);
+    const tex = new THREE.CanvasTexture(c); const sp = new THREE.Sprite(new THREE.SpriteMaterial({ map: tex, transparent: true, depthTest: false }));
+    sp.scale.set(0.9, 0.24, 1); sp.userData.texto = texto; return sp;
+  }
+  function seta(cor) {
+    const a = new THREE.ArrowHelper(new THREE.Vector3(0, -1, 0), new THREE.Vector3(), 0.3, cor, 0.05, 0.035);
+    a.line.material.linewidth = 2; return a;
+  }
+
+  let grupo = null, est = null;
+  function constroi(n) {
+    if (grupo) scene.remove(grupo);
+    grupo = new THREE.Group(); scene.add(grupo);
+    const teto = new THREE.Mesh(new THREE.BoxGeometry(4.6, 0.12, 0.5), mat(PAL.ink)); teto.position.set(WX(380), WY(TOP) - 0.06, 0); grupo.add(teto);
+    est = { n, rodas: [], cordas: [], rotF: null, carga: null, mao: null, setaP: seta(PAL.bad), setaF: seta(PAL.ocean), rotP: null, rotF2: null, pulos: [] };
+    const zk = k => 0.2 * (k - (n + 1) / 2);
+    est.zk = zk;
+    for (let k = 1; k <= n; k++) { const r = roda(false); est.rodas[k] = r; grupo.add(r.g); est.pulos[k] = rotulo('P/' + Math.pow(2, k), PAL.ink); grupo.add(est.pulos[k]); }
+    est.fixa = roda(true); grupo.add(est.fixa.g);
+    est.eixoFixo = corda(); grupo.add(est.eixoFixo);
+    const nSeg = 3 * n + 4; for (let i = 0; i < nSeg; i++) { const m = corda(); est.cordas.push(m); grupo.add(m); }
+    est.carga = new THREE.Mesh(new THREE.BoxGeometry(1, 1, 0.5), mat(PAL.ink)); grupo.add(est.carga);
+    est.rotuloCarga = rotulo('', PAL.ink); grupo.add(est.rotuloCarga);
+    est.mao = new THREE.Mesh(new THREE.SphereGeometry(0.05, 16, 12), mat(PAL.ocean)); grupo.add(est.mao);
+    grupo.add(est.setaP); grupo.add(est.setaF);
+    est.rotP = rotulo('P', PAL.bad); est.rotF = rotulo('F', PAL.ocean); grupo.add(est.rotP); grupo.add(est.rotF);
+  }
+
+  function estado(n, u, H) {                          // posições em px, como no simulador do laboratório
+    const xs = [], ys = [];
+    for (let k = 1; k <= n; k++) { xs[k] = 340 + (k - 1) * RP; ys[k] = 280 + (n - k) * 44 - Math.pow(2, k - 1) * H * u; }
+    const xf = n ? xs[n] + 2 * RP : 340 + RP;
+    const handY = 120 + Math.pow(2, n) * H * u;
+    const loadTop = n ? ys[1] + RP + 28 : 380 - H * u;
+    return { xs, ys, xf, yf: YF, handY, loadTop };
+  }
+
+  const UI = { n: document.getElementById('cena-n'), m: document.getElementById('cena-m') };
+  let tt = 0, tocando = !(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+  const botao = document.getElementById('cena-play');
+  botao.setAttribute('aria-pressed', String(tocando)); botao.textContent = tocando ? 'Pausar' : 'Reproduzir';
+  botao.addEventListener('click', () => { tocando = !tocando; botao.textContent = tocando ? 'Pausar' : 'Reproduzir'; botao.setAttribute('aria-pressed', String(tocando)); });
+
+  const fmt = (v, casas) => v.toLocaleString('pt-BR', { minimumFractionDigits: casas, maximumFractionDigits: casas });
+  function atualizaPainel(n, m, u, c) {
+    const P = m * G, F = P / Math.pow(2, n), d = Math.pow(2, n) * H_REAL * u, W = F * d, Wp = P * H_REAL * u;
+    document.getElementById('cena-no').textContent = String(n);
+    document.getElementById('cena-mo').textContent = fmt(m, 0) + ' kg';
+    document.getElementById('cena-F').textContent = fmt(F, 0) + ' N';
+    document.getElementById('cena-d').textContent = fmt(d, 2) + ' m';
+    document.getElementById('cena-W').textContent = fmt(W, 0) + ' J';
+    document.getElementById('cena-Wp').textContent = fmt(Wp, 0) + ' J';
+    document.getElementById('cena-fase').textContent = faseDe(c);
+    document.getElementById('cena-tempo').textContent = 't = ' + fmt(c, 1) + ' s de 8 s';
+  }
+
+  function desenha(u) {
+    const n = est.n, m = +UI.m.value, H = Math.min(60, 146 / Math.pow(2, Math.max(n - 1, 0)));   // altura da carga reduzida para caber
+    const s = estado(n, u, H), bw = (64 + 0.25 * m) * SC, bh = 56 * SC;
+    const P = m * G, F = P / Math.pow(2, n), escala = 0.35 / 800;   // 800 N = 0,35 m
+    // polias móveis: sobem e giram com a corda que passa por elas
+    for (let k = 1; k <= n; k++) {
+      const r = est.rodas[k]; r.g.position.set(WX(s.xs[k]), WY(s.ys[k]), est.zk(k));
+      r.raio.rotation.z = -(Math.pow(2, k - 1) * H * u * SC) / RW;
+      const pl = est.pulos[k]; pl.position.set(WX(s.xs[k] - RP) - 0.2, WY(s.ys[k]) + 0.28, est.zk(k) + 0.05);
+    }
+    const zf = 0;
+    est.fixa.g.position.set(WX(s.xf), WY(s.yf), zf);
+    est.fixa.raio.rotation.z = -(Math.pow(2, n) * H * u * SC) / RW;
+    // cordas: eixo fixo, cordas da talha, corda da mão e corda da carga (todas no plano de cada polia)
+    const segs = [];
+    segs.push([[WX(s.xf), WY(TOP), zf], [WX(s.xf), WY(s.yf), zf]]);                                   // haste do eixo fixo
+    for (let k = 1; k <= n; k++) {
+      const z = est.zk(k);
+      segs.push([[WX(s.xs[k] - RP), WY(TOP), z], [WX(s.xs[k] - RP), WY(s.ys[k]), z]]);              // do teto ao lado esquerdo
+      const alvo = k < n ? [WX(s.xs[k + 1]), WY(s.ys[k + 1]), est.zk(k + 1)] : [WX(s.xf - RP), WY(s.yf), zf];
+      segs.push([[WX(s.xs[k] + RP), WY(s.ys[k]), z], alvo]);                                          // da polia para a seguinte (ou para a fixa)
+    }
+    segs.push([[WX(s.xf + RP), WY(s.yf), zf], [WX(s.xf + RP), WY(s.handY), zf]]);                     // corda da mão
+    if (n) segs.push([[WX(s.xs[1]), WY(s.ys[1]), est.zk(1)], [WX(s.xs[1]), WY(s.loadTop), est.zk(1)]]);   // corda da carga
+    else segs.push([[WX(s.xf - RP), WY(s.yf), zf], [WX(s.xf - RP), WY(s.loadTop), zf]]);
+    segs.forEach((sg, i) => { if (est.cordas[i]) ajusta(est.cordas[i], new THREE.Vector3(...sg[0]), new THREE.Vector3(...sg[1])); });
+    est.cordas.forEach((mm, i) => { mm.visible = i < segs.length; });
+    // carga e mão
+    const xl = n ? s.xs[1] : s.xf - RP, zl = n ? est.zk(1) : zf;
+    if (est.bwAtual !== bw) {                                     // a caixa e o rótulo só são refeitos quando a massa muda
+      est.carga.geometry.dispose(); est.carga.geometry = new THREE.BoxGeometry(bw, bh, 0.45); est.bwAtual = bw;
+      est.rotuloCarga.material.map.dispose(); est.rotuloCarga.material.map = rotulo(fmt(m, 0) + ' kg', PAL.card).material.map;
+    }
+    est.carga.position.set(WX(xl), WY(s.loadTop) - bh / 2, zl);
+    est.mao.position.set(WX(s.xf + RP), WY(s.handY), zf);
+    // forças (proporcionais): P no centro inferior da carga; F na mão
+    const origemP = new THREE.Vector3(WX(xl), WY(s.loadTop) - bh - 0.02, zl);
+    est.setaP.position.copy(origemP); est.setaP.setLength(P * escala, Math.min(0.08, P * escala * 0.3), 0.04);
+    const origemF = new THREE.Vector3(WX(s.xf + RP) + 0.12, WY(s.handY), zf);
+    est.setaF.position.copy(origemF); est.setaF.setLength(F * escala, Math.min(0.08, Math.max(F * escala, 0.012) * 0.3), 0.03);
+    est.rotP.position.set(WX(xl) + 0.5, origemP.y - P * escala / 2, zl);
+    est.rotF.position.set(origemF.x + 0.5, origemF.y - F * escala / 2, zf);
+    est.rotuloCarga.position.set(WX(xl), WY(s.loadTop) - bh / 2, zl + 0.3);
+    atualizaPainel(n, m, u, tt % DUR);
+  }
+
+  function ajustaTamanho() {
+    const w = cv.clientWidth || 640; renderer.setSize(w, w * 0.75, false);
+    cam.aspect = 4 / 3; cam.updateProjectionMatrix();
+  }
+  window.addEventListener('resize', ajustaTamanho); ajustaTamanho();
+
+  UI.n.addEventListener('input', () => constroi(+UI.n.value));   // trocar o número de polias refaz a talha
+  constroi(+UI.n.value);
+
+  let ultimo = null;
+  function quadro(agora) {
+    const dt = ultimo === null ? 0 : Math.min(0.05, (agora - ultimo) / 1000);
+    ultimo = agora;
+    if (tocando) tt = (tt + dt) % DUR;
+    const u = ueh(tt);
+    desenha(u);
+    const ang = 0.16 * Math.sin((2 * Math.PI * tt) / DUR);   // leve giro da câmera: sincronizado com os 8 s
+    cam.position.set(9.4 * Math.sin(ang), 3.3, 9.4 * Math.cos(ang)); cam.lookAt(0, 3.25, 0);
+    renderer.render(scene, cam);
+    requestAnimationFrame(quadro);
+  }
+  requestAnimationFrame(quadro);
+})();
+</script>
+</body>
+</html>

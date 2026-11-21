@@ -9,19 +9,19 @@
 <link rel="stylesheet" href="simulacao.css">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Literata:ital,opsz,wght@0,7..72,400;0,7..72,600;1,7..72,400&family=JetBrains+Mono:wght@400;600&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Young+Serif&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400;1,700&family=JetBrains+Mono:wght@400;600&display=swap">
 <style>
-.rd { --rd-sky: #1d2227; }
+.rd { --rd-sky: #eaf1f2; }
 .fe-chips { display: flex; flex-wrap: wrap; gap: 6px; }
 .fe-chips button { padding: 7px 10px; font-size: .85rem; }
-.rd button.on { background: var(--blue); border-color: var(--blue); color: #14273a; }
+.rd button.on { background: var(--blue); border-color: var(--blue); color: #fff; }
 .fe-strip { height: 8px; border-radius: 4px; margin-top: 6px; }
 .fe-bars { margin-top: 12px; }
 .fe-bars .rd-bar { grid-template-columns: 112px minmax(0, 1fr) 70px; }
 .fe-bars .rd-fill { transition: none; }
 .fe-bars .rd-fill.phi { background: var(--rd-ground); }
 .fe-bars .rd-fill.k { background: var(--ok); }
-.fe-graph { width: 100%; aspect-ratio: 4/3; display: block; background: var(--rd-sky); border-radius: 8px; margin-top: 8px; }
+.fe-graph { width: 100%; aspect-ratio: 4/3; display: block; background: var(--rd-sky); border-radius: var(--radius); margin-top: 8px; }
 .fe-gh { font-size: 1.05rem; }
 .fe-gh + p { color: var(--ink-soft); font-size: .92rem; margin-top: 4px; }
 </style>
@@ -29,25 +29,21 @@
 <body>
 <header class="top">
   <div class="wrap">
-    <a class="brand" href="index.html">
-      <svg width="28" height="28" viewBox="0 0 28 28" aria-hidden="true">
-        <path d="M3 24 Q14 -6 25 24" fill="none" stroke="var(--ink)" stroke-width="2" stroke-dasharray="3 3"/>
-        <circle cx="14" cy="9" r="3.5" fill="var(--accent)"/>
-      </svg>
-      A Tal da Física
-    </a>
-    <nav class="links" aria-label="Seções">
+    <a class="brand" href="index.html"><img src="marca/logo-180.jpg" width="58" height="46" alt=""><span>A Tal da Física</span></a>
+    <button class="menu-btn" type="button" aria-expanded="false" aria-controls="menu"><span aria-hidden="true"></span>Menu</button>
+    <nav class="links" id="menu" aria-label="Seções">
       <a href="index.html#trilhas">Trilhas</a>
-      <a href="index.html#licao">Lição</a>
+      <a href="licao.html">Lição</a>
       <a href="laboratorio.html" aria-current="page">Laboratório</a>
       <a href="graficos.html">Gráficos</a>
-      <a href="formulas.html">Fórmulas</a>
+      <!-- link desativado temporariamente: <a href="formulas.html">Fórmulas</a> -->
       <a href="quiz.html">Quiz</a>
       <a href="enem.html">ENEM</a>
       <a href="fuvest.html">FUVEST</a>
       <a href="eletricidade.html">Eletricidade</a>
       <a href="game/index.html">Game</a>
-      <a href="index.html#constantes">Constantes</a>
+      <!-- link desativado temporariamente: <a href="quest.html">Quest</a> -->
+      <a href="constantes.html">Constantes</a>
     </nav>
   </div>
 </header>
@@ -391,5 +387,6 @@ $('strip').style.background='linear-gradient(to right,'+stops.join(',')+')';
 update();requestAnimationFrame(loop);
 })();
 </script>
+<script src="site.js"></script>
 </body>
 </html>
