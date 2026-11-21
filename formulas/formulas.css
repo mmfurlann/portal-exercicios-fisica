@@ -148,18 +148,30 @@
   .fb-sec > h3 { break-after: avoid; }
 }
 
-/* ilustrações dos exemplos resolvidos (formulas/ilustracoes.js) */
-.fb-fig { margin: 0; background: var(--paper); border: 1px solid var(--grid); border-radius: var(--radius); padding: 8px 10px; }
-.fb-fig svg { display: block; width: 100%; max-width: 440px; height: auto; margin: 0 auto; overflow: hidden; }
-.fb-fig text { font-family: var(--body); }
-.fb-fig .k { stroke: var(--ink); } .fb-fig .s { stroke: var(--ink-soft); } .fb-fig .a { stroke: var(--accent); }
+/* ilustrações dos exemplos resolvidos (formulas/ilustracoes.js)
+   Cada SVG traz a própria largura máxima (1,4× a largura do desenho), para que os rótulos tenham o mesmo corpo em
+   todas as figuras. No celular a figura avança sobre o recuo do cartão para ganhar largura útil. */
+.fb-fig { --fig-a: #c4620c; margin: 0; background: var(--paper); border: 1px solid var(--grid); border-radius: var(--radius); padding: 10px 12px; }
+.fb-fig svg { display: block; width: 100%; height: auto; margin: 0 auto; overflow: hidden; }
+@media (max-width: 620px) { .fb-fig { margin-inline: -8px; padding: 6px 3px; } }
+.fb-fig text { font-family: var(--body); font-variant-numeric: lining-nums; paint-order: stroke; stroke: var(--paper); stroke-width: 3.6px; stroke-linejoin: round; }
+.fb-fig .tb7 { font-weight: 700; } .fb-fig .ti { font-style: italic; }
+.fb-fig svg.escuro text, .fb-fig text.th { stroke: #14181c; }
+.fb-fig svg.escuro text.leg { stroke: var(--paper); }
+.fb-fig .k { stroke: var(--ink); } .fb-fig .s { stroke: var(--ink-soft); } .fb-fig .a { stroke: var(--fig-a); }
 .fb-fig .b { stroke: var(--blue); } .fb-fig .g { stroke: var(--ok); } .fb-fig .r { stroke: var(--bad); }
 .fb-fig .n { stroke: none; } .fb-fig .p { stroke: #f4efe6; }
 .fb-fig .fn { fill: none; } .fb-fig .fk { fill: var(--ink); } .fb-fig .fp { fill: var(--card); } .fb-fig .fs { fill: var(--grid); }
-.fb-fig .fa { fill: var(--accent); } .fb-fig .fb { fill: var(--blue); } .fb-fig .fg { fill: var(--ok); } .fb-fig .fr { fill: var(--bad); }
-.fb-fig .fw { fill: color-mix(in srgb, var(--blue) 26%, transparent); } .fb-fig .fh { fill: color-mix(in srgb, var(--accent) 26%, transparent); }
+.fb-fig .fo { fill: color-mix(in srgb, var(--accent) 16%, var(--card)); }                 /* objeto: bloco, caixa */
+.fb-fig .fm { fill: color-mix(in srgb, var(--ink-soft) 34%, var(--card)); }               /* metal, polia, cubo de roda */
+.fb-fig .fcar { fill: color-mix(in srgb, var(--blue) 30%, var(--card)); }
+.fb-fig .fpes { fill: color-mix(in srgb, var(--ink-soft) 55%, var(--card)); }
+.fb-fig .fmad { fill: #8a5a2b; } .fb-fig .fg2 { fill: color-mix(in srgb, var(--ok) 55%, var(--card)); }
+.fb-fig .fsol { fill: #f7b733; }
+.fb-fig .fa { fill: var(--fig-a); } .fb-fig .fb { fill: var(--blue); } .fb-fig .fg { fill: var(--ok); } .fb-fig .fr { fill: var(--bad); }
+.fb-fig .fw { fill: color-mix(in srgb, var(--blue) 24%, var(--card)); } .fb-fig .fh { fill: color-mix(in srgb, var(--accent) 30%, var(--card)); }
 .fb-fig .fd { fill: #14181c; }
 .fb-fig .fq { fill: var(--paper); } /* máscara do fundo da figura: some o fio por trás de componentes */
 .fb-fig .tk { fill: var(--ink); } .fb-fig .ts { fill: var(--ink-soft); } .fb-fig .ta { fill: var(--accent-ink); } .fb-fig .tb { fill: var(--blue); }
 .fb-fig .tg { fill: var(--ok); } .fb-fig .tr { fill: var(--bad); } .fb-fig .tn { fill: var(--ink); } .fb-fig .tp { fill: #f4efe6; }
-@media print { .fb-fig { break-inside: avoid; } }
+@media print { .fb-fig { break-inside: avoid; --fig-a: #b35a0a; } .fb-fig text { stroke: #fff; } }
