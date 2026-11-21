@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex">
+<title>Guia de identidade · A Tal da Física</title>
+<link rel="stylesheet" href="../estilo.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Young+Serif&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400;1,700&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+/* Guia de referência do sistema de design (não aparece no menu do site). */
+.g-sec { padding-block: 48px; border-top: 1.5px solid var(--ink); }
+.g-sec:first-of-type { border-top: 0; }
+.g-row { display: flex; flex-wrap: wrap; gap: 16px; align-items: flex-start; }
+.sw { width: 150px; display: grid; gap: 6px; font-family: var(--mono); font-size: .78rem; }
+.sw i { display: block; height: 72px; border: 1.5px solid var(--ink); border-radius: var(--radius); }
+.sw b { font-family: var(--body); font-size: .9rem; }
+.ty { display: grid; gap: 18px; }
+.ty div { display: grid; grid-template-columns: 150px minmax(0, 1fr); gap: 16px; align-items: baseline; }
+.ty span:first-child { font-family: var(--mono); font-size: .75rem; color: var(--ink-soft); }
+.sky-demo { background: var(--sky); color: var(--star); padding: 28px; border-radius: var(--radius); display: flex; gap: 24px; align-items: center; flex-wrap: wrap; }
+.sky-demo img { width: 200px; -webkit-mask-image: radial-gradient(ellipse 50% 50% at 50% 50%, #000 72%, transparent 100%); mask-image: radial-gradient(ellipse 50% 50% at 50% 50%, #000 72%, transparent 100%); }
+.rules { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px; }
+.rules ul { margin: 8px 0 0; padding-left: 18px; display: grid; gap: 6px; }
+@media (max-width: 700px) { .rules { grid-template-columns: minmax(0, 1fr); } .ty div { grid-template-columns: minmax(0, 1fr); gap: 2px; } }
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="wrap">
+    <a class="brand" href="../index.html"><img src="logo-180.jpg" width="58" height="46" alt=""><span>A Tal da Física</span></a>
+    <button class="menu-btn" type="button" aria-expanded="false" aria-controls="menu"><span aria-hidden="true"></span>Menu</button>
+    <nav class="links" id="menu" aria-label="Seções">
+      <a href="../index.html">Início</a>
+      <a href="../laboratorio.html">Laboratório</a>
+      <!-- link desativado temporariamente: <a href="../formulas.html">Fórmulas</a> -->
+      <a href="guia.html" aria-current="page">Guia de identidade</a>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap">
+  <section class="g-sec">
+    <div class="section-head">
+      <p class="label">Sistema de design</p>
+      <h2>Caderno de bordo</h2>
+      <p>A identidade nasce do logo: o céu estrelado, a Terra em traço de cartum, a fita laranja e as órbitas do átomo. Páginas de papel claro para ler e estudar; faixas de céu para o logo, o cabeçalho e o rodapé. Todas as definições estão em variáveis no topo do <span class="mono">estilo.css</span>.</p>
+    </div>
+    <div class="sky-demo">
+      <img src="logo-720.jpg" width="720" height="574" alt="Logo A Tal da Física">
+      <div><p class="label" style="color:var(--star);opacity:.7">Uso do logo</p><p style="max-width:44ch;margin-top:8px">Sempre sobre o céu (<span class="mono">--sky</span>), com as bordas do arquivo dissolvidas. Arquivo original intacto em <span class="mono">marca/logo-original.webp</span>.</p></div>
+    </div>
+  </section>
+
+  <section class="g-sec">
+    <div class="section-head"><p class="label">Paleta oficial</p><h2>Cores tiradas do logo</h2></div>
+    <div class="g-row">
+      <div class="sw"><i style="background:var(--sky)"></i><b>Céu</b>--sky · #07050c</div>
+      <div class="sw"><i style="background:var(--ribbon)"></i><b>Fita</b>--ribbon · #f99f29</div>
+      <div class="sw"><i style="background:var(--ribbon-deep)"></i><b>Contorno da fita</b>--ribbon-deep · #d9770f</div>
+      <div class="sw"><i style="background:var(--ocean)"></i><b>Oceano</b>--ocean · #1fa9c6</div>
+      <div class="sw"><i style="background:var(--leaf)"></i><b>Continente</b>--leaf · #a9c452</div>
+      <div class="sw"><i style="background:var(--paper)"></i><b>Papel</b>--paper · #fbf6ec</div>
+      <div class="sw"><i style="background:var(--ink)"></i><b>Tinta</b>--ink · #16142a</div>
+    </div>
+    <p style="margin-top:16px;color:var(--ink-soft);max-width:70ch">Para texto sobre papel, use as versões escuras com contraste suficiente: <span class="mono">--accent-ink</span> (laranja), <span class="mono">--blue</span> (oceano), <span class="mono">--ok</span> (continente) e <span class="mono">--bad</span>.</p>
+  </section>
+
+  <section class="g-sec">
+    <div class="section-head"><p class="label">Tipografia</p><h2>Três vozes</h2></div>
+    <div class="ty">
+      <div><span>Young Serif · títulos</span><span style="font-family:var(--display);font-size:var(--fs-3xl);line-height:1">A Tal da Física</span></div>
+      <div><span>--fs-2xl · seção</span><h2>Leis de Newton</h2></div>
+      <div><span>--fs-lg · subtítulo</span><h3>Princípio fundamental</h3></div>
+      <div><span>Atkinson Hyperlegible · texto</span><p style="max-width:60ch">Feita para máxima legibilidade, inclusive para quem tem baixa visão: letras de formas bem distintas, ideal para estudar.</p></div>
+      <div><span>JetBrains Mono · dados</span><p class="mono">F = m·a · 9,81 m/s² · 3,0 × 10⁸ m/s</p></div>
+      <div><span>.label · rótulos</span><p class="label">Laboratório · Mecânica</p></div>
+    </div>
+  </section>
+
+  <section class="g-sec">
+    <div class="section-head"><p class="label">Componentes</p><h2>Botões, links e grafismos</h2></div>
+    <div class="g-row" style="align-items:center">
+      <a class="btn accent" href="#">Botão principal</a>
+      <a class="btn" href="#">Botão escuro</a>
+      <a class="btn ghost" href="#">Botão secundário</a>
+      <a href="#">Link no texto</a>
+      <span class="orbit-mark" aria-hidden="true"></span><span class="label">órbita: marca de seção</span>
+    </div>
+    <div class="rules" style="margin-top:32px">
+      <div><h3>Usar</h3><ul><li>Fios de tinta de 1,5 px e cantos quase retos (4 px).</li><li>Sombra chapada de "adesivo" só em elementos que se clicam.</li><li>Órbitas como sublinhado do menu e marca de seção.</li><li>Faixas de céu só no topo da página inicial, no cabeçalho e no rodapé.</li></ul></div>
+      <div><h3>Evitar</h3><ul><li>Gradientes decorativos e sombras borradas.</li><li>Caixas dentro de caixas: prefira fios e espaço em branco.</li><li>Laranja da fita como cor de texto sobre papel (use <span class="mono">--accent-ink</span>).</li><li>Animações que não explicam nada.</li></ul></div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <span>A Tal da Física · guia de identidade</span>
+    <p class="autor">Marcelo Furlan</p>
+  </div>
+</footer>
+<script src="../site.js"></script>
+</body>
+</html>

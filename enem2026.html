@@ -1,0 +1,669 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>ENEM 2026 · A Tal da Física</title>
+<meta name="description" content="Questões de Física do ENEM 2026 (2º dia, caderno amarelo) com enunciado completo e resolução comentada, com as equações em LaTeX.">
+<link rel="stylesheet" href="estilo.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Young+Serif&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400;1,700&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+/* Resolução do ENEM 2026: mesmo padrão de cartões da página da FUVEST */
+.fv-intro { padding-block: 36px 8px; display: grid; gap: 10px; }
+.fv-intro h1 { font-size: clamp(1.9rem, 4vw, 2.7rem); font-weight: 800; letter-spacing: -0.01em; }
+.fv-intro > p:not(.label) { color: var(--ink-soft); max-width: 70ch; }
+.fv-main { display: grid; gap: 24px; padding-block: 20px 8px; }
+.fv-card { background: var(--card); border: 1px solid var(--grid); border-radius: var(--radius); padding: 24px; display: grid; gap: 16px; min-width: 0;
+  box-shadow: none; scroll-margin-top: 90px; }
+@media (max-width: 620px) { .fv-card { padding: 16px; } }
+
+/* gabarito e placar */
+.fv-top { display: grid; gap: 14px; }
+.fv-top h2 { font-size: clamp(1.4rem, 2.6vw, 1.8rem); }
+.fv-grid { display: grid; grid-template-columns: repeat(10, minmax(0, 1fr)); gap: 8px; }
+@media (max-width: 720px) { .fv-grid { grid-template-columns: repeat(5, minmax(0, 1fr)); } }
+.fv-grid a { display: grid; gap: 2px; justify-items: center; padding: 10px 4px; border: 1px solid var(--grid); border-radius: var(--radius);
+  background: var(--paper); text-decoration: none; color: var(--ink); }
+.fv-grid a:hover { border-color: var(--accent); }
+.fv-grid .n { font-family: var(--mono); font-size: .78rem; color: var(--ink-soft); }
+.fv-grid .r { font-family: var(--display); font-weight: 800; font-size: 1.3rem; color: var(--ink-soft); }
+.fv-grid a.done.ok { border-color: var(--ok); } .fv-grid a.done.bad { border-color: var(--bad); }
+.fv-gab .r { color: var(--accent-ink); }
+.fv-bar { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; justify-content: space-between; }
+.fv-score { font-family: var(--mono); color: var(--ink-soft); }
+.fv-score b { color: var(--ink); }
+
+/* questão */
+.fv-head { display: flex; flex-wrap: wrap; gap: 8px 14px; align-items: baseline; }
+.fv-head h2 { font-size: clamp(1.35rem, 2.4vw, 1.7rem); }
+.fv-topic { font-family: var(--mono); font-size: .78rem; color: var(--blue); }
+.fv-text { display: grid; gap: 10px; max-width: 75ch; }
+.fv-text blockquote { margin: 0; padding: 8px 14px; border-left: 3px solid var(--accent); color: var(--ink); font-style: italic; }
+.fv-text ul { margin: 0; padding-left: 20px; display: grid; gap: 6px; }
+.fv-note { display: block; font-size: .92rem; color: var(--ink-soft); border: 1px dashed var(--grid); border-radius: var(--radius); padding: 10px 12px; }
+.fv-note b { color: var(--ink); }
+.fv-fig { margin: 0; display: grid; gap: 6px; justify-items: center; }
+.fv-fig img { display: block; width: 100%; height: auto; background: #fff; border-radius: var(--radius); border: 1px solid var(--grid); }
+.fv-ship-img { width: 100%; background: #fff; border: 1px solid var(--grid); border-radius: var(--radius); overflow: hidden; }
+.fv-ship-img img { border: 0; border-radius: 0; }
+.fv-ship-labels { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; padding: 10px 10px 2px; color: #1e2a35;
+  font-family: var(--display); font-weight: 700; font-size: clamp(.78rem, 2.4vw, .95rem); text-align: center; line-height: 1.2; }
+.fv-fig figcaption { font-size: .82rem; color: var(--ink-soft); text-align: center; }
+.fv-table { width: 100%; min-width: 0; border-collapse: collapse; font-size: .95rem; }
+.fv-table th, .fv-table td { border: 1px solid var(--grid); padding: 8px 10px; text-align: left; vertical-align: top; }
+.fv-table th { font-family: var(--display); background: var(--paper-2, var(--paper)); }
+.fv-table td:nth-child(2) { font-family: var(--mono); white-space: nowrap; }
+@media (max-width: 620px) {
+  .fv-table { table-layout: fixed; font-size: .85rem; }
+  .fv-table th, .fv-table td { padding: 6px; }
+  .fv-table th { text-transform: none; letter-spacing: 0; font-size: .8rem; }
+  .fv-table th:nth-child(1) { width: 25%; } .fv-table th:nth-child(2) { width: 30%; }
+  .fv-table td:nth-child(2) { white-space: normal; }
+}
+
+/* alternativas */
+.fv-opts { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
+.fv-opt { width: 100%; text-align: left; display: grid; grid-template-columns: 30px minmax(0, 1fr); gap: 10px; align-items: start;
+  font: inherit; color: var(--ink); background: var(--paper); border: 1px solid var(--grid); border-radius: var(--radius); padding: 10px 12px; cursor: pointer; }
+.fv-opt:hover:not(:disabled) { border-color: var(--ink-soft); }
+.fv-opt:disabled { cursor: default; }
+.fv-opt .l { font-family: var(--display); font-weight: 800; color: var(--accent-ink); }
+.fv-opt.right { border-color: var(--ok); background: color-mix(in srgb, var(--ok) 14%, var(--paper)); }
+.fv-opt.wrong { border-color: var(--bad); background: color-mix(in srgb, var(--bad) 12%, var(--paper)); }
+.fv-opt.right .l { color: var(--ok); } .fv-opt.wrong .l { color: var(--bad); }
+
+/* resolução */
+.fv-res { border-top: 1px solid var(--grid); padding-top: 12px; }
+.fv-res summary { cursor: pointer; font-family: var(--display); font-weight: 700; color: var(--accent-ink); list-style: none; display: inline-flex; gap: 8px; align-items: center; }
+.fv-res summary::-webkit-details-marker { display: none; }
+.fv-res summary::before { content: "▸"; transition: transform .15s; }
+.fv-res[open] summary::before { transform: rotate(90deg); }
+.fv-res .fv-text { margin-top: 12px; }
+.fv-calc { font-family: var(--mono); font-size: .9rem; background: color-mix(in srgb, var(--accent) 9%, var(--card)); border-left: 3px solid var(--accent);
+  border-radius: var(--radius); padding: 10px 12px; display: grid; gap: 4px; overflow-x: auto; }
+.fv-ans { font-family: var(--display); font-weight: 800; color: var(--ok); }
+.fv-feedback { font-family: var(--display); font-weight: 700; min-height: 1.4em; }
+.fv-feedback.ok { color: var(--ok); } .fv-feedback.bad { color: var(--bad); }
+@media (prefers-reduced-motion: reduce) { .fv-res summary::before { transition: none; } }
+/* ENEM 2026: equações em LaTeX (KaTeX), gráficos da Q91 e quadros */
+.fv-calc { font-family: inherit; font-size: 1rem; }
+.fv-calc .katex-display { margin: .2em 0; }
+.katex { font-size: 1.08em; }
+.fv-opt .katex { font-size: 1em; }
+.fv-grid { grid-template-columns: repeat(7, minmax(0, 1fr)); }
+.en-graphs { grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); }
+.en-graphs svg { display: block; width: 100%; max-width: 200px; height: auto; }
+.en-graphs .ax { fill: none; stroke: var(--ink); stroke-width: 1.6; }
+.en-graphs .cv { fill: none; stroke: var(--blue); stroke-width: 2.6; stroke-linecap: round; }
+.en-graphs text { fill: var(--ink-soft); font: 11px var(--mono, monospace); }
+.en-table { width: auto; margin-inline: auto; }
+.en-table td, .en-table th { text-align: center; }
+.en-table td:nth-child(2) { font-family: inherit; }
+.en-notes caption { font-family: var(--display); font-weight: 700; padding-bottom: 6px; }
+.en-notes td { font-family: var(--mono); }
+@media (max-width: 620px) { .en-table { table-layout: auto; } .en-notes { font-size: .78rem; } }
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="wrap">
+    <a class="brand" href="index.html"><img src="marca/logo-180.jpg" width="58" height="46" alt=""><span>A Tal da Física</span></a>
+    <button class="menu-btn" type="button" aria-expanded="false" aria-controls="menu"><span aria-hidden="true"></span>Menu</button>
+    <nav class="links" id="menu" aria-label="Seções">
+      <a href="index.html#trilhas">Trilhas</a>
+      <a href="licao.html">Lição</a>
+      <a href="laboratorio.html">Laboratório</a>
+      <a href="graficos.html">Gráficos</a>
+      <!-- link desativado temporariamente: <a href="formulas.html">Fórmulas</a> -->
+      <a href="quiz.html">Quiz</a>
+      <a href="enem.html">ENEM</a>
+      <a href="fuvest.html">FUVEST</a>
+      <a href="enem2026.html" aria-current="page">ENEM 2026</a>
+      <a href="eletricidade.html">Eletricidade</a>
+      <a href="game/index.html">Game</a>
+      <a href="quest.html">Quest</a>
+      <a href="constantes.html">Constantes</a>
+    </nav>
+  </div>
+</header>
+
+<div class="wrap fv-intro">
+  <p class="label">Vestibular · ENEM 2026 · 2º dia, caderno 5 amarelo</p>
+  <h1>ENEM 2026: Física resolvida</h1>
+  <p>As 14 questões de Física de Ciências da Natureza, com enunciado completo e resolução comentada. Tente responder antes: clique numa alternativa e a resolução abre logo abaixo.</p>
+</div>
+
+<main class="wrap fv-main">
+<section class="fv-card fv-top" aria-labelledby="gab">
+  <div class="fv-bar">
+    <h2 id="gab">Suas respostas</h2>
+    <span class="fv-score" id="score" aria-live="polite"><b>0</b> de 14 respondidas</span>
+  </div>
+  <nav class="fv-grid" id="map" aria-label="Ir para a questão"></nav>
+  <div class="fv-bar">
+    <details class="fv-res" style="border:0;padding:0">
+      <summary>Mostrar o gabarito</summary>
+      <div class="fv-grid fv-gab" id="gabarito" style="margin-top:12px"></div>
+    </details>
+    <button class="btn ghost" id="reset" type="button">Limpar respostas</button>
+  </div>
+</section>
+
+<!-- ===================== Q91 ===================== -->
+<article class="fv-card" id="q91" data-ans="D">
+  <div class="fv-head"><h2>Questão 91</h2><span class="fv-topic">Eletrostática · lei de Coulomb e o átomo de Rutherford</span></div>
+  <p class="fv-text">O modelo de Rutherford para o átomo consiste em um núcleo bastante denso, pequeno e carregado positivamente, ao redor do qual orbitam partículas negativas. A interação atrativa entre o núcleo e os elétrons foi explicada posteriormente pela existência de uma força centrípeta de origem elétrica, cujo módulo, segundo a lei de Coulomb, é proporcional à constante eletrostática e ao quadrado da carga elementar, e inversamente proporcional ao quadrado da distância entre o núcleo e os elétrons. No entanto, o modelo planetário proposto por Rutherford não concorda com a teoria eletromagnética clássica, segundo a qual os elétrons descreveriam um movimento em espiral e se chocariam com o núcleo, o que não corresponde à realidade.</p>
+  <figure class="fv-fig" style="max-width:200px;justify-self:center">
+    <img src="enem2026/q91-espiral.png" width="330" height="234" alt="Elétron descrevendo uma trajetória em espiral em direção ao núcleo." loading="lazy">
+  </figure>
+  <p class="fv-text">Qual gráfico apresenta a força de atração entre o núcleo e o elétron, em função do tempo para o átomo de hidrogênio, levando em consideração a teoria eletromagnética clássica?</p>
+  <ol class="fv-opts en-graphs">
+    <li><button class="fv-opt" data-l="A"><span class="l">A</span><svg viewBox="0 0 160 100" role="img" aria-label="Força constante no tempo"><path class="ax" d="M18 6V88H154"/><path class="cv" d="M18 34H140"/><text x="86" y="99">Tempo</text><text x="10" y="50" transform="rotate(-90 10 50)">Força</text></svg></button></li>
+    <li><button class="fv-opt" data-l="B"><span class="l">B</span><svg viewBox="0 0 160 100" role="img" aria-label="Força decrescendo linearmente"><path class="ax" d="M18 6V88H154"/><path class="cv" d="M20 14L140 80"/><text x="86" y="99">Tempo</text><text x="10" y="50" transform="rotate(-90 10 50)">Força</text></svg></button></li>
+    <li><button class="fv-opt" data-l="C"><span class="l">C</span><svg viewBox="0 0 160 100" role="img" aria-label="Força crescendo linearmente"><path class="ax" d="M18 6V88H154"/><path class="cv" d="M20 78L140 20"/><text x="86" y="99">Tempo</text><text x="10" y="50" transform="rotate(-90 10 50)">Força</text></svg></button></li>
+    <li><button class="fv-opt" data-l="D"><span class="l">D</span><svg viewBox="0 0 160 100" role="img" aria-label="Força crescendo cada vez mais rápido"><path class="ax" d="M18 6V88H154"/><path class="cv" d="M20 80C80 78 125 68 138 14"/><text x="86" y="99">Tempo</text><text x="10" y="50" transform="rotate(-90 10 50)">Força</text></svg></button></li>
+    <li><button class="fv-opt" data-l="E"><span class="l">E</span><svg viewBox="0 0 160 100" role="img" aria-label="Força decrescendo cada vez mais rápido"><path class="ax" d="M18 6V88H154"/><path class="cv" d="M20 18C80 18 125 30 138 84"/><text x="86" y="99">Tempo</text><text x="10" y="50" transform="rotate(-90 10 50)">Força</text></svg></button></li>
+  </ol>
+  <p class="fv-feedback" aria-live="polite"></p>
+  <details class="fv-res">
+    <summary>Ver resolução</summary>
+    <div class="fv-text">
+      <p>Pela lei de Coulomb, a força entre o núcleo (carga \(+e\)) e o elétron (carga \(-e\)) é</p>
+      <div class="fv-calc">\[ F = \frac{k\,e^2}{r^2} \]</div>
+      <p>Segundo a teoria eletromagnética clássica, uma carga acelerada (o elétron em movimento circular) irradia energia. Perdendo energia, o elétron se aproxima do núcleo em espiral: \(r\) diminui com o tempo.</p>
+      <p>Como \(F \propto 1/r^2\), a força <b>aumenta</b> à medida que \(r\) diminui, e aumenta cada vez mais rápido: quando \(r \to 0\), \(F \to \infty\). O gráfico é crescente e com concavidade para cima.</p>
+      <p>(A) seria a órbita estável de Rutherford; (B) e (E) mostram a força diminuindo; (C) mostra crescimento linear, incompatível com \(1/r^2\).</p>
+      <p class="fv-ans">Resposta: alternativa D</p>
+    </div>
+  </details>
+</article>
+
+<!-- ===================== Q92 ===================== -->
+<article class="fv-card" id="q92" data-ans="E">
+  <div class="fv-head"><h2>Questão 92</h2><span class="fv-topic">Termologia · potência térmica e conversão de unidades</span></div>
+  <p class="fv-text">O quadro lista o resultado da simulação feita por uma engenheira para dimensionar as fontes de calor no interior de um escritório onde trabalham 20 pessoas. Todos os equipamentos e as pessoas dissipam calor de acordo com os valores no quadro. Para manter constante a temperatura do escritório, ela precisa de um aparelho de ar-condicionado o mais econômico possível. Considere as paredes isolantes e o fator de conversão 1 Btu/h = 0,3 W.</p>
+  <div style="overflow-x:auto">
+    <table class="fv-table en-table">
+      <thead><tr><th>Fonte de calor</th><th>Quantidade</th><th>Potência individual (W)</th></tr></thead>
+      <tbody>
+        <tr><td>Lâmpada</td><td>10</td><td>100</td></tr>
+        <tr><td>Computador</td><td>20</td><td>150</td></tr>
+        <tr><td>Geladeira</td><td>2</td><td>500</td></tr>
+        <tr><td>Pessoa adulta</td><td>20</td><td>200</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="fv-text">Qual é a capacidade de refrigeração, em British thermal unit por hora, do aparelho selecionado?</p>
+  <ol class="fv-opts">
+    <li><button class="fv-opt" data-l="A"><span class="l">A</span><span>7 000 Btu/h</span></button></li>
+    <li><button class="fv-opt" data-l="B"><span class="l">B</span><span>10 000 Btu/h</span></button></li>
+    <li><button class="fv-opt" data-l="C"><span class="l">C</span><span>12 000 Btu/h</span></button></li>
+    <li><button class="fv-opt" data-l="D"><span class="l">D</span><span>24 000 Btu/h</span></button></li>
+    <li><button class="fv-opt" data-l="E"><span class="l">E</span><span>30 000 Btu/h</span></button></li>
+  </ol>
+  <p class="fv-feedback" aria-live="polite"></p>
+  <details class="fv-res">
+    <summary>Ver resolução</summary>
+    <div class="fv-text">
+      <p>Para manter a temperatura constante, o aparelho precisa retirar, por unidade de tempo, todo o calor gerado dentro da sala. Somamos as potências:</p>
+      <div class="fv-calc">\[ P = 10\cdot100 + 20\cdot150 + 2\cdot500 + 20\cdot200 = 1000 + 3000 + 1000 + 4000 = 9000\ \text{W} \]</div>
+      <p>Convertendo com \(1\ \text{Btu/h} = 0{,}3\ \text{W}\):</p>
+      <div class="fv-calc">\[ P = \frac{9000}{0{,}3}\ \text{Btu/h} = 30\,000\ \text{Btu/h} \]</div>
+      <p>Quem multiplica por 0,3 em vez de dividir chega a 2 700 Btu/h, que nem aparece nas alternativas.</p>
+      <p class="fv-ans">Resposta: alternativa E</p>
+    </div>
+  </details>
+</article>
+
+<!-- ===================== Q94 ===================== -->
+<article class="fv-card" id="q94" data-ans="E">
+  <div class="fv-head"><h2>Questão 94</h2><span class="fv-topic">Física moderna · fusão nuclear e conservação do momento linear</span></div>
+  <div class="fv-text">
+    <p>Em um reator de fusão nuclear, é necessário produzir plasma a um milhão de graus centígrados para desencadear reações de fusão nuclear controladas. O plasma é formado por um gás ionizado que contém inicialmente deutério \(D^+\) e trítio \(T^+\) (isótopos do hidrogênio, com um e dois nêutrons, respectivamente). Nesse plasma, a energia térmica é suficientemente alta para desencadear uma reação de fusão nuclear na qual o núcleo do deutério, partícula \(D^+\), e o núcleo de trítio, partícula \(T^+\), colidem para formar uma partícula \(\alpha\) e um nêutron \(n\). A representação dessa reação de fusão é</p>
+    <div class="fv-calc">\[ D^+ + T^+ \longrightarrow \alpha + n \]</div>
+    <p>A partícula \(\alpha\) é formada por dois prótons e dois nêutrons. A energia liberada pela fusão é dividida na forma de energia cinética entre a partícula \(\alpha\) e o nêutron \(n\). Considere as massas do próton e do nêutron iguais, que o momento linear total das partículas reagentes é nulo e também que a energia cinética dos produtos é de 20 MeV.</p>
+    <p>Nessa reação de fusão, a energia cinética do nêutron, em megaelétron-volt, é</p>
+  </div>
+  <ol class="fv-opts">
+    <li><button class="fv-opt" data-l="A"><span class="l">A</span><span>4,0 MeV.</span></button></li>
+    <li><button class="fv-opt" data-l="B"><span class="l">B</span><span>10 MeV.</span></button></li>
+    <li><button class="fv-opt" data-l="C"><span class="l">C</span><span>13 MeV.</span></button></li>
+    <li><button class="fv-opt" data-l="D"><span class="l">D</span><span>15 MeV.</span></button></li>
+    <li><button class="fv-opt" data-l="E"><span class="l">E</span><span>16 MeV.</span></button></li>
+  </ol>
+  <p class="fv-feedback" aria-live="polite"></p>
+  <details class="fv-res">
+    <summary>Ver resolução</summary>
+    <div class="fv-text">
+      <p>Como o momento linear inicial é nulo, os produtos saem em sentidos opostos com momentos de mesmo módulo:</p>
+      <div class="fv-calc">\[ p_\alpha = p_n = p \]</div>
+      <p>Escrevendo a energia cinética em função do momento, \(E_c = \dfrac{p^2}{2m}\). Com \(m_n = m\) e \(m_\alpha = 4m\):</p>
+      <div class="fv-calc">\[ \frac{E_n}{E_\alpha} = \frac{p^2/(2m)}{p^2/(2\cdot 4m)} = 4 \quad\Rightarrow\quad E_n = 4E_\alpha \]</div>
+      <p>A energia cinética total é 20 MeV:</p>
+      <div class="fv-calc">\[ E_n + E_\alpha = 20 \;\Rightarrow\; 4E_\alpha + E_\alpha = 20 \;\Rightarrow\; E_\alpha = 4\ \text{MeV},\quad E_n = 16\ \text{MeV} \]</div>
+      <p>A partícula mais leve leva a maior parte da energia. A alternativa A é a energia da partícula \(\alpha\), não a do nêutron.</p>
+      <p class="fv-ans">Resposta: alternativa E</p>
+    </div>
+  </details>
+</article>
+
+<!-- ===================== Q95 ===================== -->
+<article class="fv-card" id="q95" data-ans="D">
+  <div class="fv-head"><h2>Questão 95</h2><span class="fv-topic">Eletrodinâmica · ponte de Wheatstone e divisor de tensão</span></div>
+  <p class="fv-text">A mudança da resistência elétrica de alguns materiais em função da temperatura é utilizada para construir sensores que podem medir desde a temperatura ambiente até a de fornos. A figura representa um circuito elétrico usado para fazer a correspondência entre temperatura e tensão elétrica, na qual a resistência elétrica \(R_s\) varia com a temperatura segundo a expressão \(R_s = 20\,[1 + 0{,}002\,(T - 300)]\). A temperatura é medida em kelvin.</p>
+  <figure class="fv-fig" style="max-width:440px;justify-self:center">
+    <img src="enem2026/q95-circuito.png" width="858" height="569" alt="Ponte de resistores alimentada por 12 V: no ramo esquerdo, 40 Ω em cima e o sensor Rs embaixo, com o ponto A entre eles; no ramo direito, 40 Ω em cima e 20 Ω embaixo, com o ponto B entre eles." loading="lazy">
+  </figure>
+  <p class="fv-text">A tensão elétrica, em volt, entre os pontos A e B da figura, quando o sensor estiver à temperatura de 800 K é de</p>
+  <ol class="fv-opts">
+    <li><button class="fv-opt" data-l="A"><span class="l">A</span><span>5,0 V.</span></button></li>
+    <li><button class="fv-opt" data-l="B"><span class="l">B</span><span>4,0 V.</span></button></li>
+    <li><button class="fv-opt" data-l="C"><span class="l">C</span><span>3,0 V.</span></button></li>
+    <li><button class="fv-opt" data-l="D"><span class="l">D</span><span>2,0 V.</span></button></li>
+    <li><button class="fv-opt" data-l="E"><span class="l">E</span><span>1,0 V.</span></button></li>
+  </ol>
+  <p class="fv-feedback" aria-live="polite"></p>
+  <details class="fv-res">
+    <summary>Ver resolução</summary>
+    <div class="fv-text">
+      <p>Primeiro, a resistência do sensor a 800 K:</p>
+      <div class="fv-calc">\[ R_s = 20\,[1 + 0{,}002\,(800 - 300)] = 20\,(1 + 1) = 40\ \Omega \]</div>
+      <p>Cada ramo da ponte está ligado diretamente aos 12 V e funciona como um divisor de tensão. Tomando o terminal inferior (terra) como referência:</p>
+      <div class="fv-calc">\[ V_A = 12\cdot\frac{R_s}{40 + R_s} = 12\cdot\frac{40}{80} = 6\ \text{V} \qquad V_B = 12\cdot\frac{20}{40 + 20} = 4\ \text{V} \]</div>
+      <div class="fv-calc">\[ U_{AB} = V_A - V_B = 6 - 4 = 2{,}0\ \text{V} \]</div>
+      <p>Repare que a 300 K (\(R_s = 20\ \Omega\)) teríamos \(V_A = 4\ \text{V} = V_B\): a ponte fica equilibrada e a tensão é nula. O aquecimento desequilibra a ponte, e é isso que o sensor mede.</p>
+      <p class="fv-ans">Resposta: alternativa D</p>
+    </div>
+  </details>
+</article>
+
+<!-- ===================== Q96 ===================== -->
+<article class="fv-card" id="q96" data-ans="E">
+  <div class="fv-head"><h2>Questão 96</h2><span class="fv-topic">Ondulatória · radar e velocidade das ondas eletromagnéticas</span></div>
+  <p class="fv-text">Uma instalação de radar, usada para rastrear aviões, emite ondas eletromagnéticas com velocidade estimada de 300 mil quilômetros por segundo. Um avião que saiu da rota foi localizado em um raio de 75 quilômetros do aeroporto onde fica o radar. O operador usou o tempo dispendido para enviar e receber a resposta com a finalidade de estimar a localização do avião.</p>
+  <figure class="fv-fig" style="max-width:420px;justify-self:center">
+    <img src="enem2026/q96-radar.jpg" width="844" height="841" alt="Torre de controle com radar emitindo ondas em direção a um avião, que as reflete de volta para a torre." loading="lazy">
+    <figcaption>Disponível em: www.pasternack.com. Acesso em: 1 abr. 2026 (adaptado).</figcaption>
+  </figure>
+  <p class="fv-text">O tempo, em segundo, medido foi de</p>
+  <ol class="fv-opts">
+    <li><button class="fv-opt" data-l="A"><span class="l">A</span><span>\(2{,}0 \times 10^{3}\) s.</span></button></li>
+    <li><button class="fv-opt" data-l="B"><span class="l">B</span><span>\(4{,}0 \times 10^{0}\) s.</span></button></li>
+    <li><button class="fv-opt" data-l="C"><span class="l">C</span><span>\(5{,}0 \times 10^{-1}\) s.</span></button></li>
+    <li><button class="fv-opt" data-l="D"><span class="l">D</span><span>\(1{,}5 \times 10^{-3}\) s.</span></button></li>
+    <li><button class="fv-opt" data-l="E"><span class="l">E</span><span>\(5{,}0 \times 10^{-4}\) s.</span></button></li>
+  </ol>
+  <p class="fv-feedback" aria-live="polite"></p>
+  <details class="fv-res">
+    <summary>Ver resolução</summary>
+    <div class="fv-text">
+      <p>O pulso vai até o avião e volta ao radar, percorrendo o dobro da distância:</p>
+      <div class="fv-calc">\[ \Delta s = 2 \cdot 75 = 150\ \text{km} \]</div>
+      <div class="fv-calc">\[ \Delta t = \frac{\Delta s}{v} = \frac{150\ \text{km}}{3 \times 10^{5}\ \text{km/s}} = 5{,}0 \times 10^{-4}\ \text{s} \]</div>
+      <p>Quem esquece a volta encontra \(2{,}5 \times 10^{-4}\) s, valor que não está entre as alternativas.</p>
+      <p class="fv-ans">Resposta: alternativa E</p>
+    </div>
+  </details>
+</article>
+
+<!-- ===================== Q99 ===================== -->
+<article class="fv-card" id="q99" data-ans="C">
+  <div class="fv-head"><h2>Questão 99</h2><span class="fv-topic">Eletrodinâmica · associação de lâmpadas e amperímetros</span></div>
+  <p class="fv-text">Em uma maquete de uma sala, foram instaladas duas lâmpadas (A e B) nas paredes e duas lâmpadas (C e D) no teto, conforme a figura. Essas lâmpadas são alimentadas por duas baterias idênticas em série. Todas as lâmpadas são incandescentes e brilham igualmente quando conectadas individualmente a uma das baterias. Considere ideais todos os elementos do circuito. Os amperímetros indicam a corrente elétrica que passa no fio no qual estão inseridos.</p>
+  <figure class="fv-fig" style="max-width:440px;justify-self:center">
+    <img src="enem2026/q99-circuito.png" width="844" height="569" alt="Circuito com duas baterias em série. As lâmpadas A e B estão em paralelo entre si; o amperímetro i1 fica só no ramo da lâmpada A. Esse conjunto está em série com as lâmpadas C e D e com o amperímetro i2, que mede a corrente total." loading="lazy">
+  </figure>
+  <p class="fv-text">As correntes medidas nos amperímetros serão iguais e não nulas quando a(s)</p>
+  <ol class="fv-opts">
+    <li><button class="fv-opt" data-l="A"><span class="l">A</span><span>lâmpadas A, B, C e D estiverem ligadas.</span></button></li>
+    <li><button class="fv-opt" data-l="B"><span class="l">B</span><span>lâmpada A estiver queimada.</span></button></li>
+    <li><button class="fv-opt" data-l="C"><span class="l">C</span><span>lâmpada B estiver queimada.</span></button></li>
+    <li><button class="fv-opt" data-l="D"><span class="l">D</span><span>lâmpada C estiver queimada.</span></button></li>
+    <li><button class="fv-opt" data-l="E"><span class="l">E</span><span>lâmpada D estiver queimada.</span></button></li>
+  </ol>
+  <p class="fv-feedback" aria-live="polite"></p>
+  <details class="fv-res">
+    <summary>Ver resolução</summary>
+    <div class="fv-text">
+      <p>Seguindo os fios a partir do polo positivo: a corrente chega a um nó e se divide entre a lâmpada A (passando pelo amperímetro de \(i_1\)) e a lâmpada B. As duas se reencontram no fio de cima e seguem, em série, por C, D e pelo amperímetro de \(i_2\) até o polo negativo. Então:</p>
+      <ul>
+        <li>\(i_2\) é a corrente <b>total</b> do circuito;</li>
+        <li>\(i_1\) é só a parte que passa por A: \(i_2 = i_1 + i_B\).</li>
+      </ul>
+      <div class="fv-calc">\[ i_1 = i_2 \iff i_B = 0 \]</div>
+      <p>Isso acontece quando a lâmpada B está queimada (ramo aberto): toda a corrente passa por A, C e D, e os dois amperímetros marcam o mesmo valor, não nulo.</p>
+      <ul>
+        <li>(A) Com todas ligadas, \(i_1 = i_2/2\).</li>
+        <li>(B) Com A queimada, \(i_1 = 0\).</li>
+        <li>(D) e (E) C e D estão em série com todo o circuito: se uma delas queimar, \(i_1 = i_2 = 0\).</li>
+      </ul>
+      <p class="fv-ans">Resposta: alternativa C</p>
+    </div>
+  </details>
+</article>
+
+<!-- ===================== Q111 ===================== -->
+<article class="fv-card" id="q111" data-ans="A">
+  <div class="fv-head"><h2>Questão 111</h2><span class="fv-topic">Energia · fontes renováveis e não renováveis</span></div>
+  <p class="fv-text">A busca por fontes alternativas de energia é uma das grandes preocupações da humanidade devido ao possível esgotamento dos combustíveis fósseis e à degradação ambiental causada por eles. Como a demanda de energia cresce significativamente, há um grande investimento em outros tipos de geração de energia, tais como hidrelétrica, nuclear, solar, termelétrica a biomassa e eólica.</p>
+  <figure class="fv-fig" style="max-width:640px;justify-self:center">
+    <img src="enem2026/q111-fontes.jpg" width="900" height="318" alt="Ilustrações de cinco usinas: energia nuclear, hidrelétrica, solar, termelétrica e eólica." loading="lazy">
+  </figure>
+  <p class="fv-text">Dentre as fontes de energia citadas, o tipo de energia oriunda de uma fonte não renovável, que independe das condições climáticas para ser obtida, é a</p>
+  <ol class="fv-opts">
+    <li><button class="fv-opt" data-l="A"><span class="l">A</span><span>nuclear, gerada pela fissão nuclear do urânio.</span></button></li>
+    <li><button class="fv-opt" data-l="B"><span class="l">B</span><span>hidrelétrica, gerada pela movimentação da água.</span></button></li>
+    <li><button class="fv-opt" data-l="C"><span class="l">C</span><span>solar, gerada pelo uso de células fotovoltaicas.</span></button></li>
+    <li><button class="fv-opt" data-l="D"><span class="l">D</span><span>termelétrica, produzida pela combustão de biomassa.</span></button></li>
+    <li><button class="fv-opt" data-l="E"><span class="l">E</span><span>eólica, produzida pelo movimento das pás de aerogeradores.</span></button></li>
+  </ol>
+  <p class="fv-feedback" aria-live="polite"></p>
+  <details class="fv-res">
+    <summary>Ver resolução</summary>
+    <div class="fv-text">
+      <p>A questão pede duas condições ao mesmo tempo: fonte <b>não renovável</b> e <b>independente do clima</b>.</p>
+      <ul>
+        <li>Hidrelétrica (chuvas e vazão dos rios), solar (insolação) e eólica (ventos) são renováveis e dependem do clima.</li>
+        <li>A termelétrica a biomassa usa combustível renovável (a biomassa é replantada).</li>
+        <li>A nuclear usa urânio, um minério com reservas finitas, e a fissão ocorre no reator independentemente do tempo lá fora.</li>
+      </ul>
+      <p class="fv-ans">Resposta: alternativa A</p>
+    </div>
+  </details>
+</article>
+
+<!-- ===================== Q113 ===================== -->
+<article class="fv-card" id="q113" data-ans="D">
+  <div class="fv-head"><h2>Questão 113</h2><span class="fv-topic">Ondulatória · cordas vibrantes e frequência</span></div>
+  <p class="fv-text">O comprimento da parte oscilante da corda de um violão determina a nota musical emitida. No braço do violão, são colocadas peças metálicas espaçadas chamadas trastes. Quando as cordas são pressionadas entre os trastes, os comprimentos de suas partes oscilantes são reduzidos, gerando ondas de diferentes frequências. Algumas notas com os valores aproximados de suas frequências são apresentadas no quadro. A figura ilustra um violão com cordas de comprimento total vibrante (\(L_T\)) igual a 60 cm. Considere o modo de vibração fundamental (\(n = 1\)) e que as frequências de vibração são inversamente proporcionais ao comprimento da parte oscilante da corda. Sabe-se que a primeira corda oscila com frequência de 660 Hz (a nota mi) quando não pressionada (corda livre).</p>
+  <figure class="fv-fig" style="max-width:520px;justify-self:center">
+    <img src="enem2026/q113-violao.jpg" width="844" height="489" alt="Violão com a corda inteira de 60 cm, do cavalete à pestana, e a parte oscilante de 45 cm quando a corda é pressionada num traste." loading="lazy">
+  </figure>
+  <div style="overflow-x:auto">
+    <table class="fv-table en-table en-notes">
+      <caption>Frequência das notas musicais, em hertz, no sistema temperado</caption>
+      <thead><tr><th>Oitava</th><th>Dó</th><th>Ré</th><th>Mi</th><th>Fá</th><th>Sol</th><th>Lá</th><th>Si</th></tr></thead>
+      <tbody>
+        <tr><th>3ª</th><td>130</td><td>147</td><td>165</td><td>175</td><td>196</td><td>220</td><td>248</td></tr>
+        <tr><th>4ª</th><td>260</td><td>294</td><td>330</td><td>349</td><td>392</td><td>440</td><td>495</td></tr>
+        <tr><th>5ª</th><td>520</td><td>587</td><td>660</td><td>698</td><td>784</td><td>880</td><td>990</td></tr>
+        <tr><th>6ª</th><td>1 040</td><td>1 174</td><td>1 320</td><td>1 397</td><td>1 568</td><td>1 760</td><td>1 980</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="fv-text">Ao pressionar a primeira corda, de forma que a sua parte oscilante tenha 45 centímetros, e fazê-la vibrar, qual é a nota emitida pela corda?</p>
+  <ol class="fv-opts">
+    <li><button class="fv-opt" data-l="A"><span class="l">A</span><span>Dó.</span></button></li>
+    <li><button class="fv-opt" data-l="B"><span class="l">B</span><span>Mi.</span></button></li>
+    <li><button class="fv-opt" data-l="C"><span class="l">C</span><span>Sol.</span></button></li>
+    <li><button class="fv-opt" data-l="D"><span class="l">D</span><span>Lá.</span></button></li>
+    <li><button class="fv-opt" data-l="E"><span class="l">E</span><span>Si.</span></button></li>
+  </ol>
+  <p class="fv-feedback" aria-live="polite"></p>
+  <details class="fv-res">
+    <summary>Ver resolução</summary>
+    <div class="fv-text">
+      <p>No modo fundamental, \(f = \dfrac{v}{2L}\). A velocidade na corda não muda (mesma tração e mesma corda), então \(f \cdot L\) é constante:</p>
+      <div class="fv-calc">\[ f_1 L_1 = f_2 L_2 \;\Rightarrow\; 660 \cdot 60 = f_2 \cdot 45 \;\Rightarrow\; f_2 = \frac{39\,600}{45} = 880\ \text{Hz} \]</div>
+      <p>Pelo quadro, 880 Hz é a nota <b>lá</b> da 5ª oitava.</p>
+      <p>Encurtar a corda para \(\tfrac{3}{4}\) do comprimento multiplica a frequência por \(\tfrac{4}{3}\): é o intervalo de quarta justa, de mi para lá.</p>
+      <p class="fv-ans">Resposta: alternativa D</p>
+    </div>
+  </details>
+</article>
+
+<!-- ===================== Q114 ===================== -->
+<article class="fv-card" id="q114" data-ans="B">
+  <div class="fv-head"><h2>Questão 114</h2><span class="fv-topic">Energia · eficiência energética e unidades (kWh → J)</span></div>
+  <p class="fv-text">Uma fabricante de automóveis anunciou o plano de eletrificar toda a sua frota até o ano 2030. Determinado protótipo é parte fundamental dessa estratégia por ter autonomia de 1 000 km e um gasto energético de 1 kWh para cada 10 km, quando ocupado por quatro pessoas. O gráfico apresenta, para vários meios de transporte, o gasto energético por passageiro, considerado como um dos fatores determinantes para o desenvolvimento de políticas públicas de regulação dos meios de transporte.</p>
+  <figure class="fv-fig" style="max-width:600px;justify-self:center">
+    <img src="enem2026/q114-grafico.png" width="900" height="565" alt="Gráfico de barras do gasto energético dos transportes, em joule por metro passageiro: velomóvel 18, bicicleta 60, pedonalidade 132, ferrovia eletrificada 200, bonde 432, carro elétrico marca 1 517, carro elétrico marca 2 560, ônibus 920, ferrovia não eletrificada 1 650, metropolitano de Londres 1 690, motociclo 1 730, carro com motor de combustão 1 750, aeronave 2 940." loading="lazy">
+    <figcaption>Disponível em: https://quatrorodas.abril.com.br. Acesso em: 2 dez. 2021 (adaptado).</figcaption>
+  </figure>
+  <p class="fv-text">De acordo com o gráfico, quantos meios de transporte apresentam maior eficiência energética que esse protótipo?</p>
+  <ol class="fv-opts">
+    <li><button class="fv-opt" data-l="A"><span class="l">A</span><span>1</span></button></li>
+    <li><button class="fv-opt" data-l="B"><span class="l">B</span><span>2</span></button></li>
+    <li><button class="fv-opt" data-l="C"><span class="l">C</span><span>4</span></button></li>
+    <li><button class="fv-opt" data-l="D"><span class="l">D</span><span>5</span></button></li>
+    <li><button class="fv-opt" data-l="E"><span class="l">E</span><span>7</span></button></li>
+  </ol>
+  <p class="fv-feedback" aria-live="polite"></p>
+  <details class="fv-res">
+    <summary>Ver resolução</summary>
+    <div class="fv-text">
+      <p>Precisamos expressar o gasto do protótipo na unidade do gráfico, joule por metro por passageiro. Como \(1\ \text{kWh} = 1000\ \text{W} \cdot 3600\ \text{s} = 3{,}6 \times 10^{6}\ \text{J}\):</p>
+      <div class="fv-calc">\[ \frac{3{,}6 \times 10^{6}\ \text{J}}{10\,000\ \text{m}} = 360\ \text{J/m} \]</div>
+      <p>Esse gasto é dividido entre os quatro ocupantes:</p>
+      <div class="fv-calc">\[ \frac{360}{4} = 90\ \text{J por metro passageiro} \]</div>
+      <p>Mais eficientes são os meios com gasto <b>menor</b> que 90: velomóvel (18) e bicicleta (60). Pedonalidade (132) já gasta mais.</p>
+      <p>Esquecer de dividir pelos quatro passageiros dá 360 J/m e leva à alternativa D (cinco meios).</p>
+      <p class="fv-ans">Resposta: alternativa B</p>
+    </div>
+  </details>
+</article>
+
+<!-- ===================== Q118 ===================== -->
+<article class="fv-card" id="q118" data-ans="A">
+  <div class="fv-head"><h2>Questão 118</h2><span class="fv-topic">Hidrostática · lei de Stevin e vasos comunicantes</span></div>
+  <p class="fv-text">A figura ilustra uma forma de medir a densidade relativa de dois líquidos, A e B, imiscíveis, colocando-os em um tubo em forma de U. Atingido o equilíbrio hidrostático, medem-se as alturas, \(h_{A1}\) e \(h_{B1}\), das colunas dos líquidos, a partir de sua superfície até o nível da linha de separação entre eles. Considere que um volume adicional de líquido A é colocado na coluna esquerda do tubo, conforme a figura. Após o equilíbrio ser restabelecido, medem-se as novas alturas, \(h_{A2}\) e \(h_{B2}\), da mesma maneira, comparando-as com as alturas anteriores.</p>
+  <figure class="fv-fig" style="max-width:300px;justify-self:center">
+    <img src="enem2026/q118-tubo.png" width="561" height="572" alt="Tubo em U com o líquido A (azul) à esquerda e no fundo e o líquido B (amarelo) no alto do ramo direito; as alturas hA1 e hB1 são medidas a partir do nível da separação entre os líquidos. Mais líquido A é despejado no ramo esquerdo." loading="lazy">
+  </figure>
+  <p class="fv-text">A comparação entre as novas alturas e as anteriores revela que</p>
+  <ol class="fv-opts">
+    <li><button class="fv-opt" data-l="A"><span class="l">A</span><span>\(h_{A2} = h_{A1}\) e \(h_{B2} = h_{B1}\).</span></button></li>
+    <li><button class="fv-opt" data-l="B"><span class="l">B</span><span>\(h_{A2} > h_{A1}\) e \(h_{B2} = h_{B1}\).</span></button></li>
+    <li><button class="fv-opt" data-l="C"><span class="l">C</span><span>\(h_{A2} > h_{A1}\) e \(h_{B2} > h_{B1}\).</span></button></li>
+    <li><button class="fv-opt" data-l="D"><span class="l">D</span><span>\(h_{A2} < h_{A1}\) e \(h_{B2} > h_{B1}\).</span></button></li>
+    <li><button class="fv-opt" data-l="E"><span class="l">E</span><span>\(h_{A2} = h_{A1}\) e \(h_{B2} > h_{B1}\).</span></button></li>
+  </ol>
+  <p class="fv-feedback" aria-live="polite"></p>
+  <details class="fv-res">
+    <summary>Ver resolução</summary>
+    <div class="fv-text">
+      <p>Pontos do mesmo líquido (A) no mesmo nível têm a mesma pressão. Igualando as pressões no nível da separação, nos dois ramos (lei de Stevin):</p>
+      <div class="fv-calc">\[ p_{atm} + \rho_A\, g\, h_A = p_{atm} + \rho_B\, g\, h_B \;\Rightarrow\; \rho_A\, h_A = \rho_B\, h_B \]</div>
+      <p>Ao acrescentar líquido A, a quantidade de B não muda. Como o tubo tem seção constante, a coluna de B continua com a mesma altura: \(h_{B2} = h_{B1}\). Pela equação acima, então,</p>
+      <div class="fv-calc">\[ h_{A2} = \frac{\rho_B}{\rho_A}\, h_{B2} = \frac{\rho_B}{\rho_A}\, h_{B1} = h_{A1} \]</div>
+      <p>O líquido A adicionado apenas eleva o conjunto todo: a linha de separação sobe, e as duas colunas sobem juntas, sem mudar as alturas medidas a partir dela.</p>
+      <p class="fv-ans">Resposta: alternativa A</p>
+    </div>
+  </details>
+</article>
+
+<!-- ===================== Q121 ===================== -->
+<article class="fv-card" id="q121" data-ans="E">
+  <div class="fv-head"><h2>Questão 121</h2><span class="fv-topic">Óptica / energia · intensidade luminosa e absorção</span></div>
+  <p class="fv-text">Um estudante acende uma lâmpada de 6 W de luz vermelha (comprimento de onda igual a 650 nm) em um quarto escuro. A 1,0 m de distância dessa lâmpada, encontra-se uma planta cujas folhas têm área de 4,0 cm². Em uma rápida pesquisa na internet, o estudante verifica que plantas dessa mesma espécie possuem espectro de absorção conforme ilustrado no gráfico, que apresenta a porcentagem de luz incidente absorvida em função do comprimento de onda.</p>
+  <figure class="fv-fig" style="max-width:440px;justify-self:center">
+    <img src="enem2026/q121-grafico.png" width="839" height="501" alt="Espectro de absorção da planta, de 400 a 750 nm: um pico de cerca de 88% perto de 480 nm, absorção quase nula entre 520 e 600 nm e um segundo pico de 60% em 650 nm." loading="lazy">
+  </figure>
+  <p class="fv-text">Considere a lâmpada como uma fonte puntiforme cuja intensidade luminosa é dada pela razão entre a sua potência e a área da superfície esférica formada a uma distância \(r\) da fonte. Utilize 3 como valor aproximado para \(\pi\).</p>
+  <p class="fv-text">Com base nessas informações e no gráfico, qual é o valor mais próximo da energia, em joule, que cada folha absorverá a cada segundo?</p>
+  <ol class="fv-opts">
+    <li><button class="fv-opt" data-l="A"><span class="l">A</span><span>\(3{,}8 \times 10^{-4}\) J</span></button></li>
+    <li><button class="fv-opt" data-l="B"><span class="l">B</span><span>\(4{,}8 \times 10^{-4}\) J</span></button></li>
+    <li><button class="fv-opt" data-l="C"><span class="l">C</span><span>\(2{,}0 \times 10^{-4}\) J</span></button></li>
+    <li><button class="fv-opt" data-l="D"><span class="l">D</span><span>\(1{,}8 \times 10^{-4}\) J</span></button></li>
+    <li><button class="fv-opt" data-l="E"><span class="l">E</span><span>\(1{,}2 \times 10^{-4}\) J</span></button></li>
+  </ol>
+  <p class="fv-feedback" aria-live="polite"></p>
+  <details class="fv-res">
+    <summary>Ver resolução</summary>
+    <div class="fv-text">
+      <p>A potência da lâmpada se espalha sobre uma esfera de raio \(r = 1{,}0\) m:</p>
+      <div class="fv-calc">\[ I = \frac{P}{4\pi r^2} = \frac{6}{4 \cdot 3 \cdot 1^2} = 0{,}5\ \text{W/m}^2 \]</div>
+      <p>A folha tem \(A = 4{,}0\ \text{cm}^2 = 4{,}0 \times 10^{-4}\ \text{m}^2\). A potência que chega a ela é</p>
+      <div class="fv-calc">\[ P_{inc} = I \cdot A = 0{,}5 \cdot 4{,}0 \times 10^{-4} = 2{,}0 \times 10^{-4}\ \text{W} \]</div>
+      <p>No gráfico, em 650 nm a absorção é de 60%. A energia absorvida por segundo é</p>
+      <div class="fv-calc">\[ E = 0{,}60 \cdot 2{,}0 \times 10^{-4}\ \text{J/s} \cdot 1\ \text{s} = 1{,}2 \times 10^{-4}\ \text{J} \]</div>
+      <p>A alternativa C é a energia que <i>chega</i> à folha, sem considerar a absorção.</p>
+      <p class="fv-ans">Resposta: alternativa E</p>
+    </div>
+  </details>
+</article>
+
+<!-- ===================== Q128 ===================== -->
+<article class="fv-card" id="q128" data-ans="A">
+  <div class="fv-head"><h2>Questão 128</h2><span class="fv-topic">Óptica · espalhamento da luz</span></div>
+  <div class="fv-text">
+    <p>Ao trafegar à noite, é necessário manter os faróis dos veículos acesos. Quando a umidade relativa do ar é baixa, o motorista consegue ter boa visibilidade da pista. No entanto, em noites em que há neblina, essa visibilidade é reduzida.</p>
+    <p>Nessa situação, a visibilidade reduzida deve-se à</p>
+  </div>
+  <ol class="fv-opts">
+    <li><button class="fv-opt" data-l="A"><span class="l">A</span><span>dispersão da luz pelas gotículas de água suspensas no ar.</span></button></li>
+    <li><button class="fv-opt" data-l="B"><span class="l">B</span><span>polarização da luz pelas gotículas de água dispersas no ar.</span></button></li>
+    <li><button class="fv-opt" data-l="C"><span class="l">C</span><span>condensação das gotículas de água na superfície do farol.</span></button></li>
+    <li><button class="fv-opt" data-l="D"><span class="l">D</span><span>solubilização das gotículas de água presentes no ar.</span></button></li>
+    <li><button class="fv-opt" data-l="E"><span class="l">E</span><span>redução da potência da luz emitida pelo farol.</span></button></li>
+  </ol>
+  <p class="fv-feedback" aria-live="polite"></p>
+  <details class="fv-res">
+    <summary>Ver resolução</summary>
+    <div class="fv-text">
+      <p>A neblina é formada por gotículas de água suspensas no ar, com tamanho comparável ou maior que o comprimento de onda da luz visível. A luz do farol, ao atingir essas gotículas, é desviada em todas as direções (dispersão, ou espalhamento).</p>
+      <p>Parte da luz volta para os olhos do motorista, formando uma “parede” clara à frente do carro, e menos luz chega à pista e retorna dela. Por isso o contraste cai e a visibilidade diminui. É também por isso que o farol baixo funciona melhor que o alto na neblina.</p>
+      <ul>
+        <li>(B) A polarização não reduz a quantidade de luz que ilumina a pista.</li>
+        <li>(C) e (E) O farol continua emitindo a mesma potência.</li>
+        <li>(D) Não há “solubilização” de gotículas no ar.</li>
+      </ul>
+      <p class="fv-ans">Resposta: alternativa A</p>
+    </div>
+  </details>
+</article>
+
+<!-- ===================== Q130 ===================== -->
+<article class="fv-card" id="q130" data-ans="A">
+  <div class="fv-head"><h2>Questão 130</h2><span class="fv-topic">Hidrodinâmica · equação da continuidade</span></div>
+  <div class="fv-text">
+    <p>Um jardineiro está irrigando as plantas de um jardim com uma mangueira. Ele estica completamente a mangueira para se aproximar de algumas flores mais afastadas, sem, no entanto, alcançá-las. Daí, ocorre-lhe que obstruir a extremidade da mangueira com o polegar faz com que o jato de água atinja uma distância maior, comparativamente com a situação sem essa ação, permitindo-lhe molhar aquelas flores mais afastadas.</p>
+    <p>Essa alteração no alcance do jato de água deve-se ao aumento do(a)</p>
+  </div>
+  <ol class="fv-opts">
+    <li><button class="fv-opt" data-l="A"><span class="l">A</span><span>velocidade da água lançada.</span></button></li>
+    <li><button class="fv-opt" data-l="B"><span class="l">B</span><span>densidade da água lançada.</span></button></li>
+    <li><button class="fv-opt" data-l="C"><span class="l">C</span><span>volume da água lançada.</span></button></li>
+    <li><button class="fv-opt" data-l="D"><span class="l">D</span><span>massa da água lançada.</span></button></li>
+    <li><button class="fv-opt" data-l="E"><span class="l">E</span><span>vazão da água lançada.</span></button></li>
+  </ol>
+  <p class="fv-feedback" aria-live="polite"></p>
+  <details class="fv-res">
+    <summary>Ver resolução</summary>
+    <div class="fv-text">
+      <p>Pela equação da continuidade, a vazão é o produto da área da seção pela velocidade do fluido:</p>
+      <div class="fv-calc">\[ Q = A \cdot v \quad\Rightarrow\quad A_1 v_1 = A_2 v_2 \]</div>
+      <p>Ao tapar parte da saída com o polegar, a área \(A\) diminui. Para escoar a água que chega pela mangueira, a velocidade de saída \(v\) aumenta.</p>
+      <p>O alcance de um lançamento cresce com a velocidade inicial (no lançamento oblíquo, \(D = \dfrac{v^2 \sin 2\theta}{g}\)), então o jato vai mais longe.</p>
+      <p>Vazão, volume e massa lançados por segundo não aumentam (no máximo diminuem um pouco), e a densidade da água não muda.</p>
+      <p class="fv-ans">Resposta: alternativa A</p>
+    </div>
+  </details>
+</article>
+
+<!-- ===================== Q133 ===================== -->
+<article class="fv-card" id="q133" data-ans="D">
+  <div class="fv-head"><h2>Questão 133</h2><span class="fv-topic">Eletrodinâmica · energia elétrica e consumo em espera</span></div>
+  <p class="fv-text">O quadro foi retirado de um manual que apresenta as especificações e a potência de um aparelho de TV.</p>
+  <div style="overflow-x:auto">
+    <table class="fv-table en-table">
+      <tbody>
+        <tr><th colspan="2">Alimentação</th><td>110-220 V e 50-60 Hz</td></tr>
+        <tr><th rowspan="2">Potência</th><th>Média em uso</th><td>158 W</td></tr>
+        <tr><th>Em espera</th><td>1 W</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="fv-text">Se uma pessoa assistiu à TV durante 4 horas e no restante do dia o aparelho permaneceu em espera, qual é a porcentagem da energia utilizada em espera quando comparada com o total de energia utilizado?</p>
+  <ol class="fv-opts">
+    <li><button class="fv-opt" data-l="A"><span class="l">A</span><span>0,2%</span></button></li>
+    <li><button class="fv-opt" data-l="B"><span class="l">B</span><span>0,6%</span></button></li>
+    <li><button class="fv-opt" data-l="C"><span class="l">C</span><span>1,0%</span></button></li>
+    <li><button class="fv-opt" data-l="D"><span class="l">D</span><span>3,0%</span></button></li>
+    <li><button class="fv-opt" data-l="E"><span class="l">E</span><span>20%</span></button></li>
+  </ol>
+  <p class="fv-feedback" aria-live="polite"></p>
+  <details class="fv-res">
+    <summary>Ver resolução</summary>
+    <div class="fv-text">
+      <p>Energia é potência vezes tempo, \(E = P \cdot \Delta t\). Em um dia, a TV fica 4 h em uso e 20 h em espera:</p>
+      <div class="fv-calc">\[ E_{uso} = 158\ \text{W} \cdot 4\ \text{h} = 632\ \text{Wh} \qquad E_{espera} = 1\ \text{W} \cdot 20\ \text{h} = 20\ \text{Wh} \]</div>
+      <div class="fv-calc">\[ \frac{E_{espera}}{E_{total}} = \frac{20}{632 + 20} = \frac{20}{652} \approx 0{,}031 \approx 3{,}0\% \]</div>
+      <p>A potência em espera é pequena, mas age por 20 horas. Comparar só as potências (\(1/159 \approx 0{,}6\%\)) leva à alternativa B.</p>
+      <p class="fv-ans">Resposta: alternativa D</p>
+    </div>
+  </details>
+</article>
+</main>
+
+<footer>
+  <div class="wrap">
+    <span>A Tal da Física</span>
+    <p class="autor">Marcelo Furlan</p>
+  </div>
+</footer>
+
+<script>
+(function(){
+const cards=[...document.querySelectorAll('article.fv-card')];
+const map=document.getElementById('map'), gab=document.getElementById('gabarito'), score=document.getElementById('score');
+const KEY='enem2026-respostas';
+let saved={};
+try{saved=JSON.parse(localStorage.getItem(KEY)||'{}')||{}}catch(e){saved={}}
+function store(){try{localStorage.setItem(KEY,JSON.stringify(saved))}catch(e){}}
+
+cards.forEach(c=>{
+  const n=c.id.slice(1);
+  map.insertAdjacentHTML('beforeend',`<a href="#${c.id}" data-q="${c.id}"><span class="n">Q${n}</span><span class="r">?</span></a>`);
+  gab.insertAdjacentHTML('beforeend',`<a href="#${c.id}"><span class="n">Q${n}</span><span class="r">${c.dataset.ans}</span></a>`);
+});
+
+function mark(card,letter,open){
+  const ans=card.dataset.ans, fb=card.querySelector('.fv-feedback');
+  card.querySelectorAll('.fv-opt').forEach(b=>{
+    b.disabled=true;
+    if(b.dataset.l===ans)b.classList.add('right');
+    else if(b.dataset.l===letter)b.classList.add('wrong');
+  });
+  const ok=letter===ans;
+  fb.textContent=ok?'Isso! Resposta certa.':`Você marcou ${letter}. A resposta é ${ans}: veja a resolução.`;
+  fb.className='fv-feedback '+(ok?'ok':'bad');
+  if(open)card.querySelector('.fv-res').open=true;
+  const tile=map.querySelector(`[data-q="${card.id}"]`);
+  tile.classList.add('done',ok?'ok':'bad');tile.querySelector('.r').textContent=letter;
+}
+function updateScore(){
+  const done=Object.keys(saved).length, right=cards.filter(c=>saved[c.id]===c.dataset.ans).length;
+  score.innerHTML=done?`<b>${right}</b> ${right===1?'acerto':'acertos'} em <b>${done}</b> de ${cards.length} ${done===1?'respondida':'respondidas'}`:`<b>0</b> de ${cards.length} respondidas`;
+}
+cards.forEach(card=>{
+  card.querySelectorAll('.fv-opt').forEach(b=>b.addEventListener('click',()=>{
+    saved[card.id]=b.dataset.l;store();mark(card,b.dataset.l,true);updateScore();
+  }));
+  if(saved[card.id])mark(card,saved[card.id],false);
+});
+document.getElementById('reset').addEventListener('click',()=>{
+  saved={};store();
+  cards.forEach(card=>{
+    card.querySelectorAll('.fv-opt').forEach(b=>{b.disabled=false;b.classList.remove('right','wrong')});
+    const fb=card.querySelector('.fv-feedback');fb.textContent='';fb.className='fv-feedback';
+    card.querySelector('.fv-res').open=false;
+  });
+  map.querySelectorAll('a').forEach(a=>{a.className='';a.querySelector('.r').textContent='?'});
+  updateScore();
+});
+updateScore();
+})();
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/contrib/auto-render.min.js"></script>
+<script>
+renderMathInElement(document.querySelector('.fv-main'),{delimiters:[{left:'\\[',right:'\\]',display:true},{left:'\\(',right:'\\)',display:false}],throwOnError:false});
+</script>
+<script src="site.js"></script>
+</body>
+</html>

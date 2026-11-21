@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="Reconheça a fórmula: sessões de 5, 10, 15 ou 20 questões sobre o conceito físico por trás de cada equação, com pontuação, explicação e revisão dos erros.">
+<title>Reconheça a fórmula · A Tal da Física</title>
+<link rel="stylesheet" href="../estilo.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css">
+<link rel="stylesheet" href="quest.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Young+Serif&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400;1,700&family=JetBrains+Mono:wght@400;600&display=swap">
+</head>
+<body>
+<header class="top">
+  <div class="wrap">
+    <a class="brand" href="../index.html"><img src="../marca/logo-180.jpg" width="58" height="46" alt=""><span>A Tal da Física</span></a>
+    <button class="menu-btn" type="button" aria-expanded="false" aria-controls="menu"><span aria-hidden="true"></span>Menu</button>
+    <nav class="links" id="menu" aria-label="Seções">
+      <a href="../index.html#trilhas">Trilhas</a>
+      <a href="../licao.html">Lição</a>
+      <a href="../laboratorio.html">Laboratório</a>
+      <a href="../graficos.html">Gráficos</a>
+      <a href="../formulas.html">Fórmulas</a>
+      <a href="../quiz.html">Quiz</a>
+      <a href="../enem.html">ENEM</a>
+      <a href="../fuvest.html">FUVEST</a>
+      <a href="../enem2026.html">ENEM 2026</a>
+      <a href="../eletricidade.html">Eletricidade</a>
+      <a href="../game/index.html">Game</a>
+      <a href="../quest.html" aria-current="page">Quest</a>
+      <a href="../constantes.html">Constantes</a>
+    </nav>
+  </div>
+</header>
+
+<main class="fq-pagina" id="inicio">
+  <div class="fq-cenario" data-cenario aria-hidden="true"></div>
+  <div class="wrap">
+    <nav class="fq-migalhas" aria-label="Você está em"><a href="../quest.html">FÍSICA QUEST</a><span aria-hidden="true">/</span><span>Atividade 01</span></nav>
+    <div id="quest-app" class="fq-app"></div>
+  </div>
+</main>
+
+<footer>
+  <div class="wrap">
+    <span>A Tal da Física</span>
+    <p class="autor">Marcelo Furlan</p>
+  </div>
+</footer>
+
+<script src="../site.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
+<!-- banco de questões (independente da interface) -->
+<script src="data/banco.js"></script>
+<script src="data/mecanica-cinematica.js"></script>
+<script src="data/mecanica-dinamica.js"></script>
+<script src="data/mecanica-equilibrio.js"></script>
+<script src="data/termologia.js"></script>
+<script src="data/ondulatoria.js"></script>
+<script src="data/optica.js"></script>
+<script src="data/eletricidade-eletrostatica.js"></script>
+<script src="data/eletricidade-circuitos.js"></script>
+<script src="data/eletromagnetismo.js"></script>
+<script src="data/fisica-moderna.js"></script>
+<!-- motor, componentes e atividades -->
+<script src="engine/pontuacao.js"></script>
+<script src="engine/sorteio.js"></script>
+<script src="engine/sessao.js"></script>
+<script src="engine/armazenamento.js"></script>
+<script src="engine/registro.js"></script>
+<script src="components/componentes.js"></script>
+<script src="engine/motor.js"></script>
+<script src="activities/reconheca-formula/atividade.js"></script>
+<script>
+  document.querySelectorAll('[data-cenario]').forEach(function (el) {
+    el.innerHTML = QUEST.ui.FOGUETE_V + QUEST.ui.FOGUETE_V + QUEST.ui.FOGUETE_V;
+  });
+  QUEST.montarAtividade('reconheca-formula', document.getElementById('quest-app'));
+</script>
+</body>
+</html>
