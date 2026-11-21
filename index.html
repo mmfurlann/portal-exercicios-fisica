@@ -6,6 +6,8 @@
 <meta name="description" content="A Tal da Física: simulações para mexer, fórmulas explicadas e exercícios de vestibular para o ensino médio, o ENEM e a FUVEST.">
 <title>A Tal da Física</title>
 <link rel="stylesheet" href="estilo.css">
+<link rel="stylesheet" href="hero/hero.css">
+<script type="importmap">{"imports":{"three":"./vendor/three/three.module.min.js"}}</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Young+Serif&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400;1,700&family=JetBrains+Mono:wght@400;600&display=swap">
@@ -150,32 +152,30 @@
 </header>
 
 <main id="inicio">
-  <!-- A. Abertura -->
-  <section class="ab" aria-labelledby="titulo">
-    <div class="estrelas" aria-hidden="true"></div>
-    <div class="wrap ab-grid">
-      <div class="ab-text">
-        <p class="ab-kicker">Gravitação universal · <b>F = G·M·m / d²</b></p>
-        <h1 id="titulo"><span class="nw">Da maçã à Lua.</span> Da pergunta <span class="nw">à <em>universidade</em>.</span></h1>
-        <p class="ab-lede">Entender um princípio é reconhecê-lo em toda parte: na queda de uma maçã, na órbita da Lua, numa questão de vestibular. Aqui você vê os fenômenos acontecerem em simulações, compreende a teoria e as fórmulas e treina para o ENEM, a FUVEST e outros vestibulares.</p>
-        <div class="ab-cta">
-          <a class="btn accent" href="#trilhas">Começar a estudar</a>
-          <a class="ab-link" href="laboratorio.html">Experimentar as simulações →</a>
+  <!-- A. Abertura cinematográfica 3D (hero/). O texto é HTML real; a cena é decoração progressiva. -->
+  <section class="ab3d" id="abertura" aria-labelledby="titulo" data-estado="estatico">
+    <div class="ab3d-pista">
+      <div class="ab3d-palco">
+        <div class="ab3d-fundo" aria-hidden="true"><div class="ab3d-planeta"></div></div>
+        <canvas class="ab3d-canvas" aria-hidden="true"></canvas>
+        <div class="ab3d-escrim" aria-hidden="true"></div>
+        <div class="ab3d-veu" aria-hidden="true"></div>
+        <div class="ab3d-conteudo">
+          <div class="wrap">
+            <div class="ab3d-texto">
+              <p class="ab3d-kicker">Gravitação universal · F = G·M·m / d²</p>
+              <h1 id="titulo">A mesma Física que move os planetas move você.</h1>
+              <p class="ab3d-lede">Da queda de uma maçã ao movimento da Lua, as mesmas leis explicam o Universo ao nosso redor. Descubra essas conexões por meio de simulações, experiências e desafios que transformam curiosidade em conhecimento.</p>
+              <div class="ab3d-cta">
+                <a class="btn accent" href="#trilhas">Começar a estudar</a>
+                <a class="ab3d-link" href="laboratorio.html">Explorar simulações</a>
+              </div>
+            </div>
+          </div>
         </div>
+        <p class="ab3d-legenda" aria-hidden="true"><span class="cena">A</span><span class="titulo">Terra</span><span class="nota"></span><span class="leitura"></span></p>
+        <p class="ab3d-sr">Animação ilustrativa: a Terra gira, a Lua orbita em torno do baricentro do sistema Terra–Lua, uma maçã cai em direção ao centro da Terra e, por fim, as duas forças de atração entre Terra e Lua ilustram a mesma lei da gravitação universal.</p>
       </div>
-
-      <figure class="sistema">
-        <svg id="sistema" viewBox="38 34 548 500" role="img" aria-labelledby="sis-desc">
-          <desc id="sis-desc">O logo A Tal da Física no centro de órbitas elípticas percorridas pela Lua, uma maçã, um satélite, uma universidade e um sonho. Em cada corpo, uma seta laranja mostra a força gravitacional apontando para o centro, maior quando o corpo está mais perto.</desc>
-          <defs>
-            <radialGradient id="dissolve"><stop offset="72%" stop-color="#fff"/><stop offset="100%" stop-color="#fff" stop-opacity="0"/></radialGradient>
-            <mask id="logo-mask" maskContentUnits="objectBoundingBox"><ellipse cx=".5" cy=".5" rx=".5" ry=".5" fill="url(#dissolve)"/></mask>
-          </defs>
-          <g id="orbitas"></g>
-          <image href="marca/logo-720.jpg" x="235" y="288" width="230" height="183.4" mask="url(#logo-mask)" preserveAspectRatio="xMidYMid meet"/>
-          <g id="corpos"></g>
-        </svg>
-      </figure>
     </div>
   </section>
 
@@ -264,6 +264,7 @@
 </footer>
 
 <script src="inicio.js"></script>
+<script type="module" src="hero/hero.js"></script>
 <script src="site.js"></script>
 </body>
 </html>

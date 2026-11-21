@@ -1,0 +1,69 @@
+/* A Tal da Física · abertura cinematográfica 3D (somente a seção #abertura).
+   Paleta da abertura: fundo #0A0B11 · texto #F1EEE7 · secundário #BDBBC0 · apoio #D18A32.
+   A logomarca (no cabeçalho) mantém suas cores originais. */
+
+.ab3d { --fundo: #0A0B11; --txt: #F1EEE7; --txt2: #BDBBC0; --ac: #D18A32; --cab: 62px;
+  position: relative; padding: 0; background: var(--fundo); color: var(--txt); }
+.ab3d-pista { position: relative; }
+.ab3d-palco { position: relative; overflow: hidden; height: calc(100svh - var(--cab)); min-height: 540px; max-height: 1100px; background: var(--fundo); }
+/* rolagem cinematográfica só quando a cena 3D está pronta */
+.ab3d[data-estado="pronto"] .ab3d-pista { height: 430svh; }
+.ab3d[data-estado="pronto"] .ab3d-palco { position: sticky; top: var(--cab); max-height: none; }
+
+/* fallback estático (e imagem enquanto o 3D carrega): hemisfério iluminado de lado, sem JS */
+.ab3d-fundo { position: absolute; inset: 0; background:
+  radial-gradient(circle at 70% 50%, rgba(10,11,17,0) 0 30%, var(--fundo) 62%); }
+.ab3d-planeta { position: absolute; width: min(62vh, 52vw); aspect-ratio: 1; right: 8%; top: 50%; transform: translateY(-50%); border-radius: 50%;
+  background: radial-gradient(circle at 26% 42%, #3b78b8 0, #1f4f8c 22%, #0f2d58 46%, #070d1c 66%, #04060d 80%);
+  box-shadow: inset -2.5vh -1vh 6vh rgba(120,170,255,.22), 0 0 3vh rgba(60,110,200,.18); }
+.ab3d[data-estado="pronto"] .ab3d-fundo, .ab3d[data-estado="reduzido"] .ab3d-fundo { opacity: 0; transition: opacity .9s ease; }
+.ab3d-fundo.poster { background: none; }
+.ab3d-fundo.poster .ab3d-planeta { display: none; }
+
+.ab3d-canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; opacity: 0; transition: opacity .9s ease; touch-action: pan-y; }
+.ab3d[data-estado="pronto"] .ab3d-canvas, .ab3d[data-estado="reduzido"] .ab3d-canvas { opacity: 1; }
+
+.ab3d-escrim { position: absolute; inset: 0; pointer-events: none; opacity: var(--texto, 1);
+  background: linear-gradient(90deg, rgba(10,11,17,.94) 0, rgba(10,11,17,.78) 30%, rgba(10,11,17,0) 60%); }
+.ab3d-veu { position: absolute; inset: 0; background: var(--fundo); opacity: var(--veu, 0); pointer-events: none; }
+
+.ab3d-conteudo { position: absolute; inset: 0; display: flex; align-items: center; pointer-events: none; }
+.ab3d-conteudo > .wrap { width: 100%; }
+.ab3d-texto { display: grid; gap: 20px; max-width: 31rem; pointer-events: auto; opacity: var(--texto, 1); transform: translateY(calc((1 - var(--texto, 1)) * -14px)); }
+.ab3d[data-texto="off"] .ab3d-texto { visibility: hidden; pointer-events: none; }
+.ab3d-kicker { margin: 0; font-family: var(--mono); font-size: var(--fs-xs); letter-spacing: .1em; text-transform: uppercase; color: var(--txt2); }
+.ab3d h1 { margin: 0; font-family: var(--display); font-weight: 400; color: var(--txt); font-size: clamp(2rem, 3.4vw, 3.15rem); line-height: 1.08; letter-spacing: -.012em; text-wrap: balance; }
+.ab3d-lede { margin: 0; color: var(--txt2); font-size: 1.05rem; line-height: 1.6; max-width: 46ch; }
+.ab3d-cta { display: flex; flex-wrap: wrap; align-items: center; gap: 14px 26px; margin-top: 4px; }
+.ab3d .btn.accent { background: var(--ac); border-color: var(--ac); color: #0A0B11; box-shadow: none; min-height: 46px; padding-inline: 22px; }
+.ab3d .btn.accent:hover { background: #dd9a45; transform: none; box-shadow: none; }
+.ab3d-link { color: var(--txt); font-weight: 700; text-decoration: none; padding: 10px 2px; border-bottom: 1.5px solid rgba(241,238,231,.35); }
+.ab3d-link:hover { border-color: var(--ac); }
+.ab3d a:focus-visible { outline-color: var(--txt); }
+
+/* legenda científica (aparece com a cena 3D) */
+.ab3d-legenda { position: absolute; right: max(20px, env(safe-area-inset-right)); bottom: 26px; width: min(26rem, calc(100% - 40px)); margin: 0; padding: 4px 0 4px 14px; border-left: 2px solid var(--ac);
+  display: none; font-size: .86rem; line-height: 1.5; color: var(--txt2); opacity: calc(1 - var(--texto, 1) * 1.4); pointer-events: none; }
+.ab3d[data-estado="pronto"] .ab3d-legenda, .ab3d[data-estado="reduzido"] .ab3d-legenda { display: block; }
+.ab3d-legenda .titulo { color: var(--txt); font-family: var(--display); font-size: 1.05rem; }
+.ab3d-legenda .cena { font-family: var(--mono); font-size: var(--fs-xs); letter-spacing: .1em; color: var(--ac); margin-right: 8px; }
+.ab3d-legenda .nota { display: block; margin-top: 4px; }
+.ab3d-legenda .leitura { display: block; margin-top: 6px; font-family: var(--mono); font-size: .78rem; color: var(--txt); font-variant-numeric: tabular-nums; min-height: 1.4em; }
+.ab3d-sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+
+@media (prefers-reduced-motion: reduce) { .ab3d-canvas { transition: none; } }
+
+/* tablet e celular: composição vertical (planeta no alto, texto embaixo) */
+@media (max-width: 960px), (max-aspect-ratio: 1/1) {
+  .ab3d-palco { min-height: 560px; }
+  .ab3d-planeta { width: min(54vw, 30vh); right: auto; left: 50%; top: 19%; transform: translate(-50%, -50%); }
+  .ab3d-fundo { background: radial-gradient(circle at 50% 19%, rgba(10,11,17,0) 0 20%, var(--fundo) 60%); }
+  .ab3d-escrim { background: linear-gradient(0deg, rgba(10,11,17,.96) 0, rgba(10,11,17,.86) 36%, rgba(10,11,17,0) 66%); }
+  .ab3d-conteudo { align-items: flex-end; }
+  .ab3d-texto { gap: 12px; padding-bottom: 20px; max-width: 36rem; }
+  .ab3d h1 { font-size: clamp(1.6rem, 6vw, 2.5rem); line-height: 1.1; }
+  .ab3d-lede { font-size: .95rem; line-height: 1.5; }
+  .ab3d-legenda { left: max(20px, env(safe-area-inset-left)); right: max(20px, env(safe-area-inset-right)); width: auto; bottom: 18px; font-size: .8rem; }
+  .ab3d-cta { gap: 10px 22px; }
+}
+@media (max-width: 480px) { .ab3d-kicker { font-size: .66rem; letter-spacing: .06em; } .ab3d-lede { font-size: .9rem; } .ab3d-link { padding: 6px 2px; } }
