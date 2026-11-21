@@ -68,7 +68,7 @@ Nenhuma seta, linha ou trajetória foi acrescentada só por estética.
 ## 6. Separação entre física e câmera
 
 - `fisica.js`: posições, rotações, queda, constantes. Nenhuma referência a câmera, rolagem ou DOM.
-- `cena.js`: `KF` (keyframes), `cameraEspacial`, `enquadramento` e `aplicaPerspectiva` só movem a câmera. A rolagem `p ∈ [0, 1]` escolhe a tomada e liga o véu, sem alterar a dinâmica. O único acoplamento é o gatilho de soltar a maçã (`p` local > 0,16), que **começa** a queda; depois a integração é por tempo.
+- `cena.js`: `KF` (keyframes), `cameraEspacial`, `enquadramento` e `aplicaPerspectiva` só movem a câmera. A rolagem `p ∈ [0, 1]` escolhe a tomada e liga o véu, sem alterar a dinâmica. O único acoplamento é o gatilho de soltar a maçã (1 s depois de a cena C aparecer), que **começa** a queda; depois a integração é por tempo.
 
 ## 7. Testes executados
 

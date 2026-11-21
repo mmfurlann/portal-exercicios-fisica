@@ -285,6 +285,7 @@ export async function criarCena(canvas, opcoes = {}) {
   // ESTADO, CÂMERA E LOOP
   // =====================================================================
   const queda = { s: F.novaQueda(ALTURA_QUEDA), solta: false };
+  let tLocal = 0;
   let tCin = 0, ultimo = null, rodando = false, rafId = 0;
   let pAlvo = 0, pSuave = 0, visivel = true;
   const ponteiro = { x: 0, y: 0, sx: 0, sy: 0 };
@@ -376,6 +377,7 @@ export async function criarCena(canvas, opcoes = {}) {
 
     const aspecto = largura / altura;
     if (!noLocal) {
+      if (tLocal > 0 || queda.solta) { tLocal = 0; queda.s = F.novaQueda(ALTURA_QUEDA); queda.solta = false; }   // saiu da cena C: rearma a queda
       const alvo = cameraEspacial(p, aspecto);
       aplicaPerspectiva(alvo, 1);
       camera.lookAt(alvo); camera.updateProjectionMatrix();
@@ -397,8 +399,8 @@ export async function criarCena(canvas, opcoes = {}) {
     } else {
       const q = (p - 0.5575) / 0.22;
       if (o.animar) {
-        if (!queda.solta && q > 0.16) queda.solta = true;
-        if (q < 0.08 && queda.solta) { queda.s = F.novaQueda(ALTURA_QUEDA); queda.solta = false; }
+        tLocal += dtReal;                                                  // a maçã se solta 1 s depois de a cena C aparecer
+        if (!queda.solta && tLocal > 1.0) queda.solta = true;
         if (queda.solta && !queda.s.repouso) {                              // integra em passos fixos de 1 ms (física independe do fps)
           let acum = dtReal * CAMERA_LENTA, n = 0;
           while (acum > 0 && n++ < 200 && !queda.s.repouso) { const h = Math.min(acum, 0.001); F.passoQueda(queda.s, h); acum -= h; }

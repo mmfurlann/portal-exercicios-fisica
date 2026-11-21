@@ -27,7 +27,11 @@ Testes numéricos da física: `node hero/fisica.test.mjs` (não precisa de naveg
 
 ## Como a rolagem funciona
 
-A seção tem uma pista alta (`430svh`) com um palco `sticky`. A rolagem normal da página avança a sequência A→D; nada captura a roda do mouse nem o toque. O texto (HTML real) desaparece depois de uns 15% da pista, e a legenda científica assume. Se o 3D não estiver pronto, a pista não é alongada.
+A seção tem uma pista de `290svh` com um palco `sticky`. A rolagem normal da página avança a sequência A→D; nada captura a roda do mouse nem o toque. O texto (HTML real) desaparece depois de uns 15% da pista, e a legenda científica assume. Se o 3D não estiver pronto, a pista não é alongada.
+
+Para não depender só da rolagem (trackpad, dois dedos), há controles explícitos: a dica "Role para explorar" no início; uma **trilha à direita** com os botões A, B, C e D, que levam direto a cada cena; e um botão ↓ para **pular a animação** e ir ao conteúdo. A maçã da cena C se solta sozinha 1 s depois de a cena aparecer, sem exigir uma posição exata de rolagem, e é rearmada ao sair da cena.
+
+Se você editar os arquivos e a página parecer não mudar, faça recarga forçada (`Cmd+Shift+R`): o navegador guarda os módulos em cache.
 
 ## Comparação visual antes e depois
 
