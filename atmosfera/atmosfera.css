@@ -17,6 +17,10 @@ header.top .menu-btn { font-family: var(--body) !important; font-size: .95rem !i
 header.top { background: var(--sky); color: var(--star); }
 header.top { padding: 0; }
 nav.links { padding: 0; max-width: none; margin: 0; }
+header.top .nav-toggle { font-family: var(--body) !important; font-size: inherit !important; background: transparent !important; border: 0 !important; border-radius: 0 !important;
+  color: color-mix(in srgb, var(--star) 74%, transparent) !important; }
+header.top .nav-toggle:hover, header.top .nav-toggle[aria-expanded="true"], header.top .is-current > .nav-toggle { color: var(--star) !important; }
+@media (max-width: 860px) { header.top .nav-toggle { font-size: 1.02rem !important; border-top: 1px solid color-mix(in srgb, var(--star) 14%, transparent) !important; } }
 .atm-intro { padding-block: 36px 8px; display: grid; gap: 10px; }
 .atm-intro .atm-title { font-size: var(--fs-2xl); font-weight: 400; }
 .atm-intro > p:last-child { color: var(--ink-soft); max-width: 70ch; }

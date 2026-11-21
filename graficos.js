@@ -39,7 +39,12 @@
 
   // o: { pts, xl, yl, sym, fill? (cor fixa para a área), arrow? (seta no sentido do trecho), from0? (eixo x começa no 0) }
   function plot(cv, o) {
-    const c = cv.getContext("2d"), W = cv.width, H = cv.height;
+    // tamanho lógico fixo (atributos do HTML) e pixels reais multiplicados pela densidade da tela
+    if (!cv.dataset.w) { cv.dataset.w = cv.width; cv.dataset.h = cv.height; }
+    const W = +cv.dataset.w, H = +cv.dataset.h, dpr = Math.min(2, window.devicePixelRatio || 1);
+    if (cv.width !== Math.round(W * dpr)) { cv.width = Math.round(W * dpr); cv.height = Math.round(H * dpr); }
+    const c = cv.getContext("2d");
+    c.setTransform(dpr, 0, 0, dpr, 0, 0);
     const padL = 78, padR = 26, padT = 34, padB = 58;
     const xs = o.pts.map(p => p[0]), ys = o.pts.map(p => p[1]);
     const xmax = Math.max(...xs) * 1.12 || 1, ymaxRaw = Math.max(0, ...ys), yminRaw = Math.min(0, ...ys);
@@ -50,12 +55,13 @@
     c.font = mono(16); c.lineWidth = 1;
     const sx = niceStep(xmax, 6), sy = niceStep(ymax - ymin, 5);
     c.textAlign = "center"; c.textBaseline = "top";
-    for (let x = sx; x < xmax; x += sx) { c.strokeStyle = C.grid; c.beginPath(); c.moveTo(X(x), padT); c.lineTo(X(x), H - padB); c.stroke(); c.fillStyle = C["ink-soft"]; c.fillText(fmt(x, sx < 1 ? (sx < 0.1 ? 2 : 1) : 0), X(x), H - padB + 8); }
+    for (let x = sx; x < xmax; x += sx) { // grade discreta (60%); números com opacidade total
+      c.strokeStyle = C.grid; c.globalAlpha = 0.6; c.beginPath(); c.moveTo(X(x), padT); c.lineTo(X(x), H - padB); c.stroke(); c.globalAlpha = 1; c.fillStyle = C["ink-soft"]; c.fillText(fmt(x, sx < 1 ? (sx < 0.1 ? 2 : 1) : 0), X(x), H - padB + 8); }
     c.textAlign = "right"; c.textBaseline = "middle";
     for (let y = Math.ceil(ymin / sy) * sy; y <= ymax; y += sy) {
       if (Math.abs(y) < 1e-9) continue;
-      c.strokeStyle = C.grid; c.beginPath(); c.moveTo(padL, Y(y)); c.lineTo(W - padR, Y(y)); c.stroke();
-      c.fillStyle = C["ink-soft"]; c.fillText(fmt(y, sy < 1 ? (sy < 0.1 ? 2 : 1) : 0), padL - 10, Y(y));
+      c.strokeStyle = C.grid; c.globalAlpha = 0.6; c.beginPath(); c.moveTo(padL, Y(y)); c.lineTo(W - padR, Y(y)); c.stroke();
+      c.globalAlpha = 1; c.fillStyle = C["ink-soft"]; c.fillText(fmt(y, sy < 1 ? (sy < 0.1 ? 2 : 1) : 0), padL - 10, Y(y));
     }
     c.fillText("0", padL - 10, Y(0));
     // área sombreada
