@@ -1,0 +1,540 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>UNESP 2027 · A Tal da Física</title>
+<meta name="description" content="Questões de Física da UNESP 2027 (Vunesp, prova de Conhecimentos Gerais) com enunciado completo, figuras e resolução comentada.">
+<link rel="stylesheet" href="estilo.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Young+Serif&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400;1,700&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+/* Resolução da UNESP: cartões de questão no padrão do site */
+.fv-intro { padding-block: 36px 8px; display: grid; gap: 10px; }
+.fv-intro h1 { font-size: clamp(1.9rem, 4vw, 2.7rem); font-weight: 800; letter-spacing: -0.01em; }
+.fv-intro > p:not(.label) { color: var(--ink-soft); max-width: 70ch; }
+.fv-main { display: grid; gap: 24px; padding-block: 20px 8px; }
+.fv-card { background: var(--card); border: 1px solid var(--grid); border-radius: var(--radius); padding: 24px; display: grid; gap: 16px; min-width: 0;
+  box-shadow: none; scroll-margin-top: 90px; }
+@media (max-width: 620px) { .fv-card { padding: 16px; } }
+
+/* gabarito e placar */
+.fv-top { display: grid; gap: 14px; }
+.fv-top h2 { font-size: clamp(1.4rem, 2.6vw, 1.8rem); }
+.fv-grid { display: grid; grid-template-columns: repeat(10, minmax(0, 1fr)); gap: 8px; }
+@media (max-width: 720px) { .fv-grid { grid-template-columns: repeat(5, minmax(0, 1fr)); } }
+.fv-grid a { display: grid; gap: 2px; justify-items: center; padding: 10px 4px; border: 1px solid var(--grid); border-radius: var(--radius);
+  background: var(--paper); text-decoration: none; color: var(--ink); }
+.fv-grid a:hover { border-color: var(--accent); }
+.fv-grid .n { font-family: var(--mono); font-size: .78rem; color: var(--ink-soft); }
+.fv-grid .r { font-family: var(--display); font-weight: 800; font-size: 1.3rem; color: var(--ink-soft); }
+.fv-grid a.done.ok { border-color: var(--ok); } .fv-grid a.done.bad { border-color: var(--bad); }
+.fv-gab .r { color: var(--accent-ink); }
+.fv-bar { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; justify-content: space-between; }
+.fv-score { font-family: var(--mono); color: var(--ink-soft); }
+.fv-score b { color: var(--ink); }
+
+/* questão */
+.fv-head { display: flex; flex-wrap: wrap; gap: 8px 14px; align-items: baseline; }
+.fv-head h2 { font-size: clamp(1.35rem, 2.4vw, 1.7rem); }
+.fv-topic { font-family: var(--mono); font-size: .78rem; color: var(--blue); }
+.fv-text { display: grid; gap: 10px; max-width: 75ch; }
+.fv-text blockquote { margin: 0; padding: 8px 14px; border-left: 3px solid var(--accent); color: var(--ink); font-style: italic; }
+.fv-text ul { margin: 0; padding-left: 20px; display: grid; gap: 6px; }
+.fv-note { display: block; font-size: .92rem; color: var(--ink-soft); border: 1px dashed var(--grid); border-radius: var(--radius); padding: 10px 12px; }
+.fv-note b { color: var(--ink); }
+.fv-fig { margin: 0; display: grid; gap: 6px; justify-items: center; }
+.fv-fig img { display: block; width: 100%; height: auto; background: #fff; border-radius: var(--radius); border: 1px solid var(--grid); }
+.fv-ship-img { width: 100%; background: #fff; border: 1px solid var(--grid); border-radius: var(--radius); overflow: hidden; }
+.fv-ship-img img { border: 0; border-radius: 0; }
+.fv-ship-labels { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; padding: 10px 10px 2px; color: #1e2a35;
+  font-family: var(--display); font-weight: 700; font-size: clamp(.78rem, 2.4vw, .95rem); text-align: center; line-height: 1.2; }
+.fv-fig figcaption { font-size: .82rem; color: var(--ink-soft); text-align: center; }
+.fv-table { width: 100%; min-width: 0; border-collapse: collapse; font-size: .95rem; }
+.fv-table th, .fv-table td { border: 1px solid var(--grid); padding: 8px 10px; text-align: left; vertical-align: top; }
+.fv-table th { font-family: var(--display); background: var(--paper-2, var(--paper)); }
+.fv-table td:nth-child(2) { font-family: var(--mono); white-space: nowrap; }
+@media (max-width: 620px) {
+  .fv-table { table-layout: fixed; font-size: .85rem; }
+  .fv-table th, .fv-table td { padding: 6px; }
+  .fv-table th { text-transform: none; letter-spacing: 0; font-size: .8rem; }
+  .fv-table th:nth-child(1) { width: 25%; } .fv-table th:nth-child(2) { width: 30%; }
+  .fv-table td:nth-child(2) { white-space: normal; }
+}
+
+/* alternativas */
+.fv-opts { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
+.fv-opt { width: 100%; text-align: left; display: grid; grid-template-columns: 30px minmax(0, 1fr); gap: 10px; align-items: start;
+  font: inherit; color: var(--ink); background: var(--paper); border: 1px solid var(--grid); border-radius: var(--radius); padding: 10px 12px; cursor: pointer; }
+.fv-opt:hover:not(:disabled) { border-color: var(--ink-soft); }
+.fv-opt:disabled { cursor: default; }
+.fv-opt .l { font-family: var(--display); font-weight: 800; color: var(--accent-ink); }
+.fv-opt.right { border-color: var(--ok); background: color-mix(in srgb, var(--ok) 14%, var(--paper)); }
+.fv-opt.wrong { border-color: var(--bad); background: color-mix(in srgb, var(--bad) 12%, var(--paper)); }
+.fv-opt.right .l { color: var(--ok); } .fv-opt.wrong .l { color: var(--bad); }
+
+/* resolução */
+.fv-res { border-top: 1px solid var(--grid); padding-top: 12px; }
+.fv-res summary { cursor: pointer; font-family: var(--display); font-weight: 700; color: var(--accent-ink); list-style: none; display: inline-flex; gap: 8px; align-items: center; }
+.fv-res summary::-webkit-details-marker { display: none; }
+.fv-res summary::before { content: "▸"; transition: transform .15s; }
+.fv-res[open] summary::before { transform: rotate(90deg); }
+.fv-res .fv-text { margin-top: 12px; }
+.fv-calc { font-family: var(--mono); font-size: .9rem; background: color-mix(in srgb, var(--accent) 9%, var(--card)); border-left: 3px solid var(--accent);
+  border-radius: var(--radius); padding: 10px 12px; display: grid; gap: 4px; overflow-x: auto; }
+.fv-ans { font-family: var(--display); font-weight: 800; color: var(--ok); }
+.fv-feedback { font-family: var(--display); font-weight: 700; min-height: 1.4em; }
+.fv-feedback.ok { color: var(--ok); } .fv-feedback.bad { color: var(--bad); }
+@media (prefers-reduced-motion: reduce) { .fv-res summary::before { transition: none; } }
+[data-tex-i] .katex-html { display: inline-block; white-space: nowrap; }
+.fv-fig figcaption { max-width: 60ch; }
+.cor-v { color: #c0392b; font-weight: 700; } .cor-l { color: #d9731a; font-weight: 700; } .cor-a { color: #b8900a; font-weight: 700; }
+.cor-g { color: #2f8f46; font-weight: 700; } .cor-z { color: #1a8fd0; font-weight: 700; }
+.fv-table caption { caption-side: top; text-align: left; font-family: var(--display); font-weight: 700; padding-bottom: 6px; }
+.fv-table[aria-label^="Figura 1"] { max-width: 360px; }
+.fv-table.num td { font-family: inherit; white-space: normal; }
+</style>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css">
+</head>
+<body>
+<header class="top">
+  <div class="wrap">
+    <a class="brand" href="index.html"><img src="marca/logo-180.jpg" width="58" height="46" alt=""><span>A Tal da Física</span></a>
+    <button class="menu-btn" type="button" aria-expanded="false" aria-controls="menu"><span aria-hidden="true"></span>Menu</button>
+    <nav class="links" id="menu" aria-label="Seções">
+      <ul class="nav-groups">
+        <li class="nav-group">
+          <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="nav-aprender">Aprender</button>
+          <ul class="nav-sub" id="nav-aprender">
+            <li><a href="index.html#trilhas">Trilhas</a></li>
+            <li><a href="licao.html">Lição</a></li>
+          </ul>
+        </li>
+        <li class="nav-group">
+          <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="nav-explorar">Explorar</button>
+          <ul class="nav-sub" id="nav-explorar">
+            <li><a href="laboratorio.html">Laboratório</a></li>
+            <li><a href="graficos.html">Gráficos</a></li>
+            <li><a href="calculo-vetorial.html">Vetores</a></li>
+          </ul>
+        </li>
+        <li class="nav-group">
+          <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="nav-praticar">Praticar</button>
+          <ul class="nav-sub" id="nav-praticar">
+            <li><a href="quiz.html">Quiz</a></li>
+            <li><a href="eletricidade.html">Eletricidade</a></li>
+            <li><a href="game/index.html">Game</a></li>
+            <li><a href="quest.html">Quest</a></li>
+            <li><a href="enem.html">ENEM</a></li>
+          </ul>
+        </li>
+        <li class="nav-group is-current">
+          <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="nav-vestibulares">Vestibulares</button>
+          <ul class="nav-sub" id="nav-vestibulares">
+            <li><a href="enem2026.html">ENEM 2026</a></li>
+            <li><a href="fuvest.html">FUVEST 2026</a></li>
+            <li><a href="unesp.html" aria-current="page">UNESP 2027</a></li>
+          </ul>
+        </li>
+        <li class="nav-group">
+          <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="nav-consultar">Consultar</button>
+          <ul class="nav-sub" id="nav-consultar">
+            <li><a href="formulas.html">Fórmulas</a></li>
+            <li><a href="constantes.html">Constantes</a></li>
+          </ul>
+        </li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<div class="wrap fv-intro">
+  <p class="label">Vestibular · UNESP 2027 · Vunesp, Conhecimentos Gerais</p>
+  <h1>UNESP 2027: Física resolvida</h1>
+  <p>As 7 questões de Física da prova de Conhecimentos Gerais da UNESP 2027 (Q76 a Q82), com enunciado completo, figuras da prova e resolução comentada. Tente responder antes: clique numa alternativa e a resolução abre logo abaixo.</p>
+</div>
+
+<main class="wrap fv-main">
+<section class="fv-card fv-top" aria-labelledby="gab">
+  <div class="fv-bar">
+    <h2 id="gab">Suas respostas</h2>
+    <span class="fv-score" id="score" aria-live="polite"><b>0</b> de 7 respondidas</span>
+  </div>
+  <nav class="fv-grid" id="map" aria-label="Ir para a questão"></nav>
+  <div class="fv-bar">
+    <details class="fv-res" style="border:0;padding:0">
+      <summary>Mostrar o gabarito</summary>
+      <div class="fv-grid fv-gab" id="gabarito" style="margin-top:12px"></div>
+    </details>
+    <button class="btn ghost" id="reset" type="button">Limpar respostas</button>
+  </div>
+</section>
+
+<!-- ===================== Q76 ===================== -->
+<article class="fv-card" id="q76" data-ans="D">
+  <div class="fv-head"><h2>Questão 76</h2><span class="fv-topic">Cinemática · lançamento horizontal e movimento relativo</span></div>
+  <div class="fv-text"><p>Um helicóptero sobrevoa horizontalmente um lago, em linha reta, com velocidade escalar constante <span data-tex-i="v_H=20\ \text{m/s}">v<sub>H</sub> = 20 m/s</span> e, desse helicóptero, um pacote será abandonado de uma altura <span data-tex-i="h=320\ \text{m}">h = 320 m</span>. Uma lancha navega nas águas desse lago, também com velocidade escalar constante <span data-tex-i="v_L=5\ \text{m/s}">v<sub>L</sub> = 5 m/s</span>, em linha reta, na mesma direção e no mesmo sentido da velocidade do helicóptero. As trajetórias do helicóptero e da lancha estão contidas em um mesmo plano vertical.</p></div>
+  <figure class="fv-fig" style="max-width:520px;justify-self:center">
+    <img src="unesp/q76-original.png" width="1080" height="690" alt="Helicóptero com velocidade v H sobrevoando um lago; o pacote, em vermelho, será abandonado a uma altura h. A lancha, com velocidade v L, está à frente a uma distância horizontal d. A gravidade g aponta para baixo." loading="lazy">
+    <figcaption>Figura da prova (fora de escala).</figcaption>
+  </figure>
+  <div class="fv-text"><p>Desprezando a resistência do ar e adotando <span data-tex-i="g=10\ \text{m/s}^2">g = 10 m/s²</span>, para que o pacote caia dentro da lancha, ele deve ser abandonado quando o helicóptero estiver, atrás da lancha, a uma distância horizontal <i>d</i> correspondente a</p></div>
+  <ol class="fv-opts">
+    <li><button class="fv-opt" data-l="A"><span class="l">A</span><span><span data-tex-i="160\ \text{m}">160 m</span>.</span></button></li>
+    <li><button class="fv-opt" data-l="B"><span class="l">B</span><span><span data-tex-i="140\ \text{m}">140 m</span>.</span></button></li>
+    <li><button class="fv-opt" data-l="C"><span class="l">C</span><span><span data-tex-i="180\ \text{m}">180 m</span>.</span></button></li>
+    <li><button class="fv-opt" data-l="D"><span class="l">D</span><span><span data-tex-i="120\ \text{m}">120 m</span>.</span></button></li>
+    <li><button class="fv-opt" data-l="E"><span class="l">E</span><span><span data-tex-i="200\ \text{m}">200 m</span>.</span></button></li>
+  </ol>
+  <p class="fv-feedback" aria-live="polite"></p>
+  <details class="fv-res">
+    <summary>Ver resolução</summary>
+    <div class="fv-text">
+      <p><b>Dados e o que se pede.</b></p>
+      <div class="fv-calc">
+        <span data-tex="v_H=20\ \text{m/s}\qquad v_L=5\ \text{m/s}\qquad h=320\ \text{m}\qquad g=10\ \text{m/s}^{2}\qquad d=\ ?">vH = 20 m/s · vL = 5 m/s · h = 320 m · g = 10 m/s² · d = ?</span>
+      </div>
+      <p><b>Ideia-chave.</b> O pacote sai com a velocidade do helicóptero. Sem resistência do ar, na <b>horizontal</b> ele mantém <span data-tex-i="v_H">v<sub>H</sub></span> (movimento uniforme) e na <b>vertical</b> cai em queda livre a partir do repouso. Os dois movimentos são independentes e duram o mesmo tempo.</p>
+      <p><b>1. Tempo de queda</b> (só depende de <i>h</i>):</p>
+      <div class="fv-calc">
+        <span data-tex="\begin{aligned}h&amp;=\dfrac{1}{2}\,g\,T^{2}\\[4pt]320&amp;=5\,T^{2}\\[2pt]T^{2}&amp;=64\;\Rightarrow\;T=8\ \text{s}\end{aligned}">h = ½·g·T²  ⇒  T = 8 s</span>
+      </div>
+      <p><b>2. Velocidade relativa.</b> Na horizontal, o pacote (que acompanha o helicóptero) se move a <span data-tex-i="20\ \text{m/s}">20 m/s</span> e a lancha, no mesmo sentido, a <span data-tex-i="5\ \text{m/s}">5 m/s</span>. Do ponto de vista da lancha, o pacote se aproxima a:</p>
+      <div class="fv-calc">
+        <span data-tex="v_{\text{rel}}=v_H-v_L=20-5=15\ \text{m/s}">vrel = vH − vL = 20 − 5 = 15 m/s</span>
+      </div>
+      <p>Para cair dentro da lancha, essa aproximação precisa fechar exatamente a distância horizontal inicial <i>d</i> durante o tempo de queda:</p>
+      <div class="fv-calc">
+        <span data-tex="d=v_{\text{rel}}\,T=15\cdot8=120\ \text{m}">d = vrel·T = 15·8 = 120 m</span>
+      </div>
+      <figure class="fv-fig" style="max-width:560px;justify-self:center">
+        <img src="unesp/q76-trajetoria.png" width="1435" height="902" alt="Trajetória parabólica do pacote abandonado pelo helicóptero, caindo na lancha após 8 segundos; a distância horizontal inicial é d = 120 m." loading="lazy">
+        <figcaption>Esquema da resolução (fora de escala): em 8 s o pacote avança 160 m e a lancha, 40 m; a diferença é a distância inicial <i>d</i>.</figcaption>
+      </figure>
+      <p><b>Armadilhas.</b> Usar <span data-tex-i="v_H T=160\ \text{m}">v<sub>H</sub>T = 160 m</span> (alternativa A) esquece que a lancha também avança. Somar as velocidades (<span data-tex-i="25\cdot8=200\ \text{m}">25·8 = 200 m</span>, alternativa E) só valeria se a lancha viesse em sentido contrário; aqui o sentido é o mesmo, então as velocidades se subtraem.</p>
+      <p class="fv-ans">Resposta: alternativa D</p>
+    </div>
+  </details>
+</article>
+
+<!-- ===================== Q77 ===================== -->
+<article class="fv-card" id="q77" data-ans="C">
+  <div class="fv-head"><h2>Questão 77</h2><span class="fv-topic">Gravitação · leis de Kepler e história da ciência</span></div>
+  <div class="fv-text"><p>Logo, concluiu, a área varrida pela linha que liga o planeta ao Sol mede o tempo exigido pelo planeta para ir de A a B; donde a linha varrerá áreas iguais em tempos iguais. É a imortal Segunda Lei, lei de espantosa simplicidade ao cabo de um labirinto terrivelmente confuso.</p></div>
+  <figure class="fv-fig" style="max-width:360px;justify-self:center">
+    <img src="unesp/q77-original.png" width="710" height="660" alt="Órbita desenhada como círculo com o Sol em S, ligeiramente deslocado do centro C. Dois setores hachurados, ABS e A1B1S, têm a mesma área. Legenda: Área ABS = Área A1B1S." loading="lazy">
+    <figcaption>Figura da prova.</figcaption>
+  </figure>
+  <div class="fv-text">
+    <p>A investida final levou quase dois anos e ocupa vinte capítulos da <i>Nova Astronomia</i>. Nos quatro primeiros capítulos, tentou, pela derradeira vez, atribuir uma órbita circular a Marte e malogrou. A seção termina com essas palavras:</p>
+    <blockquote>A conclusão é simplesmente a de não ser círculo o caminho do planeta; curva-se para dentro em ambos os lados e para fora mais uma vez nas extremidades opostas. Essa curva chama-se oval. A órbita não é circular, e sim, oval.</blockquote>
+    <p class="fv-note">(Arthur Koestler. <i>O Homem e o Universo</i>, 1989. Adaptado.)</p>
+  </div>
+  <div class="fv-text"><p>O excerto refere-se ao trabalho publicado em <i>Nova Astronomia</i>, um marco histórico que ajudou a desvendar os mistérios do sistema solar e a compreender o universo como o entendemos hoje. Esse trabalho foi feito por</p></div>
+  <ol class="fv-opts">
+    <li><button class="fv-opt" data-l="A"><span class="l">A</span><span>Isaac Newton, em um período marcado pela passagem do heliocentrismo para o geocentrismo, quando a ciência começou a se separar da filosofia e da teologia, baseando-se na experimentação e na observação.</span></button></li>
+    <li><button class="fv-opt" data-l="B"><span class="l">B</span><span>Isaac Newton, em um período marcado por uma urbanização acelerada e pela existência de duas classes sociais fundamentais: a burguesia industrial e o proletariado.</span></button></li>
+    <li><button class="fv-opt" data-l="C"><span class="l">C</span><span>Johannes Kepler, em um período marcado pelo resgate dos valores e da estética da antiguidade greco-romana, quando, diferentemente do teocentrismo medieval, o homem passou a ser visto como o centro do universo.</span></button></li>
+    <li><button class="fv-opt" data-l="D"><span class="l">D</span><span>Johannes Kepler, em um período em que a base da economia europeia era predominantemente urbana e baseada no comércio interno.</span></button></li>
+    <li><button class="fv-opt" data-l="E"><span class="l">E</span><span>Galileu Galilei, em um período marcado por mudanças no sistema de produção, passando da manufatura para a maquinofatura.</span></button></li>
+  </ol>
+  <p class="fv-feedback" aria-live="polite"></p>
+  <details class="fv-res">
+    <summary>Ver resolução</summary>
+    <div class="fv-text">
+      <p><b>Quem.</b> A lei das áreas (“áreas iguais em tempos iguais”) é a <b>2ª lei de Kepler</b>, e a <i>Astronomia Nova</i> (1609) é obra de <b>Johannes Kepler</b>. Ele usou as medidas de Marte de Tycho Brahe e mostrou que a órbita não é um círculo: é uma elipse com o Sol num dos focos (1ª lei).</p>
+      <div class="fv-calc">
+        <span data-tex="\dfrac{\Delta A}{\Delta t}=\text{constante}\;\Rightarrow\;A_1=A_2\ \text{se}\ \Delta t_1=\Delta t_2">ΔA/Δt = constante  ⇒  A₁ = A₂ se Δt₁ = Δt₂</span>
+        <span data-tex="r_{\text{per}}\,v_{\text{per}}=r_{\text{af}}\,v_{\text{af}}\;\Rightarrow\;\text{perto do Sol, o planeta é mais rápido}">r·v é igual no periélio e no afélio: perto do Sol o planeta é mais rápido</span>
+      </div>
+      <figure class="fv-fig" style="max-width:520px;justify-self:center">
+        <img src="unesp/q77-orbita.png" width="940" height="700" alt="Elipse com o Sol em um dos focos e dois setores de mesma área: um estreito e longo perto do afélio, outro curto e largo perto do periélio." loading="lazy">
+        <figcaption>Órbita elíptica (excentricidade exagerada): os dois setores têm a mesma área e levam o mesmo tempo.</figcaption>
+      </figure>
+      <p><b>Quando.</b> Kepler viveu entre o fim do século XVI e o começo do XVII, no <b>Renascimento</b>: valorização da cultura greco-romana, humanismo (o homem no centro, em oposição ao teocentrismo medieval) e o início da Revolução Científica. É o que diz a alternativa (C).</p>
+      <ul>
+        <li>(A) e (B): Newton (1643–1727) não escreveu a <i>Astronomia Nova</i>. Além disso, a passagem foi do geocentrismo para o heliocentrismo, e não o contrário (A), e a burguesia industrial e o proletariado são do século XIX (B).</li>
+        <li>(D): a economia da época era mercantil e colonial, em expansão, e não restrita ao comércio interno.</li>
+        <li>(E): Galileu foi contemporâneo de Kepler, mas a <i>Astronomia Nova</i> não é dele. A maquinofatura é da Revolução Industrial.</li>
+      </ul>
+      <p class="fv-ans">Resposta: alternativa C</p>
+    </div>
+  </details>
+</article>
+
+<!-- ===================== Q78 ===================== -->
+<article class="fv-card" id="q78" data-ans="A">
+  <div class="fv-head"><h2>Questão 78</h2><span class="fv-topic">Energia · trabalho da força peso e curvas de nível</span></div>
+  <div class="fv-text">
+    <p>O condor é a maior ave voadora do mundo e habita a cordilheira dos Andes, na América do Sul. A figura representa as curvas de nível de um pequeno trecho dessa região, em que um condor de <span data-tex-i="12\ \text{kg}">12 kg</span> parte do ponto A e voa até o ponto B.</p>
+    <p>A linha vermelha é a projeção, no plano da figura, da trajetória desse voo.</p>
+  </div>
+  <figure class="fv-fig" style="max-width:440px;justify-self:center">
+    <img src="unesp/q78-mapa.png" width="806" height="786" alt="Mapa de curvas de nível com altitudes de 3420 m a 3700 m. O ponto A fica na borda externa, à esquerda, e o ponto B perto do topo, à direita. Uma linha vermelha liga A a B contornando a encosta." loading="lazy">
+  </figure>
+  <div class="fv-text"><p>Adotando <span data-tex-i="g=10\ \text{m/s}^2">g = 10 m/s²</span>, o trabalho realizado pela força de atração gravitacional sobre esse condor, em seu voo de A para B, tem intensidade</p></div>
+  <ol class="fv-opts">
+    <li><button class="fv-opt" data-l="A"><span class="l">A</span><span><span data-tex-i="-28{,}8\ \text{kJ}">– 28,8 kJ</span> e independe da trajetória seguida pela ave.</span></button></li>
+    <li><button class="fv-opt" data-l="B"><span class="l">B</span><span><span data-tex-i="44{,}4\ \text{kJ}">44,4 kJ</span> e seria diferente se a ave seguisse por outra trajetória.</span></button></li>
+    <li><button class="fv-opt" data-l="C"><span class="l">C</span><span><span data-tex-i="28{,}8\ \text{kJ}">28,8 kJ</span> e independe da trajetória seguida pela ave.</span></button></li>
+    <li><button class="fv-opt" data-l="D"><span class="l">D</span><span><span data-tex-i="-28{,}8\ \text{kJ}">– 28,8 kJ</span> e seria diferente se a ave seguisse por outra trajetória.</span></button></li>
+    <li><button class="fv-opt" data-l="E"><span class="l">E</span><span><span data-tex-i="-44{,}4\ \text{kJ}">– 44,4 kJ</span> e independe da trajetória seguida pela ave.</span></button></li>
+  </ol>
+  <p class="fv-feedback" aria-live="polite"></p>
+  <details class="fv-res">
+    <summary>Ver resolução</summary>
+    <div class="fv-text">
+      <p><b>1. Ler o mapa.</b> Cada curva de nível liga pontos de mesma altitude, e as curvas estão de 40 em <span data-tex-i="40\ \text{m}">40 m</span>. O ponto A está na curva de <b>3 420 m</b> e o ponto B, na curva de <b>3 660 m</b>. A subida entre eles é:</p>
+      <div class="fv-calc">
+        <span data-tex="\Delta h=h_B-h_A=3660-3420=240\ \text{m}">Δh = 3 660 − 3 420 = 240 m</span>
+      </div>
+      <p><b>2. Trabalho do peso.</b> O peso é uma força conservativa: o trabalho depende só da diferença de altura entre os pontos, não do caminho. Subindo, o peso aponta contra o deslocamento vertical, e o trabalho é negativo:</p>
+      <div class="fv-calc">
+        <span data-tex="W_P=-m\,g\,\Delta h=-12\cdot10\cdot240=-28\,800\ \text{J}=-28{,}8\ \text{kJ}">W = −m·g·Δh = −12·10·240 = −28 800 J = −28,8 kJ</span>
+      </div>
+      <p>Como a força gravitacional é conservativa, o valor independe da trajetória, e isso elimina (B) e (D). O sinal positivo de (C) estaria certo só numa descida, e <span data-tex-i="44{,}4\ \text{kJ}">44,4 kJ</span> (B e E) corresponderia a <span data-tex-i="370\ \text{m}">370 m</span> de desnível, que o mapa não tem.</p>
+      <p class="fv-ans">Resposta: alternativa A</p>
+    </div>
+  </details>
+</article>
+
+<!-- ===================== Q79 ===================== -->
+<article class="fv-card" id="q79" data-ans="D">
+  <div class="fv-head"><h2>Questão 79</h2><span class="fv-topic">Calorimetria · potência e gráfico θ × Q</span></div>
+  <div class="fv-text"><p>O gráfico mostra como variou a temperatura de determinada quantidade de água dentro de uma chaleira colocada sobre a chama de um fogão, em função do calor absorvido por essa massa de água.</p></div>
+  <figure class="fv-fig" style="max-width:480px;justify-self:center">
+    <img src="unesp/q79-grafico.png" width="1030" height="655" alt="Gráfico da temperatura θ em graus Celsius em função do calor Q em 10 elevado a 4 joules. A reta vermelha passa pelos pontos (0, 20), (24, 40), (48, 60) e (72, 80)." loading="lazy">
+  </figure>
+  <div class="fv-text"><p>Sabendo que a água dentro da chaleira absorveu calor com uma potência de <span data-tex-i="2\,000\ \text{W}">2 000 W</span>, o intervalo de tempo em que a temperatura da água foi elevada de <span data-tex-i="40^{\circ}\text{C}">40 ºC</span> para <span data-tex-i="60^{\circ}\text{C}">60 ºC</span> foi de</p></div>
+  <ol class="fv-opts">
+    <li><button class="fv-opt" data-l="A"><span class="l">A</span><span><span data-tex-i="2{,}50\ \text{min}">2,50 min</span>.</span></button></li>
+    <li><button class="fv-opt" data-l="B"><span class="l">B</span><span><span data-tex-i="2{,}25\ \text{min}">2,25 min</span>.</span></button></li>
+    <li><button class="fv-opt" data-l="C"><span class="l">C</span><span><span data-tex-i="3{,}00\ \text{min}">3,00 min</span>.</span></button></li>
+    <li><button class="fv-opt" data-l="D"><span class="l">D</span><span><span data-tex-i="2{,}00\ \text{min}">2,00 min</span>.</span></button></li>
+    <li><button class="fv-opt" data-l="E"><span class="l">E</span><span><span data-tex-i="3{,}50\ \text{min}">3,50 min</span>.</span></button></li>
+  </ol>
+  <p class="fv-feedback" aria-live="polite"></p>
+  <details class="fv-res">
+    <summary>Ver resolução</summary>
+    <div class="fv-text">
+      <p><b>1. Calor absorvido no trecho.</b> No gráfico, <span data-tex-i="40^{\circ}\text{C}">40 ºC</span> corresponde a <span data-tex-i="Q=24\cdot10^{4}\ \text{J}">Q = 24·10⁴ J</span> e <span data-tex-i="60^{\circ}\text{C}">60 ºC</span> a <span data-tex-i="Q=48\cdot10^{4}\ \text{J}">Q = 48·10⁴ J</span>. O eixo está em unidades de <span data-tex-i="10^{4}\ \text{J}">10⁴ J</span>:</p>
+      <div class="fv-calc">
+        <span data-tex="\Delta Q=(48-24)\cdot10^{4}=24\cdot10^{4}\ \text{J}=2{,}4\cdot10^{5}\ \text{J}">ΔQ = (48 − 24)·10⁴ = 2,4·10⁵ J</span>
+      </div>
+      <p><b>2. Potência.</b> Potência é energia por tempo:</p>
+      <div class="fv-calc">
+        <span data-tex="P=\dfrac{\Delta Q}{\Delta t}\;\Rightarrow\;\Delta t=\dfrac{\Delta Q}{P}=\dfrac{2{,}4\cdot10^{5}}{2\,000}=120\ \text{s}=2{,}00\ \text{min}">Δt = ΔQ/P = 2,4·10⁵ / 2 000 = 120 s = 2,00 min</span>
+      </div>
+  <figure class="fv-fig" style="max-width:460px;justify-self:center">
+    <img src="unesp/q79-resolucao.png" width="1160" height="745" alt="Mesmo gráfico com o trecho de 40 a 60 graus Celsius destacado: variação de calor de 24 vezes 10 elevado a 4 joules." loading="lazy">
+    <figcaption>O trecho de 40 ºC a 60 ºC corresponde a ΔQ = 24·10⁴ J.</figcaption>
+  </figure>
+      <p><b>Conferência.</b> A reta tem inclinação constante: <span data-tex-i="\Delta Q/\Delta\theta=1{,}2\cdot10^{4}\ \text{J/}^\circ\text{C}=m\,c">ΔQ/Δθ = 1,2·10⁴ J/ºC = m·c</span> (capacidade térmica da água na chaleira). Com <span data-tex-i="c\approx4\,200\ \text{J/(kg}\cdot{}^\circ\text{C)}">c ≈ 4 200 J/(kg·ºC)</span>, a massa seria cerca de <span data-tex-i="2{,}9\ \text{kg}">2,9 kg</span>.</p>
+      <p class="fv-ans">Resposta: alternativa D</p>
+    </div>
+  </details>
+</article>
+
+<!-- ===================== Q80 ===================== -->
+<article class="fv-card" id="q80" data-ans="B">
+  <div class="fv-head"><h2>Questão 80</h2><span class="fv-topic">Óptica geométrica · lente convergente e projeção</span></div>
+  <div class="fv-text"><p>Em uma apresentação, e utilizando uma lente esférica delgada convergente, uma pessoa pretende projetar a imagem de um slide quadrado de lado <span data-tex-i="5\ \text{cm}">5 cm</span> em uma tela plana e vertical, também quadrada, de lado <span data-tex-i="120\ \text{cm}">120 cm</span>.</p></div>
+  <figure class="fv-fig" style="max-width:460px;justify-self:center">
+    <img src="unesp/q80-esquema.png" width="960" height="740" alt="Perspectiva do slide quadrado de 5 centímetros à esquerda, a tela quadrada de 120 centímetros à direita e a distância de 5 metros entre eles; fora de escala." loading="lazy">
+    <figcaption>Figura da prova (fora de escala).</figcaption>
+  </figure>
+  <div class="fv-text"><p>Sabendo que a tela se encontra a <span data-tex-i="5\ \text{m}">5 m</span> de distância do slide e que a imagem projetada deve ter área exatamente igual à área da tela, a distância focal da lente utilizada deve ser de</p></div>
+  <ol class="fv-opts">
+    <li><button class="fv-opt" data-l="A"><span class="l">A</span><span><span data-tex-i="16{,}8\ \text{cm}">16,8 cm</span>.</span></button></li>
+    <li><button class="fv-opt" data-l="B"><span class="l">B</span><span><span data-tex-i="19{,}2\ \text{cm}">19,2 cm</span>.</span></button></li>
+    <li><button class="fv-opt" data-l="C"><span class="l">C</span><span><span data-tex-i="10{,}5\ \text{cm}">10,5 cm</span>.</span></button></li>
+    <li><button class="fv-opt" data-l="D"><span class="l">D</span><span><span data-tex-i="12{,}4\ \text{cm}">12,4 cm</span>.</span></button></li>
+    <li><button class="fv-opt" data-l="E"><span class="l">E</span><span><span data-tex-i="22{,}6\ \text{cm}">22,6 cm</span>.</span></button></li>
+  </ol>
+  <p class="fv-feedback" aria-live="polite"></p>
+  <details class="fv-res">
+    <summary>Ver resolução</summary>
+    <div class="fv-text">
+      <p>Para aparecer numa tela a imagem tem de ser <b>real</b> (e, numa lente convergente, invertida). Chame de <i>p</i> a distância slide–lente e de <i>p′</i> a distância lente–tela.</p>
+      <p><b>1. Aumento linear.</b> Imagem e tela são quadrados de mesma área, então o lado da imagem é <span data-tex-i="120\ \text{cm}">120 cm</span>:</p>
+      <div class="fv-calc">
+        <span data-tex="A=\dfrac{i}{o}=\dfrac{120}{5}=24\;\Rightarrow\;p'=24\,p">A = i/o = 120/5 = 24  ⇒  p′ = 24·p</span>
+      </div>
+      <p><b>2. Distâncias.</b> O slide está a <span data-tex-i="5\ \text{m}">5 m</span> da tela (desprezando a espessura da lente delgada):</p>
+      <div class="fv-calc">
+        <span data-tex="p+p'=500\ \text{cm}\;\Rightarrow\;25\,p=500\;\Rightarrow\;p=20\ \text{cm},\quad p'=480\ \text{cm}">p + p′ = 500 cm  ⇒  p = 20 cm e p′ = 480 cm</span>
+      </div>
+      <p><b>3. Equação de Gauss.</b></p>
+      <div class="fv-calc">
+        <span data-tex="\dfrac{1}{f}=\dfrac{1}{p}+\dfrac{1}{p'}=\dfrac{1}{20}+\dfrac{1}{480}=\dfrac{25}{480}\;\Rightarrow\;f=\dfrac{480}{25}=19{,}2\ \text{cm}">1/f = 1/20 + 1/480 = 25/480  ⇒  f = 19,2 cm</span>
+      </div>
+  <figure class="fv-fig" style="max-width:760px;justify-self:center">
+    <img src="unesp/q80-lente.png" width="1900" height="790" alt="Diagrama com o slide (objeto) a 20 centímetros da lente convergente e a tela (anteparo) a 480 centímetros da lente. Três raios saem do topo do slide e se cruzam na base da tela, formando a imagem invertida." loading="lazy">
+    <figcaption>Resolução: o raio paralelo ao eixo passa por F′, o raio central não desvia e o raio que passa por F sai paralelo. Os três se encontram na imagem, invertida e ampliada 24 vezes. Desenho esquemático: as distâncias reais (20 cm e 480 cm) estão nas cotas.</figcaption>
+  </figure>
+      <p><b>Atalho.</b> Para uma distância total <span data-tex-i="D=p+p'">D = p + p′</span> e aumento <span data-tex-i="A">A</span>: <span data-tex-i="f=\dfrac{A\,D}{(A+1)^{2}}=\dfrac{24\cdot500}{25^{2}}=19{,}2\ \text{cm}">f = A·D/(A+1)² = 24·500/625 = 19,2 cm</span>.</p>
+      <p><b>Coerência.</b> O slide fica entre <span data-tex-i="f">f</span> e <span data-tex-i="2f">2f</span> (<span data-tex-i="19{,}2\ \text{cm}">19,2 cm</span> &lt; <span data-tex-i="20\ \text{cm}">20 cm</span> &lt; <span data-tex-i="38{,}4\ \text{cm}">38,4 cm</span>), exatamente a posição que dá imagem real, invertida e ampliada, como num projetor.</p>
+      <p class="fv-ans">Resposta: alternativa B</p>
+    </div>
+  </details>
+</article>
+
+<!-- ===================== Q81 ===================== -->
+<article class="fv-card" id="q81" data-ans="B">
+  <div class="fv-head"><h2>Questão 81</h2><span class="fv-topic">Ondulatória e Física moderna · cores, fótons e frequência (interdisciplinar com Química)</span></div>
+  <div class="fv-text">
+    <p>O espetáculo de queima de fogos de artifício encanta pela explosão de cores que ele produz. A maioria desses artefatos contém sais de diferentes elementos químicos em seu interior, responsáveis pela cor produzida. Os elétrons desses elementos absorvem a energia liberada na queima da pólvora e passam para níveis de energia mais elevados. A emissão de luz colorida ocorre quando esses elétrons, ao retornarem para os níveis de menor energia, liberam a energia absorvida na forma de fótons de luz, fenômeno chamado luminescência. A tabela apresentada na figura 1 relaciona a cor emitida pelos fogos de artifício com o elemento químico utilizado em suas fabricações.</p>
+  </div>
+  <table class="fv-table" aria-label="Figura 1: cor emitida e sal usado">
+    <caption>Figura 1</caption>
+    <thead><tr><th>Cor</th><th>Sais de</th></tr></thead>
+    <tbody>
+      <tr><td><span class="cor-v">Vermelha</span></td><td>Estrôncio</td></tr>
+      <tr><td><span class="cor-l">Laranja</span></td><td>Cálcio</td></tr>
+      <tr><td><span class="cor-a">Amarela</span></td><td>Sódio</td></tr>
+      <tr><td><span class="cor-g">Verde</span></td><td>Bário</td></tr>
+      <tr><td><span class="cor-z">Azul</span></td><td>Cobre</td></tr>
+    </tbody>
+  </table>
+  <div class="fv-text"><p>A figura 2 mostra uma Classificação Periódica simplificada.</p></div>
+  <figure class="fv-fig" style="max-width:560px;justify-self:center">
+    <img src="unesp/q81-tabela-periodica.png" width="1106" height="456" alt="Figura 2: quadro da Classificação Periódica simplificada, com Na no grupo 1 (3º período), Ca, Sr e Ba no grupo 2 (4º, 5º e 6º períodos) e Cu no grupo 11 (4º período)." loading="lazy">
+    <figcaption>Figura 2</figcaption>
+  </figure>
+  <div class="fv-text"><p>Considerando as informações do texto e das figuras 1 e 2, tem-se que:</p></div>
+  <ol class="fv-opts">
+    <li><button class="fv-opt" data-l="A"><span class="l">A</span><span>quando os fogos produzem luz azul, a energia dos fótons emitidos é menor do que quando esses fogos produzem luz vermelha.</span></button></li>
+    <li><button class="fv-opt" data-l="B"><span class="l">B</span><span>a cor de maior comprimento de onda é obtida com fogos que têm, em sua composição, um metal alcalino terroso.</span></button></li>
+    <li><button class="fv-opt" data-l="C"><span class="l">C</span><span>fogos de artifício coloridos são produzidos, em sua maioria, com elementos de um mesmo período da Classificação Periódica.</span></button></li>
+    <li><button class="fv-opt" data-l="D"><span class="l">D</span><span>a cor de menor frequência é obtida com fogos que são fabricados com um metal de transição.</span></button></li>
+    <li><button class="fv-opt" data-l="E"><span class="l">E</span><span>fogos constituídos com metais alcalinos produzem as duas cores de maiores frequências.</span></button></li>
+  </ol>
+  <p class="fv-feedback" aria-live="polite"></p>
+  <details class="fv-res">
+    <summary>Ver resolução</summary>
+    <div class="fv-text">
+      <p><b>Física.</b> Todas as cores viajam no vácuo com a mesma velocidade <i>c</i>, e <span data-tex-i="c=\lambda f">c = λ·f</span>. A energia de cada fóton é <span data-tex-i="E=h\,f=\dfrac{h\,c}{\lambda}">E = h·f = h·c/λ</span>. Dentro do visível, a ordem crescente de frequência é vermelho, laranja, amarelo, verde, azul. O comprimento de onda segue a ordem inversa.</p>
+      <p><b>Química.</b> Pela posição na tabela da figura 2:</p>
+      <table class="fv-table num" aria-label="Cor, elemento, família e período">
+        <thead><tr><th>Cor</th><th>Elemento</th><th>Família</th><th>Período</th></tr></thead>
+        <tbody>
+          <tr><td><span class="cor-v">Vermelha</span> (menor <i>f</i>, maior λ)</td><td>Sr</td><td>alcalino-terroso (grupo 2)</td><td>5º</td></tr>
+          <tr><td><span class="cor-l">Laranja</span></td><td>Ca</td><td>alcalino-terroso (grupo 2)</td><td>4º</td></tr>
+          <tr><td><span class="cor-a">Amarela</span></td><td>Na</td><td>alcalino (grupo 1)</td><td>3º</td></tr>
+          <tr><td><span class="cor-g">Verde</span></td><td>Ba</td><td>alcalino-terroso (grupo 2)</td><td>6º</td></tr>
+          <tr><td><span class="cor-z">Azul</span> (maior <i>f</i>, menor λ)</td><td>Cu</td><td>metal de transição (grupo 11)</td><td>4º</td></tr>
+        </tbody>
+      </table>
+      <ul>
+        <li>(A) Falsa: azul tem frequência maior que a do vermelho, logo seus fótons têm <b>mais</b> energia.</li>
+        <li>(B) <b>Verdadeira</b>: o maior comprimento de onda é o do vermelho, e o vermelho vem do estrôncio, um alcalino-terroso.</li>
+        <li>(C) Falsa: os elementos estão em períodos diferentes (3º, 4º, 5º e 6º).</li>
+        <li>(D) Falsa: a menor frequência é a do vermelho (Sr), que não é metal de transição. O metal de transição (Cu) dá o azul, de maior frequência.</li>
+        <li>(E) Falsa: as duas maiores frequências são azul (Cu, transição) e verde (Ba, alcalino-terroso). O único alcalino (Na) dá o amarelo.</li>
+      </ul>
+      <p class="fv-ans">Resposta: alternativa B</p>
+    </div>
+  </details>
+</article>
+
+<!-- ===================== Q82 ===================== -->
+<article class="fv-card" id="q82" data-ans="B">
+  <div class="fv-head"><h2>Questão 82</h2><span class="fv-topic">Eletricidade · potência dissipada em associações de resistores</span></div>
+  <div class="fv-text"><p>Dois resistores ôhmicos de resistências elétricas <span data-tex-i="R_X">R<sub>X</sub></span> e <span data-tex-i="R_Y">R<sub>Y</sub></span> podem ser associados e conectados a um gerador ideal de força eletromotriz constante, montando um dos dois circuitos mostrados nas figuras 1 e 2.</p></div>
+  <figure class="fv-fig" style="max-width:560px;justify-self:center">
+    <img src="unesp/q82-circuitos.png" width="1024" height="512" alt="Figura 1: R X e R Y em série com o gerador. Figura 2: R X e R Y em ramos paralelos ligados ao gerador." loading="lazy">
+  </figure>
+  <div class="fv-text"><p>Sabendo que <span data-tex-i="R_X<R_Y">R<sub>X</sub> &lt; R<sub>Y</sub></span>,</p></div>
+  <ol class="fv-opts">
+    <li><button class="fv-opt" data-l="A"><span class="l">A</span><span>R<sub>X</sub> dissipará mais potência do que R<sub>Y</sub> no circuito mostrado na figura 1.</span></button></li>
+    <li><button class="fv-opt" data-l="B"><span class="l">B</span><span>R<sub>X</sub> dissipará mais potência do que R<sub>Y</sub> no circuito mostrado na figura 2.</span></button></li>
+    <li><button class="fv-opt" data-l="C"><span class="l">C</span><span>R<sub>X</sub> e R<sub>Y</sub> dissiparão potências iguais no circuito mostrado na figura 1.</span></button></li>
+    <li><button class="fv-opt" data-l="D"><span class="l">D</span><span>R<sub>X</sub> e R<sub>Y</sub> dissiparão potências iguais no circuito mostrado na figura 2.</span></button></li>
+    <li><button class="fv-opt" data-l="E"><span class="l">E</span><span>R<sub>X</sub> dissipará menos potência do que R<sub>Y</sub> no circuito mostrado na figura 2.</span></button></li>
+  </ol>
+  <p class="fv-feedback" aria-live="polite"></p>
+  <details class="fv-res">
+    <summary>Ver resolução</summary>
+    <div class="fv-text">
+      <p>A potência dissipada num resistor pode ser escrita de duas formas, e cada associação favorece uma delas:</p>
+      <p><b>Figura 1 (série).</b> A mesma corrente <i>i</i> passa pelos dois resistores, então vale <span data-tex-i="P=R\,i^{2}">P = R·i²</span>. A maior resistência dissipa mais:</p>
+      <div class="fv-calc">
+        <span data-tex="P_X=R_X\,i^{2}<R_Y\,i^{2}=P_Y">PX = RX·i² < RY·i² = PY</span>
+      </div>
+      <p><b>Figura 2 (paralelo).</b> Os dois resistores ficam sob a mesma tensão <i>U</i> do gerador, então vale <span data-tex-i="P=\dfrac{U^{2}}{R}">P = U²/R</span>. A menor resistência dissipa mais:</p>
+      <div class="fv-calc">
+        <span data-tex="P_X=\dfrac{U^{2}}{R_X}>\dfrac{U^{2}}{R_Y}=P_Y">PX = U²/RX > U²/RY = PY</span>
+      </div>
+      <p>Logo, na figura 2, <span data-tex-i="R_X">R<sub>X</sub></span> dissipa <b>mais</b> potência que <span data-tex-i="R_Y">R<sub>Y</sub></span>: alternativa (B). As demais afirmam o contrário ou igualdade, que só valeria se <span data-tex-i="R_X=R_Y">R<sub>X</sub> = R<sub>Y</sub></span>.</p>
+      <p class="fv-ans">Resposta: alternativa B</p>
+    </div>
+  </details>
+</article>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <span>A Tal da Física</span>
+    <p class="autor">Marcelo Furlan</p>
+  </div>
+</footer>
+
+<script>
+(function(){
+const cards=[...document.querySelectorAll('article.fv-card')];
+const map=document.getElementById('map'), gab=document.getElementById('gabarito'), score=document.getElementById('score');
+const KEY='unesp2027-respostas';
+let saved={};
+try{saved=JSON.parse(localStorage.getItem(KEY)||'{}')||{}}catch(e){saved={}}
+function store(){try{localStorage.setItem(KEY,JSON.stringify(saved))}catch(e){}}
+
+cards.forEach(c=>{
+  const n=c.id.slice(1);
+  map.insertAdjacentHTML('beforeend',`<a href="#${c.id}" data-q="${c.id}"><span class="n">Q${n}</span><span class="r">?</span></a>`);
+  gab.insertAdjacentHTML('beforeend',`<a href="#${c.id}"><span class="n">Q${n}</span><span class="r">${c.dataset.ans}</span></a>`);
+});
+
+function mark(card,letter,open){
+  const ans=card.dataset.ans, fb=card.querySelector('.fv-feedback');
+  card.querySelectorAll('.fv-opt').forEach(b=>{
+    b.disabled=true;
+    if(b.dataset.l===ans)b.classList.add('right');
+    else if(b.dataset.l===letter)b.classList.add('wrong');
+  });
+  const ok=letter===ans;
+  fb.textContent=ok?'Isso! Resposta certa.':`Você marcou ${letter}. A resposta é ${ans}: veja a resolução.`;
+  fb.className='fv-feedback '+(ok?'ok':'bad');
+  if(open)card.querySelector('.fv-res').open=true;
+  const tile=map.querySelector(`[data-q="${card.id}"]`);
+  tile.classList.add('done',ok?'ok':'bad');tile.querySelector('.r').textContent=letter;
+}
+function updateScore(){
+  const done=Object.keys(saved).length, right=cards.filter(c=>saved[c.id]===c.dataset.ans).length;
+  score.innerHTML=done?`<b>${right}</b> ${right===1?'acerto':'acertos'} em <b>${done}</b> de 7 ${done===1?'respondida':'respondidas'}`:'<b>0</b> de 7 respondidas';
+}
+cards.forEach(card=>{
+  card.querySelectorAll('.fv-opt').forEach(b=>b.addEventListener('click',()=>{
+    saved[card.id]=b.dataset.l;store();mark(card,b.dataset.l,true);updateScore();
+  }));
+  if(saved[card.id])mark(card,saved[card.id],false);
+});
+document.getElementById('reset').addEventListener('click',()=>{
+  saved={};store();
+  cards.forEach(card=>{
+    card.querySelectorAll('.fv-opt').forEach(b=>{b.disabled=false;b.classList.remove('right','wrong')});
+    const fb=card.querySelector('.fv-feedback');fb.textContent='';fb.className='fv-feedback';
+    card.querySelector('.fv-res').open=false;
+  });
+  map.querySelectorAll('a').forEach(a=>{a.className='';a.querySelector('.r').textContent='?'});
+  updateScore();
+});
+updateScore();
+})();
+</script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
+<script defer src="tex.js"></script>
+<script src="site.js"></script>
+</body>
+</html>
