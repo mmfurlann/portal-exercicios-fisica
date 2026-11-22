@@ -17,6 +17,8 @@
 .cena-ctl { display: grid; gap: 14px; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); margin-top: 16px; }
 .cena-ctl label { display: flex; justify-content: space-between; font-family: var(--mono); font-size: .85rem; }
 .cena-ctl input { width: 100%; accent-color: var(--ribbon-deep); }
+.cena-video { display: block; width: 100%; height: auto; aspect-ratio: 16 / 9; background: #0a1424; border: var(--line-w) solid var(--ink); border-radius: var(--radius); }
+.cena-forcas { font-family: var(--mono); font-size: .9rem; color: var(--ink); margin: 12px 0 0; }
 .cena-leit { display: grid; gap: 10px; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); margin-top: 16px; }
 .cena-leit div { border-top: 1.5px solid var(--ink); padding-top: 8px; }
 .cena-leit .v { display: block; font-family: var(--mono); font-size: 1.15rem; font-weight: 600; }
@@ -90,7 +92,7 @@
     <div class="cena" aria-label="Cena 3D da talha com polias móveis em série">
       <canvas id="cena3d" role="img" aria-label="Talha de polias levantando uma carga, com as forças peso e força da mão"></canvas>
     </div>
-    <p class="cena-legenda">Setas proporcionais às forças (800 N = 0,35 m). A altura da carga é reduzida na tela para caber; as contas usam h = 1,0 m.</p>
+    <p class="cena-legenda">Setas azuis: forças das cordas, em múltiplos de F (o comprimento de P é fixo e F = P/2ⁿ). Seta verde: subida h da carga. Seta laranja: descida 2ⁿ·h da corda. A altura é reduzida na tela para caber; as contas usam h = 1,0 m.</p>
 
     <div class="cena-acoes">
       <button id="cena-play" type="button" aria-pressed="false">Pausar</button>
@@ -111,10 +113,23 @@
 
     <div class="cena-leit" aria-live="polite">
       <div><span class="label">Força na mão</span><span class="v" id="cena-F">—</span></div>
-      <div><span class="label">Corda puxada</span><span class="v" id="cena-d">—</span></div>
+      <div><span class="label">Subida da carga</span><span class="v" id="cena-h">—</span></div>
+      <div><span class="label">Descida da corda</span><span class="v" id="cena-d">—</span></div>
       <div><span class="label">Trabalho da mão</span><span class="v" id="cena-W">—</span></div>
       <div><span class="label">Trabalho do peso</span><span class="v" id="cena-Wp">—</span></div>
     </div>
+    <p class="cena-forcas" id="cena-forcas" aria-live="polite"></p>
+  </section>
+
+  <section aria-labelledby="titulo-manim" style="margin-top: 48px">
+    <div class="section-head">
+      <p class="label">Revisão em Manim</p>
+      <h2 id="titulo-manim">As forças em termos de F, com 2 polias móveis</h2>
+      <p class="cena-nota">Conferência da distribuição: a mão puxa com F; a polia 2 recebe 2·F = 2F; a polia 1 recebe 2·2F = 4F = P. Enquanto a carga sobe h, a polia 2 sobe 2h e a mão desce 4h = 2²·h, e o trabalho F·4h = P·h é o mesmo.</p>
+    </div>
+    <video class="cena-video" controls preload="metadata" poster="formulas/animacoes/polias-arquimedes/polias-arquimedes-final.png" aria-label="Animação das forças F, 2F e 4F na talha de duas polias móveis e da subida h da carga em relação à descida 4h da corda">
+      <source src="formulas/animacoes/polias-arquimedes/polias-arquimedes.mp4" type="video/mp4">
+    </video>
   </section>
 </main>
 
@@ -174,12 +189,12 @@
     mesh.quaternion.setFromUnitVectors(UP, d.clone().normalize());
     mesh.scale.set(1, L, 1);
   }
-  function rotulo(texto, cor) {
+  function rotulo(texto, cor, esc) {
     const c = document.createElement('canvas'); c.width = 320; c.height = 84;
     const x = c.getContext('2d'); x.font = 'bold 40px "Atkinson Hyperlegible", sans-serif'; x.textAlign = 'center'; x.textBaseline = 'middle';
     x.fillStyle = '#' + cor.toString(16).padStart(6, '0'); x.fillText(texto, 160, 42);
     const tex = new THREE.CanvasTexture(c); const sp = new THREE.Sprite(new THREE.SpriteMaterial({ map: tex, transparent: true, depthTest: false }));
-    sp.scale.set(0.9, 0.24, 1); sp.userData.texto = texto; return sp;
+    sp.scale.set(0.9 * (esc || 1), 0.24 * (esc || 1), 1); sp.userData.texto = texto; return sp;
   }
   function seta(cor) {
     const a = new THREE.ArrowHelper(new THREE.Vector3(0, -1, 0), new THREE.Vector3(), 0.3, cor, 0.05, 0.035);
@@ -191,10 +206,29 @@
     if (grupo) scene.remove(grupo);
     grupo = new THREE.Group(); scene.add(grupo);
     const teto = new THREE.Mesh(new THREE.BoxGeometry(4.6, 0.12, 0.5), mat(PAL.ink)); teto.position.set(WX(380), WY(TOP) - 0.06, 0); grupo.add(teto);
-    est = { n, rodas: [], cordas: [], rotF: null, carga: null, mao: null, setaP: seta(PAL.bad), setaF: seta(PAL.ocean), rotP: null, rotF2: null, pulos: [] };
+    est = { n, rodas: [], cordas: [], rotF: null, carga: null, mao: null, setaP: seta(PAL.bad), setaF: seta(PAL.ocean), rotP: null, rotF2: null, ten: [] };
     const zk = k => 0.2 * (k - (n + 1) / 2);
     est.zk = zk;
-    for (let k = 1; k <= n; k++) { const r = roda(false); est.rodas[k] = r; grupo.add(r.g); est.pulos[k] = rotulo('P/' + Math.pow(2, k), PAL.ink); grupo.add(est.pulos[k]); }
+    const Lp = 0.9, LF = Lp / Math.pow(2, n);                      // P tem comprimento fixo; F = P/2ⁿ
+    const mult = c => (c === 1 ? '' : String(c)) + 'F';
+    const dimensiona = (a, len) => a.setLength(len, Math.min(0.07, len * 0.4), Math.min(0.045, len * 0.3));
+    est.Lp = Lp; est.LF = LF; est.ten = [];
+    for (let k = 1; k <= n; k++) {
+      const r = roda(false); est.rodas[k] = r; grupo.add(r.g);
+      const c = Math.pow(2, n - k);                                // tensão nas duas cordas da polia k: c·F
+      const t = { c, upL: seta(PAL.ocean), upR: seta(PAL.ocean), lL: rotulo(mult(c), PAL.ocean, 0.6), lR: rotulo(mult(c), PAL.ocean, 0.6) };
+      t.upL.setDirection(new THREE.Vector3(0, 1, 0)); t.upR.setDirection(new THREE.Vector3(0, 1, 0));   // as cordas puxam a polia para cima
+      dimensiona(t.upL, c * LF); dimensiona(t.upR, c * LF);
+      grupo.add(t.upL, t.upR, t.lL, t.lR);
+      if (k > 1) {                                                 // a corda da polia k−1 puxa o eixo para baixo com 2c·F
+        t.dn = seta(PAL.ocean); dimensiona(t.dn, 2 * c * LF); t.lD = rotulo(mult(2 * c), PAL.ocean, 0.6); grupo.add(t.dn, t.lD);
+      }
+      est.ten[k] = t;
+    }
+    const lin = cor => new THREE.Line(new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(-0.2, 0, 0), new THREE.Vector3(0.2, 0, 0)]), new THREE.LineBasicMaterial({ color: cor }));
+    est.refH = lin(PAL.leaf); est.refD = lin(PAL.ribbon); grupo.add(est.refH, est.refD);
+    est.cotaH = seta(PAL.leaf); est.cotaD = seta(PAL.ribbon); grupo.add(est.cotaH, est.cotaD);
+    est.lH = rotulo('h', PAL.leaf, 0.6); est.lD = rotulo(n ? Math.pow(2, n) + 'h' : 'h', PAL.ribbon, 0.6); grupo.add(est.lH, est.lD);
     est.fixa = roda(true); grupo.add(est.fixa.g);
     est.eixoFixo = corda(); grupo.add(est.eixoFixo);
     const nSeg = 3 * n + 4; for (let i = 0; i < nSeg; i++) { const m = corda(); est.cordas.push(m); grupo.add(m); }
@@ -202,7 +236,8 @@
     est.rotuloCarga = rotulo('', PAL.ink); grupo.add(est.rotuloCarga);
     est.mao = new THREE.Mesh(new THREE.SphereGeometry(0.05, 16, 12), mat(PAL.ocean)); grupo.add(est.mao);
     grupo.add(est.setaP); grupo.add(est.setaF);
-    est.rotP = rotulo('P', PAL.bad); est.rotF = rotulo('F', PAL.ocean); grupo.add(est.rotP); grupo.add(est.rotF);
+    est.rotP = rotulo(n ? 'P = ' + Math.pow(2, n) + 'F' : 'P = F', PAL.bad, 0.75); est.rotF = rotulo('F', PAL.ocean, 0.75); grupo.add(est.rotP); grupo.add(est.rotF);
+    est.setaP.setLength(Lp, 0.08, 0.04); est.setaF.setLength(LF, Math.min(0.08, LF * 0.4), Math.min(0.04, LF * 0.3));
   }
 
   function estado(n, u, H) {                          // posições em px, como no simulador do laboratório
@@ -222,11 +257,15 @@
 
   const fmt = (v, casas) => v.toLocaleString('pt-BR', { minimumFractionDigits: casas, maximumFractionDigits: casas });
   function atualizaPainel(n, m, u, c) {
-    const P = m * G, F = P / Math.pow(2, n), d = Math.pow(2, n) * H_REAL * u, W = F * d, Wp = P * H_REAL * u;
+    const P = m * G, F = P / Math.pow(2, n), hs = H_REAL * u, d = Math.pow(2, n) * hs, W = F * d, Wp = P * hs;
+    document.getElementById('cena-h').textContent = fmt(hs, 2) + ' m';
+    const cf = [];
+    for (let k = n; k >= 1; k--) { const c = Math.pow(2, n - k), f = q => (q === 1 ? '' : q) + 'F'; cf.push('polia ' + k + ': ' + f(c) + ' + ' + f(c) + ' = ' + f(2 * c) + (k === 1 ? ' = P' : '')); }
+    document.getElementById('cena-forcas').textContent = n ? 'Forças: ' + cf.join(' · ') + '. Mão: F. Carga sobe h; corda desce ' + Math.pow(2, n) + 'h.' : 'Sem polia móvel: a mão puxa com F = P e a corda desce o mesmo que a carga sobe (h).';
     document.getElementById('cena-no').textContent = String(n);
     document.getElementById('cena-mo').textContent = fmt(m, 0) + ' kg';
     document.getElementById('cena-F').textContent = fmt(F, 0) + ' N';
-    document.getElementById('cena-d').textContent = fmt(d, 2) + ' m';
+    document.getElementById('cena-d').textContent = fmt(d, 2) + ' m (' + Math.pow(2, n) + ' × h)';
     document.getElementById('cena-W').textContent = fmt(W, 0) + ' J';
     document.getElementById('cena-Wp').textContent = fmt(Wp, 0) + ' J';
     document.getElementById('cena-fase').textContent = faseDe(c);
@@ -236,12 +275,10 @@
   function desenha(u) {
     const n = est.n, m = +UI.m.value, H = Math.min(60, 146 / Math.pow(2, Math.max(n - 1, 0)));   // altura da carga reduzida para caber
     const s = estado(n, u, H), bw = (64 + 0.25 * m) * SC, bh = 56 * SC;
-    const P = m * G, F = P / Math.pow(2, n), escala = 0.35 / 800;   // 800 N = 0,35 m
-    // polias móveis: sobem e giram com a corda que passa por elas
+        // polias móveis: sobem e giram com a corda que passa por elas
     for (let k = 1; k <= n; k++) {
       const r = est.rodas[k]; r.g.position.set(WX(s.xs[k]), WY(s.ys[k]), est.zk(k));
       r.raio.rotation.z = -(Math.pow(2, k - 1) * H * u * SC) / RW;
-      const pl = est.pulos[k]; pl.position.set(WX(s.xs[k] - RP) - 0.2, WY(s.ys[k]) + 0.28, est.zk(k) + 0.05);
     }
     const zf = 0;
     est.fixa.g.position.set(WX(s.xf), WY(s.yf), zf);
@@ -268,14 +305,29 @@
     }
     est.carga.position.set(WX(xl), WY(s.loadTop) - bh / 2, zl);
     est.mao.position.set(WX(s.xf + RP), WY(s.handY), zf);
-    // forças (proporcionais): P no centro inferior da carga; F na mão
+    // forças em múltiplos de F: tensões nas cordas de cada polia, peso da carga e força da mão
     const origemP = new THREE.Vector3(WX(xl), WY(s.loadTop) - bh - 0.02, zl);
-    est.setaP.position.copy(origemP); est.setaP.setLength(P * escala, Math.min(0.08, P * escala * 0.3), 0.04);
+    est.setaP.position.copy(origemP);
     const origemF = new THREE.Vector3(WX(s.xf + RP) + 0.12, WY(s.handY), zf);
-    est.setaF.position.copy(origemF); est.setaF.setLength(F * escala, Math.min(0.08, Math.max(F * escala, 0.012) * 0.3), 0.03);
-    est.rotP.position.set(WX(xl) + 0.5, origemP.y - P * escala / 2, zl);
-    est.rotF.position.set(origemF.x + 0.5, origemF.y - F * escala / 2, zf);
+    est.setaF.position.copy(origemF);
+    est.rotP.position.set(WX(xl) + 0.5, origemP.y - est.Lp / 2, zl);
+    est.rotF.position.set(origemF.x + 0.3, origemF.y - est.LF / 2, zf);
     est.rotuloCarga.position.set(WX(xl), WY(s.loadTop) - bh / 2, zl + 0.3);
+    const dx = 0.075;
+    for (let k = 1; k <= n; k++) {
+      const t = est.ten[k], z = est.zk(k), y = WY(s.ys[k]), xe = WX(s.xs[k] - RP) - dx, xd = WX(s.xs[k] + RP) + dx, L = t.c * est.LF;
+      t.upL.position.set(xe, y, z); t.upR.position.set(xd, y, z);
+      t.lL.position.set(xe - 0.14, y + L + 0.05, z + 0.05); t.lR.position.set(xd + 0.14, y + L + 0.05, z + 0.05);
+      if (t.dn) { t.dn.position.set(WX(s.xs[k]) + dx, y, z); t.lD.position.set(WX(s.xs[k]) + 0.2, y - 2 * L - 0.04, z + 0.05); }
+    }
+    // subida da carga (h) e descida da corda (2ⁿ·h), a partir das posições iniciais
+    const s0 = estado(n, 0, H), subida = H * u * SC, descida = Math.pow(2, n) * H * u * SC;
+    const xH = WX(xl) - bw / 2 - 0.3, yH0 = WY(s0.loadTop) - bh, xD = WX(s.xf + RP) + 0.55, yD0 = WY(s0.handY);
+    est.refH.position.set(xH, yH0, zl); est.refD.position.set(xD, yD0, zf);
+    est.cotaH.visible = est.lH.visible = subida > 0.02;
+    est.cotaD.visible = est.lD.visible = descida > 0.02;
+    if (subida > 0.02) { est.cotaH.position.set(xH, yH0, zl); est.cotaH.setDirection(new THREE.Vector3(0, 1, 0)); est.cotaH.setLength(subida, Math.min(0.07, subida * 0.4), 0.04); est.lH.position.set(xH - 0.16, yH0 + subida / 2, zl); }
+    if (descida > 0.02) { est.cotaD.position.set(xD, yD0, zf); est.cotaD.setDirection(new THREE.Vector3(0, -1, 0)); est.cotaD.setLength(descida, Math.min(0.07, descida * 0.4), 0.04); est.lD.position.set(xD + 0.18, yD0 - descida / 2, zf); }
     atualizaPainel(n, m, u, tt % DUR);
   }
 
