@@ -26,6 +26,7 @@
 .ce-cmp .rd-fill { transition: none; }
 .ce-cmp .rd-fill.need { background: var(--blue); }
 </style>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css">
 </head>
 <body>
 <header class="top">
@@ -145,22 +146,22 @@
   <h2>A gravidade como força centrípeta</h2>
   <div class="rd-eqs">
     <div class="rd-eq"><h3>1. Gravitação universal</h3>
-      <div class="rd-formula">F<sub>g</sub> = G · M · m / r²</div>
+      <div class="rd-formula" data-tex="F_g=\dfrac{G\,M\,m}{r^2}">F<sub>g</sub> = G · M · m / r²</div>
       <p>Newton: o Sol (massa M) atrai o planeta (massa m) com uma força que cai com o quadrado da distância. G = 6,67 × 10⁻¹¹ N·m²/kg².</p></div>
     <div class="rd-eq"><h3>2. Força centrípeta</h3>
-      <div class="rd-formula">F<sub>cp</sub> = m · v² / r = m · ω² · r</div>
+      <div class="rd-formula" data-tex="F_{cp}=\dfrac{m\,v^2}{r}=m\,\omega^2 r">F<sub>cp</sub> = m · v² / r = m · ω² · r</div>
       <p>Para andar em círculo, o corpo precisa de uma força resultante apontando para o centro. Ela não é uma força nova: alguém tem que fazer esse papel.</p></div>
     <div class="rd-eq"><h3>3. Órbita circular</h3>
-      <div class="rd-formula">G·M·m / r² = m·v² / r &nbsp;⇒&nbsp; v = √(G·M / r)</div>
+      <div class="rd-formula" data-tex="\dfrac{G\,M\,m}{r^2}=\dfrac{m\,v^2}{r}\;\Rightarrow\; v=\sqrt{\dfrac{G\,M}{r}}">G·M·m / r² = m·v² / r &nbsp;⇒&nbsp; v = √(G·M / r)</div>
       <p>Na órbita, a gravidade é a força centrípeta. A massa m do planeta cancela: Júpiter e uma pedrinha na mesma distância andam com a mesma velocidade. Para a Terra, <span class="n">v ≈ 29,8 km/s</span>.</p></div>
     <div class="rd-eq"><h3>4. Período</h3>
-      <div class="rd-formula">T = 2·π·r / v</div>
+      <div class="rd-formula" data-tex="T=\dfrac{2\pi r}{v}">T = 2·π·r / v</div>
       <p>Uma volta completa tem comprimento 2πr. Com r = 1,50 × 10¹¹ m e v = 29,8 km/s, sai T ≈ 365 dias.</p></div>
     <div class="rd-eq"><h3>5. 3ª lei de Kepler</h3>
-      <div class="rd-formula">T² / r³ = 4·π² / (G·M)</div>
+      <div class="rd-formula" data-tex="\dfrac{T^2}{r^3}=\dfrac{4\pi^2}{G\,M}">T² / r³ = 4·π² / (G·M)</div>
       <p>Juntando 3 e 4: a razão T²/r³ é a mesma para todos os planetas do Sol. Medindo T em anos e r em UA, ela vale 1.</p></div>
     <div class="rd-eq"><h3>6. Velocidade de escape</h3>
-      <div class="rd-formula">v<sub>esc</sub> = √(2·G·M / r) = √2 · v<sub>circular</sub></div>
+      <div class="rd-formula" data-tex="v_{\text{esc}}=\sqrt{\dfrac{2\,G\,M}{r}}=\sqrt{2}\,v_{\text{circular}}">v<sub>esc</sub> = √(2·G·M / r) = √2 · v<sub>circular</sub></div>
       <p>Abaixo da circular, a gravidade sobra e o planeta cai para dentro (elipse). Acima, falta gravidade e ele se afasta (elipse maior). A partir de √2, não volta mais.</p></div>
   </div>
 </div>
@@ -417,6 +418,8 @@ document.querySelectorAll('#presets button').forEach(b=>b.addEventListener('clic
 reset();rotUpdate();requestAnimationFrame(loop);
 })();
 </script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
+<script defer src="tex.js"></script>
 <script src="site.js"></script>
 </body>
 </html>

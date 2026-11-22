@@ -10,6 +10,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Young+Serif&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400;1,700&family=JetBrains+Mono:wght@400;600&display=swap">
 <link rel="stylesheet" href="simulacao.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css">
 </head>
 <body>
 <header class="top">
@@ -119,22 +120,22 @@
   <h2>Como os números saem</h2>
   <div class="rd-eqs">
     <div class="rd-eq"><h3>1. Empuxo</h3>
-      <div class="rd-formula">F = ṁ · v<sub>e</sub> &nbsp;&nbsp; v<sub>e</sub> = I<sub>sp</sub> · g₀</div>
+      <div class="rd-formula" data-tex="F=\dot m\,v_e\qquad v_e=I_{sp}\,g_0">F = ṁ · v<sub>e</sub> &nbsp;&nbsp; v<sub>e</sub> = I<sub>sp</sub> · g₀</div>
       <p>O jato empurra o carro com força igual à vazão de massa vezes a velocidade de saída do gás. Para pairar, F tem que igualar o peso m·g.</p></div>
     <div class="rd-eq"><h3>2. Velocidade de saída</h3>
-      <div class="rd-formula">v<sub>e,máx</sub> = √(2·c<sub>p</sub>·T₀) ≈ <span class="n">767 m/s</span></div>
+      <div class="rd-formula" data-tex="v_{e,\text{máx}}=\sqrt{2\,c_p\,T_0}\approx 767\ \text{m/s}">v<sub>e,máx</sub> = √(2·c<sub>p</sub>·T₀) ≈ <span class="n">767 m/s</span></div>
       <p>Sem combustão, a única energia é a entalpia do ar a temperatura ambiente. Isso limita o I<sub>sp</sub> a uns 78 s; um foguete químico passa de 300 s.</p></div>
     <div class="rd-eq"><h3>3. Tempo máximo pairando</h3>
-      <div class="rd-formula">t = I<sub>sp</sub> · ln(m₀ / m<sub>f</sub>)</div>
+      <div class="rd-formula" data-tex="t=I_{sp}\,\ln\dfrac{m_0}{m_f}">t = I<sub>sp</sub> · ln(m₀ / m<sub>f</sub>)</div>
       <p>Sai de m·g = −ṁ·v<sub>e</sub>. Como o carro fica mais leve ao gastar ar, a vazão cai com o tempo: é a equação do foguete aplicada ao pairar.</p></div>
     <div class="rd-eq"><h3>4. Potência do jato</h3>
-      <div class="rd-formula">P = ½ · F · v<sub>e</sub></div>
+      <div class="rd-formula" data-tex="P=\tfrac{1}{2}\,F\,v_e">P = ½ · F · v<sub>e</sub></div>
       <p>Pairar 2,2 t com ar a ~690 m/s exige uns 7 MW de jato, dez vezes a potência dos motores elétricos. Por isso só dura segundos.</p></div>
     <div class="rd-eq"><h3>5. Volume do tanque</h3>
-      <div class="rd-formula">V = Z · m · R · T / p</div>
+      <div class="rd-formula" data-tex="V=\dfrac{Z\,m\,R\,T}{p}">V = Z · m · R · T / p</div>
       <p>Gás real: a 700 bar o ar é ~30% menos compressível que o ideal (Z ≈ 1,3). O resultado bate com um tanque do tamanho dos bancos traseiros.</p></div>
     <div class="rd-eq"><h3>6. Energia para recarregar</h3>
-      <div class="rd-formula">W ≥ m · R · T · ln(p / p₀)</div>
+      <div class="rd-formula" data-tex="W\ge m\,R\,T\,\ln\dfrac{p}{p_0}">W ≥ m · R · T · ln(p / p₀)</div>
       <p>Mínimo teórico (compressão isotérmica). O compressor de bordo tira essa energia da bateria; na prática, gasta perto do dobro.</p></div>
   </div>
 </div>
@@ -378,6 +379,8 @@ $('reset').addEventListener('click',resetSim);
 updateReadout();resetSim();requestAnimationFrame(loop);
 })();
 </script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
+<script defer src="tex.js"></script>
 <script src="site.js"></script>
 </body>
 </html>
