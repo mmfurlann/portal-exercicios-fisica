@@ -10,6 +10,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Young+Serif&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400;1,700&family=JetBrains+Mono:wght@400;600&display=swap">
 <link rel="stylesheet" href="simulacao.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css">
 </head>
 <body>
 <header class="top">
@@ -149,10 +150,10 @@
   <h2>Por que a altura mínima é 2,5 R?</h2>
   <div class="rd-eqs">
     <div class="rd-eq"><h3>1. Força no topo</h3>
-      <div class="rd-formula">mg + N = mv²/R &nbsp;⇒&nbsp; v<sub>mín</sub> = √(gR)</div>
+      <div class="rd-formula" data-tex="m g+N=\dfrac{m v^2}{R}\;\Rightarrow\; v_{\text{mín}}=\sqrt{g R}">mg + N = mv²/R &nbsp;⇒&nbsp; v<sub>mín</sub> = √(gR)</div>
       <p>A pista exerce a força normal perpendicularmente à superfície, mesmo com o carrinho em repouso na rampa. No topo, peso e normal apontam para o centro do loop. No limite de contato, N = 0 e só o peso fornece a aceleração centrípeta.</p></div>
     <div class="rd-eq"><h3>2. Energia entre o ponto inicial e o topo</h3>
-      <div class="rd-formula">mgh = mg(2R) + ½mv² &nbsp;⇒&nbsp; h<sub>mín</sub> = 2,5 R</div>
+      <div class="rd-formula" data-tex="m g h=m g(2R)+\tfrac{1}{2}m v^2\;\Rightarrow\; h_{\text{mín}}=2{,}5\,R">mgh = mg(2R) + ½mv² &nbsp;⇒&nbsp; h<sub>mín</sub> = 2,5 R</div>
       <p>Em repouso na altura h, o carrinho tem energia mgh. No topo, a 2R da base, precisa conservar energia cinética suficiente para manter contato.</p></div>
   </div>
   <p class="rd-sub">Mude a gravidade para comparar. A velocidade mínima no topo muda, mas a altura mínima para um mesmo raio continua igual.</p>
@@ -805,6 +806,8 @@ updateSetup();
 new ResizeObserver(render).observe(canvas);
 })();
 </script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
+<script defer src="tex.js"></script>
 <script src="site.js"></script>
 </body>
 </html>
