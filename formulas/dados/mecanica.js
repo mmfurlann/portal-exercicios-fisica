@@ -165,10 +165,10 @@ const L = [
 
 { id: 'graf-areas', sub: 'escalar', topico: 'Gráficos do movimento', top: true,
   nome: 'Propriedades dos gráficos do movimento', tex: T`\Delta s \overset{N}{=} \text{área sob } v \times t`,
-  alt: [[T`Inclinação do gráfico s × t`, T`v = \dfrac{\Delta s}{\Delta t} \overset{N}{=} \tg\alpha`], [T`Inclinação do gráfico v × t`, T`a = \dfrac{\Delta v}{\Delta t} \overset{N}{=} \tg\alpha`], [T`Área sob a × t`, T`\Delta v \overset{N}{=} \text{área}`]],
+  alt: [[T`Secante no gráfico s × t`, T`v_m = \dfrac{\Delta s}{\Delta t}`], [T`Tangente no gráfico s × t`, T`v = \dfrac{ds}{dt}`], [T`Secante no gráfico v × t`, T`a_m = \dfrac{\Delta v}{\Delta t}`], [T`Tangente no gráfico v × t`, T`a = \dfrac{dv}{dt}`], [T`Área sob a × t`, T`\Delta v \overset{N}{=} \text{área}`]],
   vars: [[T`\overset{N}{=}`, 'numericamente igual (nas unidades dos eixos)', ''], [T`\alpha`, 'ângulo de inclinação da reta (ou da tangente) no gráfico', '°']],
   uso: T`Para tirar deslocamento, velocidade ou aceleração direto do gráfico, inclusive quando o movimento não é uniforme nem uniformemente variado.`,
-  val: T`Áreas abaixo do eixo do tempo contam como negativas (deslocamento no sentido contrário). Para curvas, a inclinação da reta tangente dá o valor instantâneo.`,
+  val: T`Calcule a inclinação com os valores e as unidades dos eixos, não com o ângulo desenhado. A área abaixo do eixo do tempo contribui negativamente: em v × t é deslocamento negativo; em a × t, variação negativa da velocidade. Para curvas, a inclinação da tangente dá o valor instantâneo.`,
   ex: [T`A velocidade cresce uniformemente de 0 a 20 m/s em 4 s. Quanto o móvel andou?`, T`$\Delta s = \text{área do triângulo} = \dfrac{4 \cdot 20}{2} = 40\ \text{m}$`],
   ver: [['Gráficos e áreas', 'graficos.html']], tags: 'grafico area inclinacao tangente s x t v x t' },
 

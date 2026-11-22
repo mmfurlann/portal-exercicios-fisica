@@ -168,7 +168,7 @@
 <div class="rd-panel">
   <p class="rd-eyebrow">O outro movimento circular da Terra</p>
   <h2>Rotação: quem está no equador anda a 1 670 km/h</h2>
-  <p class="rd-sub">Cada ponto da superfície descreve um círculo em torno do eixo, de raio R·cos φ. Parte da gravidade é gasta como força centrípeta, e o peso aparente fica um pouco menor. E se o dia fosse bem mais curto?</p>
+  <p class="rd-sub">Cada ponto da superfície descreve um círculo em torno do eixo, de raio R·cos φ. A diferença entre o peso e a força normal fornece a resultante centrípeta, então a balança indica um valor um pouco menor que mg. E se o dia fosse bem mais curto?</p>
   <div class="rd-acc">
     <div class="rd-stage ce-rot"><canvas id="rot" aria-label="Terra girando com um ponto na latitude escolhida"></canvas></div>
     <div class="rd-ctrl">
@@ -253,7 +253,7 @@ function readout(){
 function setMsg(t,c){const m=$('msg');m.textContent=t;m.className='rd-msg '+(c||'')}
 function launchMsg(){
   if(Math.abs(P.f-1)<0.005) setMsg('Órbita circular: a gravidade é exatamente a força centrípeta que o círculo pede (as duas barras empatam).','good');
-  else if(P.f<1) setMsg('Abaixo da velocidade circular: a gravidade é maior que m·v²/r, o planeta cai para dentro e a órbita vira elipse. O ponto de partida é o afélio.','warn');
+  else if(P.f<1) setMsg('Abaixo da velocidade circular: a gravidade é maior que a força necessária para uma órbita circular (m·v²/r), o planeta cai para dentro e a órbita vira elipse. O ponto de partida é o afélio.','warn');
   else if(P.bound) setMsg('Acima da velocidade circular: a gravidade não dá conta de curvar tanto, o planeta se afasta e a órbita vira elipse. O ponto de partida é o periélio.','warn');
   else setMsg('Velocidade de escape: com v ≥ √2·v_circular, a gravidade não consegue mais trazer o planeta de volta.','bad');
 }
