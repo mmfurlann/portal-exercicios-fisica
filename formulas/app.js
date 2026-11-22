@@ -251,6 +251,9 @@ window.addEventListener('afterprint', () => { opened.forEach(d => d.open = false
 /* PDF só para quem se cadastrou com e-mail. O arquivo pdf/ok.json fica atrás do Cloudflare Access:
    quem já confirmou o e-mail recebe o JSON; quem não confirmou recebe um redirecionamento para a tela de entrada.
    No teste local (sem Access) tudo aparece liberado; para ver o estado bloqueado, use ?simular=bloqueado. */
+/* Chave geral do PDF: enquanto o Cloudflare Access de /pdf não estiver configurado, o botão fica escondido e o
+   Ctrl+P imprime só um aviso de "em breve". Para religar, troque para true. */
+const PDF_ATIVO = false;
 let pdfLiberado = false;
 const local = /^(localhost|127\.0\.0\.1|\[::1\])$/.test(location.hostname);
 const checaPdf = local && new URLSearchParams(location.search).get('simular') === 'bloqueado' ? Promise.resolve(false)
@@ -266,7 +269,9 @@ function abrirCadastro() {
   link.href = 'pdf/?volta=' + encodeURIComponent(location.hash); // depois do cadastro, volta para esta mesma vista
   if (dlg.showModal) dlg.showModal(); else location.href = link.href;
 }
-checaPdf.then(ok => {
+if (!PDF_ATIVO) document.documentElement.classList.add('pdf-desligado');
+else checaPdf.then(ok => {
+  $('print').hidden = false;
   setPdf(ok);
   const q = new URLSearchParams(location.search);
   if (!q.has('pdf')) return;            // chegou de pdf/ depois do cadastro: gera o PDF

@@ -148,6 +148,8 @@
 .fb-dlg-acts { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 4px; }
 .fb-dlg-nota { font-size: var(--fs-xs); }
 .fb-printlock { display: none; }
+.fb-print[hidden] { display: none !important; }
+html.pdf-desligado .fb-pl-ativo, html:not(.pdf-desligado) .fb-pl-breve { display: none; }
 
 /* impressão / PDF: papel branco com a identidade do site (céu com a logo no topo, fontes e cores da marca),
    numeração no rodapé e quebras de página que não separam título, equação e ilustração */
