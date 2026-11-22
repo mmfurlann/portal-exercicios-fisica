@@ -136,16 +136,67 @@
 .fb-toast.on { opacity: 1; transform: translate(-50%, 0); }
 @media (prefers-reduced-motion: reduce) { .fb-card.flash { animation: none; } .fb-toast { transition: none; } }
 
-/* impressão: fundo branco, sem navegação nem botões */
+/* cabeçalho que só aparece na impressão (formulas.html) */
+.fb-printhead { display: none; }
+
+/* impressão / PDF: papel branco com a identidade do site (céu com a logo no topo, fontes e cores da marca),
+   numeração no rodapé e quebras de página que não separam título, equação e ilustração */
+@page { size: A4; margin: 14mm 13mm 16mm;
+  @bottom-left { content: "A Tal da Física · Biblioteca de Fórmulas"; font: 8.5pt "Atkinson Hyperlegible", sans-serif; color: #5a5670; }
+  @bottom-right { content: "página " counter(page) " de " counter(pages); font: 8.5pt "JetBrains Mono", monospace; color: #5a5670; } }
 @media print {
-  :root { --paper: #fff; --paper-2: #f3f3f3; --card: #fff; --ink: #111; --ink-soft: #444; --grid: #bbb; --accent: #b36412; --accent-ink: #8a4a08; --blue: #1d4f86; }
-  body { background: #fff !important; color: #111; }
-  body::before, header.top, footer, .fb-side, .fb-intro, .fb-print, .fb-acts, .fb-subnav, .fb-toast, .fb-letters { display: none !important; }
+  :root { --paper: #fff; --paper-2: #f6f1e7; --card: #fff; --grid: #d6ccb8; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  html, body { background: #fff !important; }
+  body { font-size: 10pt; line-height: 1.45; }
+  body::before, header.top, footer, .fb-side, .fb-intro, .fb-print, .fb-acts, .fb-subnav, .fb-toast, .fb-letters, .fb-see { display: none !important; }
+  .wrap { padding: 0 !important; max-width: none; }
+
+  /* faixa de céu com a logo, como o cabeçalho do site */
+  .fb-printhead { display: flex; align-items: center; gap: 14px; background: #07050c; color: #f4efe3; border-radius: 4px;
+    padding: 10px 18px 10px 12px; margin: 0 0 14px; border-bottom: 3px solid #f99f29; }
+  .fb-printhead img { width: 96px; height: auto; border-radius: 6px; } /* o fundo do arquivo já é o céu: some na faixa sem precisar de máscara */
+  .fb-printhead p { margin: 0; }
+  .fb-ph-site { font-family: var(--mono); font-size: 7.5pt; letter-spacing: .14em; text-transform: uppercase; color: #f99f29; }
+  .fb-ph-title { font-family: var(--display); font-size: 21pt; line-height: 1.1; }
+  .fb-ph-meta { font-size: 8.5pt; color: color-mix(in srgb, #f4efe3 78%, transparent); margin-top: 3px !important; }
+
   .fb-layout { display: block; padding: 0; }
-  .fb-card { box-shadow: none; break-inside: avoid; padding: 10px 12px; }
-  .fb-ex summary::before { content: ""; }
-  .fb-eq, .fb-sol { background: #f6f1ea; }
-  .fb-sec > h3 { break-after: avoid; }
+  .fb-main { gap: 10px; }
+  .fb-bar { border-bottom: 1.5px solid var(--ink); padding-bottom: 6px; }
+  .fb-bar h2 { font-size: 18pt; }
+  .fb-count { font-size: 8pt; }
+  .fb-areaintro { font-size: 9.5pt; max-width: none; }
+  .fb-sec { gap: 8px; }
+  .fb-sec + .fb-sec { margin-top: 10px; }
+  .fb-sec > h3 { font-size: 14pt; padding-bottom: 4px; border-bottom: 1.5px solid var(--ink); break-after: avoid; }
+  .fb-sec > h3::before { content: ""; display: inline-block; width: 26px; height: 14px; margin-right: 8px; vertical-align: -1px; /* órbita da marca, como no site */
+    background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 26 14'%3E%3Cg fill='none' stroke='%23d9770f' stroke-width='1.4'%3E%3Cellipse cx='13' cy='7' rx='12' ry='4' transform='rotate(-18 13 7)'/%3E%3Cellipse cx='13' cy='7' rx='12' ry='4' transform='rotate(18 13 7)'/%3E%3C/g%3E%3Ccircle cx='13' cy='7' r='2.2' fill='%231fa9c6'/%3E%3C/svg%3E") no-repeat center / contain; }
+  .fb-topic { font-size: 7.5pt; margin-top: 2px; break-after: avoid; }
+
+  /* cartão: pode quebrar entre páginas, mas nunca separa o título da equação nem corta a ilustração */
+  /* em bloco (e não em grid), para o motor de impressão respeitar as quebras de página */
+  .fb-card { display: block; box-shadow: none; padding: 9px 12px; border-color: var(--grid); break-inside: auto; }
+  .fb-card > * + * { margin-top: 7px; }
+  /* no papel, a figura fica à esquerda e o enunciado e a resolução à direita: o exemplo ocupa metade da altura */
+  .fb-ex > div { display: grid; grid-template-columns: 62mm minmax(0, 1fr); gap: 5px 12px; align-items: start; }
+  .fb-ex > div > .fb-fig { grid-row: 1 / span 3; }
+  .fb-ex > div > :not(.fb-fig) { grid-column: 2; }
+  .fb-sec, .fb-main { display: block; } .fb-sec > * + * { margin-top: 8px; } .fb-main > * + * { margin-top: 10px; }
+  .fb-head { break-after: avoid; }
+  .fb-head h4 { font-size: 11.5pt; }
+  .fb-tags { margin-top: 3px; } .fb-tag { font-size: 6.5pt; }
+  .fb-eq { background: color-mix(in srgb, #f99f29 10%, #fff); border-left: 3px solid #f99f29; padding: 4px 12px; font-size: 10.5pt; break-inside: avoid; break-after: avoid; }
+  .fb-alt > div { padding: 3px 0; break-inside: avoid; }
+  .fb-vars { font-size: 9pt; gap: 1px 12px; break-inside: avoid; }
+  .fb-info { font-size: 9pt; gap: 5px; }
+  .fb-valid { padding: 5px 10px; break-inside: avoid; }
+  .fb-ex { padding-top: 6px; }
+  .fb-ex { display: block; break-inside: avoid; page-break-inside: avoid; } /* o exemplo inteiro (título, figura, enunciado e resolução) fica numa página só */
+  .fb-ex summary { display: block; font-size: 10pt; break-after: avoid; page-break-after: avoid; }
+  .fb-ex summary::before, .fb-ex[open] summary::before { content: none; }
+  .fb-ex > div { font-size: 9pt; gap: 4px; }
+  .fb-sol { background: var(--paper-2); padding: 4px 10px; break-inside: avoid; }
+  .fb-index { font-size: 9pt; }
 }
 
 /* ilustrações dos exemplos resolvidos (formulas/ilustracoes.js)
@@ -174,4 +225,10 @@
 .fb-fig .fq { fill: var(--paper); } /* máscara do fundo da figura: some o fio por trás de componentes */
 .fb-fig .tk { fill: var(--ink); } .fb-fig .ts { fill: var(--ink-soft); } .fb-fig .ta { fill: var(--accent-ink); } .fb-fig .tb { fill: var(--blue); }
 .fb-fig .tg { fill: var(--ok); } .fb-fig .tr { fill: var(--bad); } .fb-fig .tn { fill: var(--ink); } .fb-fig .tp { fill: #f4efe6; }
-@media print { .fb-fig { break-inside: avoid; --fig-a: #b35a0a; } .fb-fig text { stroke: #fff; } }
+@media print {
+  .fb-fig { break-inside: avoid; padding: 6px 8px; background: #fff; }
+  .fb-fig svg { max-width: 100% !important; } /* ocupa a coluna de 62 mm: rótulos com ~8 pt */
+  .fb-fig text { stroke: #fff; }
+  /* o volume usa gradientes translúcidos, que alguns motores de impressão achatam; no papel os objetos ficam em cor chapada */
+  .fb-fig [fill^="url("] { display: none; }
+}

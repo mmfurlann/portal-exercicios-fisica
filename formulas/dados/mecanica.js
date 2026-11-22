@@ -585,7 +585,7 @@ const L = [
   vars: [[T`\vec Q`, 'quantidade de movimento', 'kg·m/s'], [T`m`, 'massa', 'kg'], [T`\vec v`, 'velocidade', 'm/s']],
   uso: T`Base de colisões, explosões e recuos.`,
   val: T`Mecânica clássica. É vetorial: tem a direção e o sentido da velocidade, e no sistema as quantidades somam como vetores.`,
-  ex: [T`Uma bola de 0,4 kg a 15 m/s.`, T`$Q = 0{,}4 \cdot 15 = 6\ \text{kg·m/s}$`],
+  ex: [T`Uma bola de 0,4 kg a 15 m/s.`, T`$Q = 0{,}4 \cdot 15 = 6\ \text{kg}\cdot\text{m/s}$`],
   tags: 'quantidade de movimento momento linear' },
 
 { id: 'impulso', sub: 'impulso', topico: 'Impulso',
@@ -594,7 +594,7 @@ const L = [
   vars: [[T`\vec I`, 'impulso', 'N·s'], [T`\vec F`, 'força', 'N'], [T`\Delta t`, 'tempo de atuação', 's']],
   uso: T`Para o efeito de uma força que age por um certo tempo: chutes, batidas, freadas.`,
   val: T`A forma $F\Delta t$ só vale para força constante. Para força variável, use a área do gráfico ou a força média.`,
-  ex: [T`Uma força de 200 N age por 0,05 s.`, T`$I = 200 \cdot 0{,}05 = 10\ \text{N·s}$`],
+  ex: [T`Uma força de 200 N age por 0,05 s.`, T`$I = 200 \cdot 0{,}05 = 10\ \text{N}\cdot\text{s}$`],
   ver: [['Gráficos e áreas', 'graficos.html']], tags: 'impulso forca tempo' },
 
 { id: 'teorema-impulso', sub: 'impulso', topico: 'Impulso', top: true,
@@ -602,7 +602,7 @@ const L = [
   vars: [[T`\vec I_R`, 'impulso da força resultante', 'N·s'], [T`\Delta\vec Q`, 'variação da quantidade de movimento', 'kg·m/s']],
   uso: T`Para forças médias em choques rápidos e para entender airbags e colchões (mais tempo, menos força).`,
   val: T`Sempre. É vetorial: se a velocidade inverte de sentido, as quantidades se somam em módulo.`,
-  ex: [T`Uma bola de 0,5 kg bate a 20 m/s numa parede e volta a 20 m/s. O contato dura 0,01 s.`, T`$\Delta Q = 0{,}5 \cdot 20 - (-0{,}5 \cdot 20) = 20\ \text{N·s} \Rightarrow F_m = \dfrac{20}{0{,}01} = 2\,000\ \text{N}$`],
+  ex: [T`Uma bola de 0,5 kg bate a 20 m/s numa parede e volta a 20 m/s. O contato dura 0,01 s.`, T`$\Delta Q = 0{,}5 \cdot 20 - (-0{,}5 \cdot 20) = 20\ \text{N}\cdot\text{s} \Rightarrow F_m = \dfrac{20}{0{,}01} = 2\,000\ \text{N}$`],
   tags: 'teorema impulso forca media choque airbag' },
 
 { id: 'conservacao-q', sub: 'impulso', topico: 'Conservação da quantidade de movimento', top: true,
@@ -740,7 +740,7 @@ const L = [
   vars: [[T`M`, 'momento (torque) em relação a um polo O', 'N·m'], [T`F`, 'força', 'N'], [T`b`, 'braço: distância de O à linha de ação da força', 'm'], [T`d`, 'distância de O ao ponto de aplicação', 'm'], [T`\theta`, 'ângulo entre a força e a reta que liga O ao ponto de aplicação', '°']],
   uso: T`Para a tendência de uma força girar um corpo: chaves, portas, gangorras, alavancas.`,
   val: T`Convenção usual: anti-horário positivo, horário negativo. Força cuja linha passa pelo polo tem momento nulo.`,
-  ex: [T`Uma força de 20 N, perpendicular a uma chave de 30 cm.`, T`$M = 20 \cdot 0{,}3 = 6\ \text{N·m}$`],
+  ex: [T`Uma força de 20 N, perpendicular a uma chave de 30 cm.`, T`$M = 20 \cdot 0{,}3 = 6\ \text{N}\cdot\text{m}$`],
   tags: 'momento torque binario chave braco' },
 
 { id: 'equilibrio-extenso', sub: 'estatica', topico: 'Equilíbrio do corpo extenso', top: true,

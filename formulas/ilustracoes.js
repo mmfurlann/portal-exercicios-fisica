@@ -29,8 +29,9 @@ function mathTxt(t) {
     last = m.index + m[0].length;
     const base = m[1], sub = m[2], antes = s.slice(0, m.index), depois = s.slice(last);
     const letraSimples = base.length === 1 || (base.length === 2 && base[0] === 'Δ');
+    const artigoFimLinha = /^[aeo]$/.test(base) && sub === undefined && depois === '' && /\p{L}\s$/u.test(antes);   // 'para a' no fim de uma linha quebrada
     const unidadeParen = /\(\s*$/.test(antes) && /^\s*\)/.test(depois);
-    const variavel = letraSimples && !unidadeParen && !/([\d⁰-⁹\/·×^°])\s?$/.test(antes) && !/[°]$/.test(antes)
+    const variavel = letraSimples && !unidadeParen && !artigoFimLinha && !/([\d⁰-⁹\/·×^°])\s?$/.test(antes) && !/[°]$/.test(antes)
       && (sub !== undefined || /^\s*([=≈<>≤≥,.:;)+\-−·→/]|$)|^[′₀-₉⁰-⁹ₓ]|^ \(/.test(depois));
     out += variavel ? `<tspan font-style="italic">${E(base)}</tspan>` : E(base);
     if (sub !== undefined) out += `<tspan dy="0.28em" font-size="74%">${E(sub)}</tspan><tspan dy="-0.28em"> </tspan>`.replace('> </tspan>', '>&#8203;</tspan>');
@@ -498,6 +499,75 @@ D.lente = p => fig(300, p.p == null && p.pp == null ? 170 : 196, F => {
   if (p.escala) F.foraEscala();
   F.legenda(p.t);
 });
+
+// Projetor: preserva a escala perto da lente e comprime o trecho até a tela.
+D.projetor = ({ f, pp }) => {
+  const p = 1 / (1 / f - 1 / pp);
+  const aumento = -pp / p;
+  const [xl, y0, altura] = [111, 89, 25];
+  const escala = 7;
+  const xo = xl - p * escala, foco = f * escala;
+  const [corte, retomada, tela] = [201, 224, 278];
+  const inicioDistante = (corte - xl) / escala;
+  const projecaoVertical = 64 / (-aumento * altura);
+  const slide = [xo, y0 - altura], centro = [xl, y0], paralelo = [xl, slide[1]];
+  const imagem = [tela, y0 - aumento * altura * projecaoVertical];
+  const numero = new Intl.NumberFormat('pt-BR', { maximumFractionDigits: 1 });
+  const texto = (x, y, valor, cor = 'k', peso = 700) =>
+    `<text x="${x}" y="${y}" class="t${cor}" font-size="14" font-weight="${peso}" text-anchor="middle">${mathTxt(valor)}</text>`;
+  const segmento = (a, b, cor) => ln(...a, ...b, cor, 2) + sentido(a, b, cor);
+  const raio = (entrada, inclinacao, cor) => {
+    const y = entrada[1] + inclinacao * inicioDistante;
+    return segmento(slide, entrada, cor)
+      + segmento(entrada, [corte, y], cor)
+      + segmento([retomada, y], imagem, cor);
+  };
+  const marca = (x, y) => ln(x - 4, y + 5, x + 1, y - 5, 's', 1.35)
+    + ln(x + 2, y + 5, x + 7, y - 5, 's', 1.35);
+  const cotaHorizontal = (inicio, fim, y) => ln(inicio, y, fim, y, 's', 1)
+    + ln(inicio, y - 4, inicio, y + 4, 's', 1)
+    + ln(fim, y - 4, fim, y + 4, 's', 1);
+  const vidro = 'M106 38 Q88 89 106 140 H116 Q134 89 116 38 Z';
+  const filtro = `fb-projetor-vidro-${++UID}`;
+
+  return `<svg viewBox="0 0 320 245" xmlns="http://www.w3.org/2000/svg" role="img" focusable="false"
+    aria-label="Projetor com lente convergente. O raio paralelo passa por F′, e o raio central segue em linha reta. A imagem real e invertida se forma na tela a ${numero.format(pp / 100)} m. O trecho distante está fora de escala."
+    style="max-width:448px" class="fb-projetor">
+    <defs><linearGradient id="${filtro}">
+      <stop stop-color="white" stop-opacity=".65"/><stop offset=".28" stop-color="white" stop-opacity=".3"/>
+      <stop offset=".53" stop-color="white" stop-opacity=".04"/><stop offset="1" stop-color="white" stop-opacity=".5"/>
+    </linearGradient></defs>
+    ${re(tela, 42, 10, 120, 's', 'fs', 2, 1)}
+    ${ln(tela + 4, 45, tela + 4, 159, 's', .65)}
+    ${pa(vidro, 'b', 'fw', 1.5)}
+    <path d="${vidro}" fill="url(#${filtro})"/>
+    ${pa('M106 47 Q93 89 106 131', 'b', 'fn', .65)}
+    ${ln(16, y0, corte, y0, 's', 1, '6 4')}
+    ${ln(retomada, y0, 302, y0, 's', 1, '6 4')}
+    ${raio(paralelo, altura / f, 'a')}
+    ${raio(centro, altura / p, 'b')}
+    ${marca(211, y0)}
+    ${seta(xo, y0, xo, slide[1], 'k', 2.6, { h: 8, s: 4 })}
+    ${seta(tela, y0, tela, imagem[1], 'g', 3, { h: 10, s: 5 })}
+    ${[xl - foco, xl, xl + foco].map(x => ci(x, y0, 2.5, 'n', 'fk', 0)).join('')}
+    ${texto(xl - foco, 109, 'F')}
+    ${texto(xl, 111, 'O')}
+    ${texto(xl + foco, 76, 'F′')}
+    ${texto(xo, 51, 'Slide')}
+    ${texto(xl, 27, 'Lente', 'b')}
+    ${texto(tela, 33, 'Tela')}
+    ${texto(252, 177, 'Imagem real', 'g')}
+    ${cotaHorizontal(xl, xl + foco, 152)}
+    ${texto((xl * 2 + foco) / 2, 174, `f = ${numero.format(f)} cm`, 's')}
+    ${cotaHorizontal(xo, xl, 188)}
+    ${texto((xo + xl) / 2, 211, `p ≈ ${numero.format(p)} cm`, 's')}
+    ${cotaHorizontal(xl, corte, 188)}
+    ${cotaHorizontal(retomada, tela, 188)}
+    ${marca(211, 188)}
+    ${texto(192, 211, `p′ = ${numero.format(pp / 100)} m`, 's')}
+    ${texto(160, 234, `A = ${numero.format(aumento).replace('-', '−')} · trecho até a tela fora de escala`, 's', 400)}
+  </svg>`;
+};
 
 /* ---------- PILOTO 3 · circuito simples: gerador real, resistor, motor ---------- */
 // p: E (fem), r (resistência interna), R (resistor), i (corrente), U (tensão nos terminais), motor {e, r}, t (legenda)
@@ -2130,7 +2200,7 @@ const MAPA = {
   'plano-componentes': ['plano', { Pv: 40, Ptv: 20, Nv: 34.6, ang: 30, P: 'P = 40 N', Pt: 'P_t = 20 N', N: 'N ≈ 34,6 N', Pn: 'P_n', m: '4 kg' }],
   'plano-aceleracao': ['plano', { ang: 30, P: 'P', Pt: 'P_t', N: 'N', a: 'a = 5 m/s²', t: 'sem atrito: a = g·sen 30° = 5 m/s² · com μ = 0,2: a ≈ 3,3 m/s²' }],
   'plano-iminencia': ['plano', { ang: 37, P: 'P', Pt: 'P_t', N: 'N', atrito: 'f_e,máx', t: 'na iminência: f_e,máx = P_t ⇒ μ_e = tg 37° = 0,75' }],
-  'equacao-lentes': ['lente', { f: 10, pp: 500, K: 5, xl: 84, y0: 74, ho: 14, o: 'slide', i: 'imagem', ppLab: 'p′ = 5 m', quebra: { x: 176, xI: 262, hI: 52 }, t: ['p = 500/49 ≈ 10,2 cm · A = −p′/p ≈ −49', 'imagem real, invertida e 49× maior que o slide'] }],
+  'equacao-lentes': ['projetor', { f: 10, pp: 500 }],
   'vergencia': ['lente', { f: -50, p: null, K: 1.6, xl: 196, fd: 'f = −50 cm', t: 'V = −2 di: lente divergente' }],
   'fabricantes': ['lente', { f: 20, p: null, K: 2.6, xl: 120, fd: 'f = 20 cm', t: 'biconvexa · R = 20 cm · n = 1,5 → V = 5 di' }],
   'associacao-lentes': ['lente', { f: 50, p: null, K: 1.9, xl: 90, dupla: ['+5 di', '−3 di'], fd: 'f = 50 cm', t: 'lentes encostadas: V = +5 − 3 = +2 di' }],
