@@ -1,0 +1,13 @@
+# macOS
+.DS_Store
+
+# Python
+__pycache__/
+*.pyc
+
+# Manim: renders intermediarios (os finais ficam fora da pasta media/)
+**/media/
+
+# Claude Code: configuracao local e worktrees
+.claude/settings.local.json
+.claude/worktrees/
