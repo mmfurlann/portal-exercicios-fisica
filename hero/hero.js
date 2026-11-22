@@ -50,6 +50,7 @@
         aoEstado: s => {
           if (s.cena !== ultimaCena) {
             ultimaCena = s.cena; const [k, t, n] = CENAS[s.cena];
+            sec.querySelectorAll('.ab3d-trilho button').forEach(b => b.setAttribute('aria-current', b.textContent === k ? 'true' : 'false'));
             elCena.textContent = k; elTitulo.textContent = t; elNota.textContent = n; legenda.dataset.cena = k;
           }
           if (s.leitura !== ultimaLeitura) { ultimaLeitura = s.leitura; elLeitura.textContent = s.leitura; }
@@ -80,6 +81,12 @@
     const aoRolar = () => cena.definirProgresso(progresso());
     addEventListener('scroll', aoRolar, { passive: true });
     aoRolar();
+
+    // trilha de cenas: pula direto para uma cena (a rolagem do navegador faz o resto)
+    sec.querySelectorAll('.ab3d-trilho button').forEach(b => b.addEventListener('click', () => {
+      const total = pista.offsetHeight - palco.offsetHeight, topo = pista.getBoundingClientRect().top + scrollY;
+      scrollTo({ top: topo - alturaCab + parseFloat(b.dataset.p) * total, behavior: reduz ? 'auto' : 'smooth' });
+    }));
 
     const ro = new ResizeObserver(() => { alturaCab = calcCab(); cena.redimensiona(palco.clientWidth, palco.clientHeight); aoRolar(); });
     ro.observe(palco);

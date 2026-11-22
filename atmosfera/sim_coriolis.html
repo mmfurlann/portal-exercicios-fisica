@@ -38,19 +38,47 @@ input[type=range]{width:100%}
     <a class="brand" href="../index.html"><img src="../marca/logo-180.jpg" width="58" height="46" alt=""><span>A Tal da Física</span></a>
     <button class="menu-btn" type="button" aria-expanded="false" aria-controls="menu"><span aria-hidden="true"></span>Menu</button>
     <nav class="links" id="menu" aria-label="Seções">
-      <a href="../index.html#trilhas">Trilhas</a>
-      <a href="../licao.html">Lição</a>
-      <a href="../laboratorio.html" aria-current="page">Laboratório</a>
-      <a href="../graficos.html">Gráficos</a>
-      <!-- link desativado temporariamente: <a href="../formulas.html">Fórmulas</a> -->
-      <a href="../quiz.html">Quiz</a>
-      <a href="../enem.html">ENEM</a>
-      <a href="../fuvest.html">FUVEST</a>
-      <a href="../enem2026.html">ENEM 2026</a>
-      <a href="../eletricidade.html">Eletricidade</a>
-      <a href="../game/index.html">Game</a>
-      <a href="../quest.html">Quest</a>
-      <a href="../constantes.html">Constantes</a>
+      <ul class="nav-groups">
+        <li class="nav-group">
+          <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="nav-aprender">Aprender</button>
+          <ul class="nav-sub" id="nav-aprender">
+            <li><a href="../index.html#trilhas">Trilhas</a></li>
+            <li><a href="../licao.html">Lição</a></li>
+          </ul>
+        </li>
+        <li class="nav-group is-current">
+          <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="nav-explorar">Explorar</button>
+          <ul class="nav-sub" id="nav-explorar">
+            <li><a href="../laboratorio.html" aria-current="page">Laboratório</a></li>
+            <li><a href="../graficos.html">Gráficos</a></li>
+            <li><a href="../calculo-vetorial.html">Vetores</a></li>
+          </ul>
+        </li>
+        <li class="nav-group">
+          <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="nav-praticar">Praticar</button>
+          <ul class="nav-sub" id="nav-praticar">
+            <li><a href="../quiz.html">Quiz</a></li>
+            <li><a href="../eletricidade.html">Eletricidade</a></li>
+            <li><a href="../game/index.html">Game</a></li>
+            <li><a href="../quest.html">Quest</a></li>
+          </ul>
+        </li>
+        <li class="nav-group">
+          <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="nav-vestibulares">Vestibulares</button>
+          <ul class="nav-sub" id="nav-vestibulares">
+            <li><a href="../enem.html">ENEM</a></li>
+            <li><a href="../enem2026.html">ENEM 2026</a></li>
+            <li><a href="../fuvest.html">FUVEST</a></li>
+          </ul>
+        </li>
+        <li class="nav-group">
+          <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="nav-consultar">Consultar</button>
+          <ul class="nav-sub" id="nav-consultar">
+            <li><a href="../formulas.html">Fórmulas</a></li>
+            <li><a href="../constantes.html">Constantes</a></li>
+          </ul>
+        </li>
+      </ul>
     </nav>
   </div>
 </header>

@@ -92,7 +92,7 @@ const L = [
 
 /* ===================== RADIAÇÃO ===================== */
 { id: 'wien', sub: 'radiacao', topico: 'Radiação de corpo negro', top: true,
-  nome: 'Lei de deslocamento de Wien', tex: T`\lambda_{máx}\,T = b \qquad b \approx 2{,}9 \cdot 10^{-3}\ \text{m·K}`,
+  nome: 'Lei de deslocamento de Wien', tex: T`\lambda_{máx}\,T = b \qquad b \approx 2{,}9 \cdot 10^{-3}\ \text{m}\cdot\text{K}`,
   vars: [[T`\lambda_{máx}`, 'comprimento de onda de emissão máxima', 'm'], [T`T`, 'temperatura da superfície', 'K'], [T`b`, 'constante de Wien', 'm·K']],
   uso: T`Temperatura de estrelas pela cor; câmeras térmicas; por que o ferro aquecido vai do vermelho ao branco.`,
   val: T`Corpos aproximadamente negros (estrelas, filamentos). Mais quente: pico em comprimento de onda menor (estrelas azuis são mais quentes que as vermelhas).`,

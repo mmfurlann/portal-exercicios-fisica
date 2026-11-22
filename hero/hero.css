@@ -7,7 +7,7 @@
 .ab3d-pista { position: relative; }
 .ab3d-palco { position: relative; overflow: hidden; height: calc(100svh - var(--cab)); min-height: 540px; max-height: 1100px; background: var(--fundo); }
 /* rolagem cinematográfica só quando a cena 3D está pronta */
-.ab3d[data-estado="pronto"] .ab3d-pista { height: 430svh; }
+.ab3d[data-estado="pronto"] .ab3d-pista { height: 290svh; }
 .ab3d[data-estado="pronto"] .ab3d-palco { position: sticky; top: var(--cab); max-height: none; }
 
 /* fallback estático (e imagem enquanto o 3D carrega): hemisfério iluminado de lado, sem JS */
@@ -67,3 +67,20 @@
   .ab3d-cta { gap: 10px 22px; }
 }
 @media (max-width: 480px) { .ab3d-kicker { font-size: .66rem; letter-spacing: .06em; } .ab3d-lede { font-size: .9rem; } .ab3d-link { padding: 6px 2px; } }
+
+/* trilha de cenas (A–D) e dica de rolagem: só com o 3D pronto */
+.ab3d-trilho, .ab3d-dica { display: none; }
+.ab3d[data-estado="pronto"] .ab3d-trilho { display: flex; flex-direction: column; gap: 8px; position: absolute; right: max(14px, env(safe-area-inset-right)); top: 50%; transform: translateY(-50%);
+  opacity: calc(1 - var(--texto, 1) * 1.6); pointer-events: none; }
+.ab3d[data-estado="pronto"][data-texto="off"] .ab3d-trilho { opacity: 1; pointer-events: auto; }
+.ab3d-trilho button, .ab3d-trilho .pular { width: 38px; height: 38px; display: grid; place-items: center; border-radius: 50%; padding: 0; cursor: pointer; text-decoration: none;
+  font: 600 .8rem var(--mono); color: var(--txt); background: rgba(10,11,17,.62); border: 1px solid rgba(241,238,231,.38); transition: background .2s, border-color .2s; }
+.ab3d-trilho button:hover, .ab3d-trilho .pular:hover { border-color: var(--ac); }
+.ab3d-trilho button[aria-current="true"] { background: var(--ac); border-color: var(--ac); color: #0A0B11; }
+.ab3d-trilho .pular { margin-top: 6px; font-size: 1rem; }
+.ab3d[data-estado="pronto"] .ab3d-dica { display: block; position: absolute; left: 50%; bottom: 20px; transform: translateX(-50%); margin: 0; font: .78rem var(--mono); letter-spacing: .08em; text-transform: uppercase;
+  color: var(--txt2); opacity: var(--texto, 1); pointer-events: none; }
+.ab3d-dica span { display: inline-block; animation: ab3d-saltita 1.6s ease-in-out infinite; }
+@keyframes ab3d-saltita { 50% { transform: translateY(4px); } }
+@media (prefers-reduced-motion: reduce) { .ab3d-dica span { animation: none; } }
+@media (max-width: 960px), (max-aspect-ratio: 1/1) { .ab3d[data-estado="pronto"] .ab3d-dica { display: none; } .ab3d-trilho button, .ab3d-trilho .pular { width: 36px; height: 36px; } }

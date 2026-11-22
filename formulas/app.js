@@ -273,7 +273,12 @@ $('q').addEventListener('keydown', e => { if (e.key === 'Escape') { $('q').value
 window.addEventListener('hashchange', () => { if ($('q').value) $('q').value = ''; route(); });
 // abre os exemplos para a impressão e fecha depois
 let opened = [];
-window.addEventListener('beforeprint', () => { opened = [...document.querySelectorAll('.fb-ex:not([open])')]; opened.forEach(d => d.open = true); });
+window.addEventListener('beforeprint', () => {
+  opened = [...document.querySelectorAll('.fb-ex:not([open])')]; opened.forEach(d => d.open = true);
+  // cabeçalho do PDF: o que está sendo impresso e quando
+  const hoje = new Date().toLocaleDateString('pt-BR', { day: '2-digit', month: 'long', year: 'numeric' });
+  $('print-meta').textContent = [$('view-title').textContent, $('view-count').textContent, 'gerado em ' + hoje].filter(Boolean).join(' · ');
+});
 window.addEventListener('afterprint', () => { opened.forEach(d => d.open = false); opened = []; });
 $('print').addEventListener('click', () => window.print());
 

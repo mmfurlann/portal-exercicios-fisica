@@ -28,7 +28,7 @@ const L = [
 
 { id: 'coulomb', sub: 'eletrostatica', topico: 'Lei de Coulomb', top: true,
   nome: 'Lei de Coulomb', tex: T`F = \dfrac{k\,|Q|\,|q|}{d^2}`,
-  alt: [[T`Constante eletrostática no vácuo`, T`k = \dfrac{1}{4\pi\varepsilon_0} = 9 \cdot 10^9\ \text{N·m}^2/\text{C}^2`]],
+  alt: [[T`Constante eletrostática no vácuo`, T`k = \dfrac{1}{4\pi\varepsilon_0} = 9 \cdot 10^9\ \text{N}\cdot\text{m}^2/\text{C}^2`]],
   vars: [[T`F`, 'força elétrica entre as cargas', 'N'], [T`Q,\ q`, 'cargas', 'C'], [T`d`, 'distância entre elas', 'm'], [T`k`, 'constante eletrostática do meio', 'N·m²/C²']],
   uso: T`Força de atração ou repulsão entre cargas puntiformes.`,
   val: T`Cargas puntiformes (ou esferas, medindo entre os centros) em repouso. Mesmo sinal: repulsão; sinais opostos: atração. Com várias cargas, some as forças vetorialmente.`,

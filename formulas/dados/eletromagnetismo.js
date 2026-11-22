@@ -18,7 +18,7 @@ const L = [
 /* ===================== CAMPO MAGNÉTICO ===================== */
 { id: 'campo-fio', sub: 'campo', topico: 'Fio retilíneo', top: true,
   nome: 'Campo magnético de um fio retilíneo longo', tex: T`B = \dfrac{\mu_0\,i}{2\pi\,d}`,
-  alt: [[T`Permeabilidade do vácuo`, T`\mu_0 = 4\pi \cdot 10^{-7}\ \text{T·m/A}`]],
+  alt: [[T`Permeabilidade do vácuo`, T`\mu_0 = 4\pi \cdot 10^{-7}\ \text{T}\cdot\text{m/A}`]],
   vars: [[T`B`, 'intensidade do campo magnético', 'T (tesla)'], [T`i`, 'corrente no fio', 'A'], [T`d`, 'distância ao fio', 'm']],
   uso: T`Campo em volta de fios: linhas de transmissão, experiência de Oersted.`,
   val: T`Fio muito longo e retilíneo. As linhas de campo são circunferências em volta do fio; o sentido sai pela regra da mão direita (polegar na corrente, dedos dão o sentido de $\vec B$).`,
@@ -57,7 +57,7 @@ const L = [
   vars: [[T`F`, 'força magnética', 'N'], [T`q`, 'carga', 'C'], [T`v`, 'velocidade da carga', 'm/s'], [T`B`, 'campo magnético', 'T'], [T`\theta`, T`ângulo entre $\vec v$ e $\vec B$`, '°']],
   uso: T`Partículas em campos magnéticos: auroras, aceleradores, cinturões de Van Allen.`,
   val: T`A força é perpendicular a $\vec v$ e a $\vec B$ (regra da mão esquerda ou do tapa), por isso **não realiza trabalho** e não muda a rapidez. Carga parada ou movendo-se paralela ao campo: $F = 0$. Para carga negativa, o sentido se inverte.`,
-  ex: [T`Um próton a $10^6$ m/s, perpendicular a um campo de 0,5 T.`, T`$F = 1{,}6 \cdot 10^{-19} \cdot 10^6 \cdot 0{,}5 = 8 \cdot 10^{-14}\ \text{N}$`],
+  ex: [T`Um próton sobe a $10^6$ m/s num campo magnético de 0,5 T que entra no plano da figura.`, T`$F = 1{,}6 \cdot 10^{-19} \cdot 10^6 \cdot 0{,}5 = 8 \cdot 10^{-14}\ \text{N}$. Pela regra da mão direita aplicada a $\vec v \times \vec B$, a força aponta para a esquerda, em direção ao centro da trajetória.`],
   tags: 'forca magnetica lorentz carga velocidade regra da mao' },
 
 { id: 'raio-ciclotron', sub: 'forca', topico: 'Movimento de partículas em campos magnéticos', top: true,

@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="description" content="Gráficos da física em que a área sob a curva representa uma grandeza: deslocamento, variação de velocidade, trabalho, energia, impulso, carga elétrica e trabalho do gás.">
-<title>Gráficos e Áreas · A Tal da Física</title>
+<meta name="description" content="Gráficos da física: a inclinação do gráfico s × t, da velocidade média à derivada, e a área sob a curva como deslocamento, trabalho, impulso, carga e energia.">
+<title>Gráficos: inclinação e área · A Tal da Física</title>
 <link rel="stylesheet" href="estilo.css">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -16,25 +16,114 @@
     <a class="brand" href="index.html"><img src="marca/logo-180.jpg" width="58" height="46" alt=""><span>A Tal da Física</span></a>
     <button class="menu-btn" type="button" aria-expanded="false" aria-controls="menu"><span aria-hidden="true"></span>Menu</button>
     <nav class="links" id="menu" aria-label="Seções">
-      <a href="index.html#trilhas">Trilhas</a>
-      <a href="licao.html">Lição</a>
-      <a href="laboratorio.html">Laboratório</a>
-      <a href="graficos.html" aria-current="page">Gráficos</a>
-      <!-- link desativado temporariamente: <a href="formulas.html">Fórmulas</a> -->
-      <a href="quiz.html">Quiz</a>
-      <a href="enem.html">ENEM</a>
-      <a href="fuvest.html">FUVEST</a>
-      <a href="enem2026.html">ENEM 2026</a>
-      <a href="eletricidade.html">Eletricidade</a>
-      <a href="game/index.html">Game</a>
-      <a href="quest.html">Quest</a>
-      <a href="constantes.html">Constantes</a>
+      <ul class="nav-groups">
+        <li class="nav-group">
+          <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="nav-aprender">Aprender</button>
+          <ul class="nav-sub" id="nav-aprender">
+            <li><a href="index.html#trilhas">Trilhas</a></li>
+            <li><a href="licao.html">Lição</a></li>
+          </ul>
+        </li>
+        <li class="nav-group is-current">
+          <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="nav-explorar">Explorar</button>
+          <ul class="nav-sub" id="nav-explorar">
+            <li><a href="laboratorio.html">Laboratório</a></li>
+            <li><a href="graficos.html" aria-current="page">Gráficos</a></li>
+            <li><a href="calculo-vetorial.html">Vetores</a></li>
+          </ul>
+        </li>
+        <li class="nav-group">
+          <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="nav-praticar">Praticar</button>
+          <ul class="nav-sub" id="nav-praticar">
+            <li><a href="quiz.html">Quiz</a></li>
+            <li><a href="eletricidade.html">Eletricidade</a></li>
+            <li><a href="game/index.html">Game</a></li>
+            <li><a href="quest.html">Quest</a></li>
+          </ul>
+        </li>
+        <li class="nav-group">
+          <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="nav-vestibulares">Vestibulares</button>
+          <ul class="nav-sub" id="nav-vestibulares">
+            <li><a href="enem.html">ENEM</a></li>
+            <li><a href="enem2026.html">ENEM 2026</a></li>
+            <li><a href="fuvest.html">FUVEST</a></li>
+          </ul>
+        </li>
+        <li class="nav-group">
+          <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="nav-consultar">Consultar</button>
+          <ul class="nav-sub" id="nav-consultar">
+            <li><a href="formulas.html">Fórmulas</a></li>
+            <li><a href="constantes.html">Constantes</a></li>
+          </ul>
+        </li>
+      </ul>
     </nav>
   </div>
 </header>
 
 <main id="inicio">
-  <section style="padding-block: 48px 32px;">
+  <section class="slope-sec" id="inclinacao" aria-labelledby="incl-titulo">
+    <div class="wrap">
+      <div class="section-head">
+        <p class="label">Gráficos · inclinação</p>
+        <h2 id="incl-titulo">A inclinação do gráfico s × t é a velocidade</h2>
+        <p>Um carrinho anda para a frente, para, volta um pouco, para de novo e retoma. A posição dele segue <span class="mono">s(t) = t³ − 7,5t² + 12t + 10</span>, com s em metros e t em segundos, de 0 a 5 s. Arraste os pontos A e B (ou use os controles) e leia a inclinação nos valores dos eixos.</p>
+      </div>
+
+      <article class="slope-card">
+        <ul class="slope-legend" aria-label="Legenda do gráfico">
+          <li><span class="sw sw-curve" aria-hidden="true"></span>Curva s(t)</li>
+          <li><span class="sw sw-sec" aria-hidden="true"></span>Secante AB</li>
+          <li><span class="sw sw-tan" aria-hidden="true"></span>Tangente em A</li>
+        </ul>
+        <canvas id="g-st" class="slope-canvas" role="img" aria-label="Gráfico de posição por tempo com a secante entre A e B e a tangente em A"></canvas>
+        <div class="controls slope-controls">
+          <div class="ctrl"><label for="st-a">Instante de A <output id="st-ao">1,50 s</output></label><input type="range" id="st-a" min="0" max="5" step="0.1" value="1.5"></div>
+          <div class="ctrl"><label for="st-b">Instante de B <output id="st-bo">3,00 s</output></label><input type="range" id="st-b" min="0" max="5" step="0.1" value="3"></div>
+          <div class="slope-btns">
+            <button class="btn accent" type="button" id="st-approach">Aproximar B de A</button>
+            <label class="slope-check"><input type="checkbox" id="st-tan"> Mostrar a tangente em A</label>
+          </div>
+        </div>
+        <div class="gres slope-res" id="g-st-res"></div>
+      </article>
+
+      <ol class="slope-steps">
+        <li>
+          <h3>Inclinação entre dois pontos</h3>
+          <p>A reta que passa por A e B é a <b class="k-sec">secante</b>. A inclinação dela é Δs/Δt: quantos metros a posição muda por segundo, em média, entre t<sub>A</sub> e t<sub>B</sub>. Por isso <span class="mono">v<sub>média</sub> = Δs/Δt</span>, em m/s.</p>
+        </li>
+        <li>
+          <h3>Do intervalo ao instante</h3>
+          <p>Deixe A parado e aproxime B. O intervalo Δt encolhe e a secante gira até encostar na curva só em A: vira a <b class="k-tan">tangente</b>. Em Δt = 0 a conta Δs/Δt seria 0/0, que não tem valor; o que importa é o número do qual Δs/Δt se aproxima.</p>
+          <table class="slope-table">
+            <caption>Δs/Δt com A fixo em <span id="st-tab-a">1,50 s</span></caption>
+            <thead><tr><th scope="col">Δt</th><th scope="col">Δs/Δt</th></tr></thead>
+            <tbody id="st-tab"></tbody>
+          </table>
+        </li>
+        <li>
+          <h3>Derivada: a velocidade no instante</h3>
+          <p>A inclinação da tangente em A é a velocidade naquele instante: <span class="mono">v(t) = ds/dt</span>. Tangente subindo: velocidade positiva, o carrinho avança. Descendo: velocidade negativa, ele volta. Horizontal: velocidade nula, ele está parado naquele instante.</p>
+        </li>
+        <li class="slope-note">
+          <h3>E no gráfico v × t?</h3>
+          <p>A mesma ideia vale para qualquer gráfico. No gráfico v × t, a inclinação da tangente é a aceleração: <span class="mono">a(t) = dv/dt</span>, em (m/s)/s = m/s².</p>
+        </li>
+      </ol>
+
+      <div class="rule-box slope-ask">
+        <p class="label">Para explorar</p>
+        <p>Em que instante a velocidade é zero? O que a tangente mostra nesse ponto?</p>
+        <details>
+          <summary>Ver a resposta</summary>
+          <p>Em t = 1 s e em t = 4 s. Leve A até esses instantes com a tangente ligada: ela fica horizontal, com inclinação 0 m/s. Em t = 1 s o carrinho para e começa a voltar; em t = 4 s para de novo e volta a avançar.</p>
+        </details>
+      </div>
+    </div>
+  </section>
+
+  <section style="padding-block: 16px 32px;">
     <div class="wrap">
       <div class="section-head">
         <p class="label">Gráficos e áreas</p>
@@ -190,15 +279,6 @@
 
     </div>
   </section>
-
-  <section style="padding-top: 0;">
-    <div class="wrap">
-      <div class="rule-box">
-        <p class="label">E a inclinação?</p>
-        <p>A área não é a única informação escondida no gráfico. A inclinação da curva também é uma grandeza: em <span class="mono">s × t</span> é a velocidade, em <span class="mono">v × t</span> é a aceleração e em <span class="mono">Q × t</span> é a corrente. Unidade da inclinação = (unidade do eixo y) ÷ (unidade do eixo x).</p>
-      </div>
-    </div>
-  </section>
 </main>
 
 <footer>
@@ -208,6 +288,7 @@
   </div>
 </footer>
 
+<script src="inclinacao.js"></script>
 <script src="graficos.js"></script>
 <script src="site.js"></script>
 </body>

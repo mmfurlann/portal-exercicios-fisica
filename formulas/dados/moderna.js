@@ -105,7 +105,7 @@ const L = [
   vars: [[T`\Delta x`, 'incerteza na posição', 'm'], [T`\Delta p`, 'incerteza no momento linear', 'kg·m/s']],
   uso: T`Para entender os limites fundamentais de medida no mundo atômico.`,
   val: T`Não é limitação dos instrumentos: é uma propriedade da natureza. Quanto mais precisa a posição, menos preciso o momento.`,
-  ex: [T`Um elétron confinado em $\Delta x = 10^{-10}$ m.`, T`$\Delta p \ge \dfrac{6{,}63 \cdot 10^{-34}}{4\pi \cdot 10^{-10}} \approx 5{,}3 \cdot 10^{-25}\ \text{kg·m/s}$`],
+  ex: [T`Um elétron confinado em $\Delta x = 10^{-10}$ m.`, T`$\Delta p \ge \dfrac{6{,}63 \cdot 10^{-34}}{4\pi \cdot 10^{-10}} \approx 5{,}3 \cdot 10^{-25}\ \text{kg}\cdot\text{m/s}$`],
   tags: 'heisenberg incerteza mecanica quantica' },
 
 /* ===================== ÁTOMO ===================== */
