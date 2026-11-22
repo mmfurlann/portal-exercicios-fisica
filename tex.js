@@ -4,12 +4,14 @@
   const MACROS = { '\\sen': '\\operatorname{sen}', '\\tg': '\\operatorname{tg}', '\\cotg': '\\operatorname{cotg}' };
   function render() {
     if (!window.katex) return;
-    document.querySelectorAll('[data-tex]').forEach(function (el) {
+    /* data-tex: fórmula em bloco · data-tex-i: fórmula na linha do texto */
+    document.querySelectorAll('[data-tex], [data-tex-i]').forEach(function (el) {
       if (el.dataset.texOk) return;
+      const inline = el.hasAttribute('data-tex-i');
       try {
-        el.innerHTML = katex.renderToString(el.dataset.tex, { displayMode: true, throwOnError: false, macros: MACROS, strict: false });
+        el.innerHTML = katex.renderToString(inline ? el.dataset.texI : el.dataset.tex, { displayMode: !inline, throwOnError: false, macros: MACROS, strict: false });
         el.dataset.texOk = '1';
-        el.classList.add('tex');
+        if (!inline) el.classList.add('tex');
       } catch (e) { /* mantém o texto simples */ }
     });
   }
