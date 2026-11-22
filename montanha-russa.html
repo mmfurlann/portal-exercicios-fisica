@@ -1,0 +1,810 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Montanha-russa no loop · A Tal da Física</title>
+<meta name="description" content="Qual é a altura mínima para o carrinho completar o loop? Explore a energia mecânica, a força normal e a condição de contato na montanha-russa.">
+<link rel="stylesheet" href="estilo.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Young+Serif&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400;1,700&family=JetBrains+Mono:wght@400;600&display=swap">
+<link rel="stylesheet" href="simulacao.css">
+</head>
+<body>
+<header class="top">
+  <div class="wrap">
+    <a class="brand" href="index.html"><img src="marca/logo-180.jpg" width="58" height="46" alt=""><span>A Tal da Física</span></a>
+    <button class="menu-btn" type="button" aria-expanded="false" aria-controls="menu"><span aria-hidden="true"></span>Menu</button>
+    <nav class="links" id="menu" aria-label="Seções">
+      <ul class="nav-groups">
+        <li class="nav-group">
+          <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="nav-aprender">Aprender</button>
+          <ul class="nav-sub" id="nav-aprender">
+            <li><a href="index.html#trilhas">Trilhas</a></li>
+            <li><a href="licao.html">Lição</a></li>
+          </ul>
+        </li>
+        <li class="nav-group is-current">
+          <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="nav-explorar">Explorar</button>
+          <ul class="nav-sub" id="nav-explorar">
+            <li><a href="laboratorio.html" aria-current="page">Laboratório</a></li>
+            <li><a href="graficos.html">Gráficos</a></li>
+            <li><a href="calculo-vetorial.html">Vetores</a></li>
+          </ul>
+        </li>
+        <li class="nav-group">
+          <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="nav-praticar">Praticar</button>
+          <ul class="nav-sub" id="nav-praticar">
+            <li><a href="quiz.html">Quiz</a></li>
+            <li><a href="eletricidade.html">Eletricidade</a></li>
+            <li><a href="game/index.html">Game</a></li>
+            <li><a href="quest.html">Quest</a></li>
+          </ul>
+        </li>
+        <li class="nav-group">
+          <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="nav-vestibulares">Vestibulares</button>
+          <ul class="nav-sub" id="nav-vestibulares">
+            <li><a href="enem.html">ENEM</a></li>
+            <li><a href="enem2026.html">ENEM 2026</a></li>
+            <li><a href="fuvest.html">FUVEST</a></li>
+          </ul>
+        </li>
+        <li class="nav-group">
+          <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="nav-consultar">Consultar</button>
+          <ul class="nav-sub" id="nav-consultar">
+            <li><a href="formulas.html">Fórmulas</a></li>
+            <li><a href="constantes.html">Constantes</a></li>
+          </ul>
+        </li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<div class="rd">
+<div class="wrap rd-intro">
+  <a class="rd-back" href="laboratorio.html#mecanica">← Voltar ao laboratório</a>
+  <p class="label">Laboratório · Mecânica · Energia e movimento circular</p>
+  <h1>Montanha-russa no loop</h1>
+  <p class="rd-lede">Qual é a altura mínima para o carrinho completar a volta? Solte o carrinho do repouso, mude o raio do loop, a altura inicial e a gravidade, e acompanhe a energia, a força normal e o contato com a pista em cada ponto.</p>
+</div>
+
+<main class="wrap rd-main">
+<div class="rd-grid">
+  <div class="rd-panel">
+    <div class="rd-stage mr-stage">
+      <canvas id="track" role="img" aria-label="O carrinho começa em repouso na altura h, desce a rampa e entra no loop circular de altura 2R. Os vetores mostram velocidade, normal e peso."></canvas>
+    </div>
+    <div class="mr-vectors" role="group" aria-label="Vetores na pista">
+      <label class="mr-vec v"><input id="show-v" type="checkbox" checked><i></i>Velocidade</label>
+      <label class="mr-vec n" title="Na rampa, as setas curtas da normal são ampliadas para facilitar a leitura."><input id="show-n" type="checkbox" checked><i></i>Normal</label>
+      <label class="mr-vec w"><input id="show-w" type="checkbox" checked><i></i>Peso</label>
+      <span class="mr-model">Modelo sem atrito</span>
+    </div>
+    <div class="rd-hud">
+      <div><span class="rd-lab">Altura y</span><b id="live-height">30,00 m</b></div>
+      <div><span class="rd-lab">Velocidade v</span><b id="live-speed">0,00 m/s</b></div>
+      <div><span class="rd-lab">Normal N (1 kg)</span><b id="live-normal">0,00 N</b></div>
+      <div id="contact-box" class="mr-contact"><span class="rd-lab">Contato</span><b id="live-contact">Em contato</b></div>
+    </div>
+    <div class="rd-btns">
+      <button class="rd-primary" id="play" type="button"><span id="play-label">Iniciar</span></button>
+      <button id="reset" type="button" title="Voltar ao início">Voltar ao início</button>
+      <button id="slow" type="button" aria-pressed="false" title="Alternar câmera lenta">1×</button>
+    </div>
+    <div class="mr-timeline">
+      <label for="time" class="sr-only">Tempo da simulação</label>
+      <input type="range" id="time" min="0" max="1" value="0" step="any">
+      <output id="time-label">0,00 s</output>
+    </div>
+    <div class="rd-msg" id="outcome" role="status"></div>
+  </div>
+
+  <div class="rd-panel rd-ctrl">
+    <div class="rd-row"><label for="radius">Raio do loop R<output id="oR"></output></label>
+      <input type="range" id="radius" min="4" max="20" step="0.1" value="10"></div>
+    <div class="rd-row"><label for="height">Altura inicial h<output id="oH"></output></label>
+      <input type="range" id="height" min="0" max="65" step="0.01" value="30">
+      <div class="rd-hint">O carrinho é solto do repouso.</div></div>
+    <div class="rd-row"><label for="gravity">Gravidade g<output id="oG"></output></label>
+      <input type="range" id="gravity" min="1" max="30" step="0.01" value="9.81">
+      <div class="mr-presets" role="group" aria-label="Valores de gravidade">
+        <button type="button" data-gravity="9.81" aria-pressed="true">Terra</button>
+        <button type="button" data-gravity="1.62" aria-pressed="false">Lua</button>
+        <button type="button" data-gravity="3.71" aria-pressed="false">Marte</button>
+      </div></div>
+    <div class="rd-sep"></div>
+    <div class="rd-row"><span class="rd-lab">Compare os casos</span>
+      <div class="mr-presets mr-cases" role="group" aria-label="Casos para comparar">
+        <button type="button" data-height="0.75" aria-pressed="false">Retorno</button>
+        <button type="button" data-height="2.2" aria-pressed="false">Perda de contato</button>
+        <button type="button" data-height="2.5" aria-pressed="false">Altura mínima</button>
+        <button type="button" data-height="3" aria-pressed="true">Volta completa</button>
+      </div></div>
+    <div class="rd-sep"></div>
+    <span class="rd-lab">Condição no topo</span>
+    <div class="rd-readout">
+      <span>Altura mínima</span><span class="hl" id="min-height">25 m</span>
+      <span>Velocidade mínima</span><span class="hl" id="min-speed">9,90 m/s</span>
+    </div>
+    <button type="button" id="jump-top">Ver carrinho no topo</button>
+  </div>
+</div>
+
+<div class="rd-panel">
+  <p class="rd-eyebrow">Para 1 kg de massa</p>
+  <h2>Energia mecânica</h2>
+  <div class="mr-ebar" id="energy-bar" role="img" aria-label="Distribuição da energia mecânica"><span id="kinetic-bar"></span><span id="potential-bar"></span></div>
+  <div class="mr-evalues">
+    <div><span class="rd-lab"><i class="k"></i>Cinética</span><b id="live-kinetic">0,00 J</b></div>
+    <div><span class="rd-lab"><i class="p"></i>Potencial</span><b id="live-potential">0,00 J</b></div>
+    <div><span class="rd-lab">Total</span><b id="live-total">0,00 J</b></div>
+  </div>
+  <p class="rd-hint" id="impact-loss" hidden></p>
+</div>
+
+<div class="rd-panel">
+  <p class="rd-eyebrow">As equações do modelo</p>
+  <h2>Por que a altura mínima é 2,5 R?</h2>
+  <div class="rd-eqs">
+    <div class="rd-eq"><h3>1. Força no topo</h3>
+      <div class="rd-formula">mg + N = mv²/R &nbsp;⇒&nbsp; v<sub>mín</sub> = √(gR)</div>
+      <p>A pista exerce a força normal perpendicularmente à superfície, mesmo com o carrinho em repouso na rampa. No topo, peso e normal apontam para o centro do loop. No limite de contato, N = 0 e só o peso fornece a aceleração centrípeta.</p></div>
+    <div class="rd-eq"><h3>2. Energia entre o ponto inicial e o topo</h3>
+      <div class="rd-formula">mgh = mg(2R) + ½mv² &nbsp;⇒&nbsp; h<sub>mín</sub> = 2,5 R</div>
+      <p>Em repouso na altura h, o carrinho tem energia mgh. No topo, a 2R da base, precisa conservar energia cinética suficiente para manter contato.</p></div>
+  </div>
+  <p class="rd-sub">Mude a gravidade para comparar. A velocidade mínima no topo muda, mas a altura mínima para um mesmo raio continua igual.</p>
+</div>
+
+<div class="rd-panel">
+  <p class="rd-eyebrow">Onde o modelo simplifica</p>
+  <h2>Limites</h2>
+  <ul class="rd-limits">
+    <li>O carrinho é tratado como uma partícula que desliza sem atrito, sem rolamento das rodas e sem resistência do ar. Por isso a energia mecânica se conserva enquanto ele está na pista.</li>
+    <li>A rampa é uma parábola que encontra o loop com a mesma inclinação e a mesma curvatura, para que a força normal não dê um salto na base.</li>
+    <li>No caso de perda de contato, o carrinho segue um lançamento oblíquo até voltar à pista. No impacto, a componente da velocidade perpendicular à pista é perdida, e essa energia dissipada aparece abaixo da barra de energia.</li>
+    <li>No caso de retorno (h ≤ R), o carrinho sobe pelo loop, para e volta pelo mesmo caminho.</li>
+  </ul>
+</div>
+</main>
+</div>
+
+<footer>
+  <div class="wrap">
+    <span>A Tal da Física</span>
+    <p class="autor">Marcelo Furlan</p>
+  </div>
+</footer>
+
+<script>
+(() => {
+"use strict";
+
+const FULL_LOOP = 2 * Math.PI;
+const SAMPLES = 768;
+const steps = Float64Array.from({ length: SAMPLES + 1 }, (_, i) => i / SAMPLES);
+
+function interpolate(value, inputs, outputs) {
+  if (value <= inputs[0]) return outputs[0];
+  if (value >= inputs[SAMPLES]) return outputs[SAMPLES];
+  let low = 0;
+  let high = SAMPLES;
+  while (high - low > 1) {
+    const middle = (low + high) >> 1;
+    if (inputs[middle] <= value) low = middle;
+    else high = middle;
+  }
+  const portion = (value - inputs[low]) / (inputs[high] - inputs[low]);
+  return outputs[low] + portion * (outputs[high] - outputs[low]);
+}
+
+function stateOnTrack(params, theta, direction = 1) {
+  const { radius, height, gravity } = params;
+  const sine = Math.sin(theta);
+  const cosine = Math.cos(theta);
+  const y = radius * (1 - cosine);
+  const speedSquared = Math.max(0, 2 * gravity * (height - y));
+  const speed = Math.sqrt(speedSquared);
+  const heightAboveLimit = height - 2.5 * radius;
+  const normal = gravity * Math.max(0, 2 * heightAboveLimit / radius + 6 * Math.cos(theta / 2) ** 2);
+  return {
+    x: radius * sine, y, theta, angle: theta, speed, normal, contact: true, phase: 'loop',
+    nx: -sine, ny: cosine,
+    vx: direction * speed * cosine, vy: direction * speed * sine,
+    kinetic: speedSquared / 2, potential: gravity * y
+  };
+}
+
+function createRamp({ radius, height, gravity }) {
+  const length = Math.sqrt(2 * radius * height);
+  const times = new Float64Array(SAMPLES + 1);
+  // The horizontal fraction is q², which keeps the time integral finite at rest.
+  for (let i = 1; height > 0 && i <= SAMPLES; i++) {
+    const q = (i - 0.5) / SAMPLES;
+    const slope = -length * (1 - q * q) / radius;
+    const rate = 2 * Math.sqrt(radius / gravity) * Math.hypot(1, slope) / Math.sqrt(2 - q * q);
+    times[i] = times[i - 1] + rate / SAMPLES;
+  }
+
+  function at(time, direction = 1) {
+    const q = interpolate(time, times, steps);
+    const fraction = 1 - q * q;
+    const x = -length * fraction;
+    const y = height * fraction * fraction;
+    const slope = x / radius;
+    const slopeScale = Math.hypot(1, slope);
+    const speedSquared = 2 * gravity * height * q * q * (2 - q * q);
+    const speed = Math.sqrt(speedSquared);
+    // The parabola y = x²/(2R) meets the loop at the same slope and curvature.
+    const normal = gravity / slopeScale + speedSquared / (radius * slopeScale ** 3);
+    return {
+      x, y, theta: null, angle: Math.atan(slope), speed, normal, contact: true, phase: 'ramp',
+      nx: -slope / slopeScale, ny: 1 / slopeScale,
+      vx: direction * speed / slopeScale, vy: direction * speed * slope / slopeScale,
+      kinetic: speedSquared / 2, potential: gravity * y
+    };
+  }
+
+  return { length, duration: times[SAMPLES], at };
+}
+
+function createLoopSegment(params, start, end, rest = null) {
+  const angleChange = end - start;
+  const times = new Float64Array(SAMPLES + 1);
+  const angles = new Float64Array(SAMPLES + 1);
+  const angleAt = u => {
+    if (rest === 'start') return start + angleChange * u * u;
+    if (rest === 'end') return end - angleChange * (1 - u) ** 2;
+    return start + angleChange * u;
+  };
+  angles[0] = start;
+  if (angleChange !== 0) {
+    for (let i = 1; i <= SAMPLES; i++) {
+      const u = (i - 0.5) / SAMPLES;
+      const derivative = rest === 'start' ? 2 * u : rest === 'end' ? 2 * (1 - u) : 1;
+      const angle = angleAt(u);
+      let speed;
+      if (rest) {
+        // The cosine difference avoids loss of precision close to a turning point.
+        const turn = rest === 'start' ? start : end;
+        const distance = Math.abs(angleChange) * (rest === 'start' ? u * u : (1 - u) ** 2);
+        const heightChange = 2 * params.radius * Math.sin(Math.abs(turn + angle) / 2) * Math.sin(distance / 2);
+        speed = Math.sqrt(2 * params.gravity * heightChange);
+      } else {
+        speed = stateOnTrack(params, angle).speed;
+      }
+      times[i] = times[i - 1] + params.radius * Math.abs(angleChange) * derivative / (SAMPLES * speed);
+      angles[i] = angleAt(i / SAMPLES);
+    }
+    angles[SAMPLES] = end;
+  }
+  return {
+    duration: times[SAMPLES],
+    at(time, direction = Math.sign(angleChange) || 1) {
+      const angle = angleChange ? interpolate(time, times, angles) : start;
+      return stateOnTrack(params, angle, direction);
+    },
+    timeAtAngle: angle => interpolate(angle, angles, times)
+  };
+}
+
+function createFlight(params, departure) {
+  const { gravity, radius } = params;
+  // At separation the next positive root of the distance-to-track equation is 4 vy / g.
+  const duration = 4 * departure.vy / gravity;
+
+  function at(time) {
+    const x = departure.x + departure.vx * time;
+    const y = departure.y + departure.vy * time - gravity * time ** 2 / 2;
+    const vy = departure.vy - gravity * time;
+    const speed = Math.hypot(departure.vx, vy);
+    return {
+      x, y, theta: null, angle: Math.atan2(vy, departure.vx),
+      speed, normal: 0, contact: false, phase: 'flight',
+      vx: departure.vx, vy, kinetic: speed ** 2 / 2, potential: gravity * y
+    };
+  }
+
+  const impact = at(duration);
+  const angle = Math.atan2(impact.x, radius - impact.y);
+  // An inelastic impact removes the radial velocity and preserves its tangent component.
+  const tangentSpeed = impact.vx * Math.cos(angle) + impact.vy * Math.sin(angle);
+  const energyHeight = radius * (1 - Math.cos(angle)) + tangentSpeed ** 2 / (2 * gravity);
+  const landing = { ...params, height: energyHeight };
+  const climbs = angle * tangentSpeed > 0;
+  const turningAngle = climbs ? Math.sign(angle) * Math.acos(1 - energyHeight / radius) : angle;
+  const climb = climbs ? createLoopSegment(landing, angle, turningAngle, 'end') : null;
+  const descent = createLoopSegment(landing, turningAngle, 0, climbs ? 'start' : null);
+
+  return {
+    duration,
+    afterLanding: (climb?.duration ?? 0) + descent.duration,
+    at,
+    onTrack(time) {
+      if (climb && time < climb.duration) return climb.at(time);
+      return descent.at(time - (climb?.duration ?? 0));
+    }
+  };
+}
+
+function createRun(params) {
+  const ramp = createRamp(params);
+  const ratio = params.height / params.radius;
+  const outcome = ratio === 0 ? 'rest'
+    : ratio <= 1 ? 'return'
+    : ratio < 2.5 ? 'detach' : 'complete';
+  const endAngle = outcome === 'complete' ? FULL_LOOP
+    : outcome === 'return' ? Math.acos(1 - ratio)
+    : outcome === 'detach' ? Math.acos((2 - 2 * ratio) / 3) : 0;
+  const loop = createLoopSegment(params, 0, endAngle, outcome === 'return' ? 'end' : null);
+  const constrainedDuration = ramp.duration + loop.duration;
+  const flight = outcome === 'detach' ? createFlight(params, stateOnTrack(params, endAngle)) : null;
+  const landingTime = flight ? constrainedDuration + flight.duration : null;
+  const duration = outcome === 'return' ? 2 * constrainedDuration
+    : flight ? landingTime + flight.afterLanding : constrainedDuration;
+
+  function at(time) {
+    const elapsed = Math.max(0, Math.min(duration, time));
+    if (elapsed < ramp.duration) return ramp.at(elapsed);
+    if (flight && elapsed >= constrainedDuration) {
+      if (elapsed >= landingTime) return flight.onTrack(elapsed - landingTime);
+      return flight.at(elapsed - constrainedDuration);
+    }
+    const goingBack = outcome === 'return' && elapsed > constrainedDuration;
+    const trackTime = goingBack ? duration - elapsed : elapsed;
+    const direction = goingBack ? -1 : 1;
+    if (trackTime < ramp.duration) return ramp.at(trackTime, direction);
+    const loopTime = elapsed === constrainedDuration ? loop.duration : trackTime - ramp.duration;
+    return loop.at(loopTime, direction);
+  }
+
+  function timeAtAngle(angle) {
+    if (angle < 0 || angle > endAngle) return null;
+    return ramp.duration + loop.timeAtAngle(angle);
+  }
+
+  return {
+    outcome, duration, endAngle, constrainedDuration, at, timeAtAngle,
+    landingTime,
+    rampLength: ramp.length, rampDuration: ramp.duration
+  };
+}
+
+const metric = new Intl.NumberFormat('pt-BR', { maximumFractionDigits: 1 });
+const root = document.querySelector('.rd');
+const cssVar = name => getComputedStyle(root).getPropertyValue(name).trim();
+const colors = {
+  sky: cssVar('--rd-sky') || '#eaf1f2', grid: cssVar('--grid') || '#ddd3bf',
+  ink: cssVar('--ink') || '#16142a', soft: cssVar('--ink-soft') || '#5a5670',
+  paper: cssVar('--card') || '#fffdf8', accent: cssVar('--accent') || '#f99f29',
+  velocity: cssVar('--blue') || '#0e7490', normal: cssVar('--accent-ink') || '#a95300',
+  weight: '#6b4fa8', path: cssVar('--ok') || '#4d7a12', support: '#c4baa3'
+};
+const bodyFont = cssVar('--body') || 'system-ui, sans-serif';
+
+function drawTrack(canvas, params, run, state, elapsed, vectors) {
+  const width = canvas.clientWidth;
+  const height = canvas.clientHeight;
+  if (!width || !height) return;
+  const density = window.devicePixelRatio || 1;
+  const pixelWidth = Math.round(width * density);
+  const pixelHeight = Math.round(height * density);
+  if (canvas.width !== pixelWidth || canvas.height !== pixelHeight) {
+    canvas.width = pixelWidth;
+    canvas.height = pixelHeight;
+  }
+  const ctx = canvas.getContext('2d');
+  ctx.setTransform(density, 0, 0, density, 0, 0);
+  ctx.fillStyle = colors.sky;
+  ctx.fillRect(0, 0, width, height);
+
+  function line(x1, y1, x2, y2, color, size = 1) {
+    ctx.strokeStyle = color;
+    ctx.lineWidth = size;
+    ctx.beginPath();
+    ctx.moveTo(x1, y1);
+    ctx.lineTo(x2, y2);
+    ctx.stroke();
+  }
+
+  function dot(x, y, color, size) {
+    ctx.fillStyle = color;
+    ctx.beginPath();
+    ctx.arc(x, y, size, 0, 2 * Math.PI);
+    ctx.fill();
+  }
+
+  function label(value, x, y, color = colors.ink, align = 'left') {
+    ctx.fillStyle = color;
+    ctx.font = '600 13px ' + bodyFont;
+    ctx.textAlign = align;
+    ctx.textBaseline = 'middle';
+    ctx.fillText(value, x, y);
+  }
+
+  function arrow(x, y, vx, vy, length, color, symbol) {
+    const magnitude = Math.hypot(vx, vy);
+    if (magnitude < 1e-7 || length < 2) return;
+    const ux = vx / magnitude;
+    const uy = vy / magnitude;
+    const tipX = x + ux * length;
+    const tipY = y + uy * length;
+    const head = Math.min(7, length * .6);
+    line(x, y, tipX, tipY, color, 2.4);
+    ctx.fillStyle = color;
+    ctx.beginPath();
+    ctx.moveTo(tipX, tipY);
+    ctx.lineTo(tipX - ux * head + uy * head * .55, tipY - uy * head - ux * head * .55);
+    ctx.lineTo(tipX - ux * head - uy * head * .55, tipY - uy * head + ux * head * .55);
+    ctx.closePath();
+    ctx.fill();
+    if (length > 8) label(symbol, tipX + ux * 8 - uy * 8, tipY + uy * 8 + ux * 8, color, 'center');
+  }
+
+  const leftExtent = Math.max(run.rampLength, params.radius * 1.25);
+  const rightExtent = params.radius * 1.46;
+  const peak = Math.max(params.height, 2 * params.radius);
+  const meters = Math.min((width - 88) / (leftExtent + rightExtent), (height - 92) / peak);
+  const figureWidth = meters * (leftExtent + rightExtent);
+  const cx = (width - figureWidth) / 2 + meters * leftExtent;
+  const bottom = height - 46;
+  const radius = meters * params.radius;
+  const cy = bottom - radius;
+  const top = cy - radius;
+  const ground = bottom + 16;
+  const launchX = cx - run.rampLength * meters;
+  const launchY = bottom - params.height * meters;
+  const trackStart = cx - leftExtent * meters;
+  const trackEnd = cx + rightExtent * meters;
+  const plot = sample => [cx + sample.x * meters, bottom - sample.y * meters];
+
+  ctx.lineCap = 'round';
+  ctx.globalAlpha = .6;
+  for (let x = cx % 24; x < width; x += 24) line(x, 0, x, height, colors.grid);
+  for (let y = bottom % 24; y < height; y += 24) line(0, y, width, y, colors.grid);
+  ctx.globalAlpha = 1;
+
+  line(trackStart, ground, trackEnd, ground, colors.soft, 2);
+  for (const sign of [-1, 1]) {
+    const foot = Math.min(trackEnd - 6, Math.max(trackStart + 6, cx + sign * radius * 1.28));
+    const outer = cx + sign * radius * .79;
+    const middle = bottom - radius * 1.62;
+    line(foot, ground, outer, middle, colors.support, 2);
+    line(outer, middle, outer, ground, colors.support, 2);
+    line(foot, ground - 14, outer, ground - 25, colors.support, 1.5);
+    line(foot, bottom + 1, foot, ground, colors.support, 2);
+  }
+
+  function heightGuide(x, upperY, edgeX, content, color, side) {
+    ctx.setLineDash([4, 5]);
+    line(x, upperY, edgeX, upperY, colors.soft);
+    line(x, bottom, edgeX, bottom, colors.soft);
+    ctx.setLineDash([]);
+    line(x, upperY, x, bottom, colors.soft);
+    line(x - 4, upperY, x + 4, upperY, color);
+    line(x - 4, bottom, x + 4, bottom, color);
+    label(content, x + side * 8, (upperY + bottom) / 2, color, side < 0 ? 'right' : 'left');
+  }
+
+  heightGuide(cx + radius + 15, top, cx, '2R', colors.ink, 1);
+  if (radius >= 43) {
+    line(cx - 4, cy, cx + 4, cy, colors.soft);
+    line(cx, cy - 4, cx, cy + 4, colors.soft);
+    ctx.setLineDash([4, 5]);
+    line(cx + 7, cy, cx + radius - 3, cy, colors.soft);
+    ctx.setLineDash([]);
+    label(radius >= 69 ? 'R = ' + metric.format(params.radius) + ' m' : 'R',
+      cx + radius * .49, cy - 10, colors.ink, 'center');
+  }
+
+  function rampRail(size, color, u = 1) {
+    const controlX = (launchX + cx) / 2;
+    const x = launchX + u * (cx - launchX);
+    const y = bottom - (bottom - launchY) * (1 - u) ** 2;
+    ctx.strokeStyle = color;
+    ctx.lineWidth = size;
+    ctx.beginPath();
+    ctx.moveTo(launchX, launchY);
+    ctx.quadraticCurveTo(launchX + u * (controlX - launchX), launchY + u * (bottom - launchY), x, y);
+    ctx.stroke();
+  }
+
+  if (run.rampLength) {
+    for (const fraction of [.87, .66, .42]) {
+      const x = cx - run.rampLength * meters * fraction;
+      const y = bottom - params.height * meters * fraction ** 2;
+      line(x, y + 2, x, ground, colors.support, 2);
+    }
+    if (bottom - launchY >= 21) heightGuide(launchX - 15, launchY, launchX, 'h', colors.normal, -1);
+    rampRail(12, colors.ink);
+    rampRail(7, '#8d89a3');
+    rampRail(1.5, colors.paper);
+  }
+
+  line(cx, bottom, trackEnd, bottom, colors.ink, 12);
+  line(cx, bottom, trackEnd, bottom, '#8d89a3', 7);
+  line(cx, bottom - 1.5, trackEnd, bottom - 1.5, colors.paper, 1.2);
+
+  function rail(size, color, ringRadius = radius, end = Math.PI * 2) {
+    ctx.strokeStyle = color;
+    ctx.lineWidth = size;
+    ctx.beginPath();
+    ctx.arc(cx, cy, ringRadius, Math.PI / 2, Math.PI / 2 - end, true);
+    ctx.stroke();
+  }
+
+  rail(12, colors.ink);
+  rail(7, '#8d89a3');
+  rail(1.6, colors.paper, radius - 2.2);
+  if (run.rampLength && elapsed > 0) {
+    const fraction = elapsed >= run.rampDuration ? 1 : 1 + state.x / run.rampLength;
+    rampRail(3, colors.path, fraction);
+  }
+  const travelled = Math.min(elapsed, run.constrainedDuration);
+  if (travelled > run.rampDuration) {
+    const angle = travelled === run.constrainedDuration ? run.endAngle : run.at(travelled).theta;
+    rail(3, colors.path, radius, angle);
+  }
+  if (run.outcome === 'detach' && elapsed >= run.constrainedDuration) {
+    const flightEnd = Math.min(elapsed, run.landingTime);
+    ctx.setLineDash([4, 5]);
+    ctx.strokeStyle = colors.normal;
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    for (let i = 0; i <= 64; i++) {
+      const [x, y] = plot(run.at(run.constrainedDuration + (flightEnd - run.constrainedDuration) * i / 64));
+      if (i === 0) ctx.moveTo(x, y);
+      else ctx.lineTo(x, y);
+    }
+    ctx.stroke();
+    ctx.setLineDash([]);
+    const [x, y] = plot(run.at(run.constrainedDuration));
+    dot(x, y, colors.normal, 4);
+  }
+
+  dot(cx, top, colors.ink, 3.5);
+  label('TOPO', cx, top - 18, colors.ink, 'center');
+  label('BASE  y = 0', cx, ground + 14, colors.soft, 'center');
+  if (run.rampLength) {
+    dot(launchX, launchY, colors.normal, 4);
+    if (cx - launchX > 47 || Math.abs(launchY - top) > 24) {
+      label('ALTURA INICIAL', Math.max(56, launchX), Math.max(12, launchY - 40), colors.normal, 'center');
+    }
+  }
+
+  const [x, y] = plot(state);
+  const maxWeightPixels = Math.max(10, height - bottom - 14);
+  const forceScale = Math.min(maxWeightPixels, 68 / (1 + 2 * params.height / params.radius)) / params.gravity;
+  const speedScale = 73 / Math.max(1, Math.sqrt(2 * params.gravity * params.height));
+  if (vectors.velocity) arrow(x, y, state.vx, -state.vy, state.speed * speedScale, colors.velocity, 'v');
+
+  ctx.save();
+  ctx.translate(x, y);
+  ctx.rotate(-state.angle);
+  ctx.fillStyle = colors.ink;
+  ctx.beginPath();
+  ctx.roundRect(-14.5, -15.5, 29, 14, 4);
+  ctx.fill();
+  ctx.fillStyle = colors.accent;
+  ctx.beginPath();
+  ctx.roundRect(-13, -14, 26, 11, 3);
+  ctx.fill();
+  ctx.fillStyle = colors.paper;
+  ctx.beginPath();
+  ctx.roundRect(-8, -12.5, 15, 3.5, 1.5);
+  ctx.fill();
+  dot(-8, -2, colors.ink, 3.5);
+  dot(8, -2, colors.ink, 3.5);
+  dot(-8, -2, colors.paper, 1.35);
+  dot(8, -2, colors.paper, 1.35);
+  ctx.restore();
+
+  if (vectors.weight) {
+    const centerX = x - 8 * Math.sin(state.angle);
+    const centerY = y - 8 * Math.cos(state.angle);
+    arrow(centerX, centerY, 0, 1, params.gravity * forceScale, colors.weight, 'P');
+  }
+  if (vectors.normal && state.contact && state.normal > params.gravity * 1e-10) {
+    const scaledLength = state.normal * forceScale;
+    // Na rampa, a normal inicial é ampliada para continuar visível; no loop a escala é preservada.
+    const normalLength = state.phase === 'ramp' ? Math.max(28, scaledLength) : scaledLength;
+    arrow(x, y, state.nx, -state.ny, normalLength, colors.normal, 'N');
+  }
+}
+
+const element = id => document.getElementById(id);
+const twoDecimals = new Intl.NumberFormat('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+const compact = new Intl.NumberFormat('pt-BR', { maximumFractionDigits: 2 });
+const decimal = value => twoDecimals.format(Math.abs(value) < 0.005 ? 0 : value);
+const params = { radius: 10, height: 30, gravity: 9.81 };
+const sliders = { radius: element('radius'), height: element('height'), gravity: element('gravity') };
+const canvas = element('track');
+const timeSlider = element('time');
+const play = element('play');
+const slow = element('slow');
+const jump = element('jump-top');
+const outcome = element('outcome');
+const impactLoss = element('impact-loss');
+const vectorV = element('show-v');
+const vectorN = element('show-n');
+const vectorW = element('show-w');
+
+let run;
+let elapsed = 0;
+let playing = false;
+let speedFactor = 1;
+let previousFrame = null;
+let animationFrame;
+
+function display(id, value) {
+  const target = element(id);
+  if (target.textContent !== value) target.textContent = value;
+}
+
+function render() {
+  const state = run.at(elapsed);
+  const initialEnergy = params.gravity * params.height;
+  const total = state.kinetic + state.potential;
+  const afterImpact = run.landingTime !== null && elapsed >= run.landingTime;
+  const kinetic = decimal(state.kinetic) + ' J';
+  const potential = decimal(state.potential) + ' J';
+  display('live-height', decimal(state.y) + ' m');
+  display('live-speed', decimal(state.speed) + ' m/s');
+  display('live-normal', decimal(state.normal) + ' N');
+  display('live-contact', state.contact ? 'Em contato' : 'Sem contato');
+  element('contact-box').dataset.air = state.contact ? 'no' : 'yes';
+  display('live-kinetic', kinetic);
+  display('live-potential', potential);
+  display('live-total', decimal(total) + ' J');
+  element('kinetic-bar').style.width = (initialEnergy ? 100 * state.kinetic / initialEnergy : 0) + '%';
+  element('potential-bar').style.width = (initialEnergy ? 100 * state.potential / initialEnergy : 0) + '%';
+  element('energy-bar').setAttribute('aria-label', 'Energia cinética: ' + kinetic + '. Energia potencial: ' + potential + '.');
+  impactLoss.hidden = !afterImpact;
+  if (afterImpact) {
+    const loss = initialEnergy - total;
+    const value = loss < 0.005 ? '< 0,01 J' : decimal(loss) + ' J';
+    display('impact-loss', 'Energia dissipada no impacto: ' + value);
+  }
+
+  timeSlider.value = elapsed;
+  timeSlider.setAttribute('aria-valuetext', decimal(elapsed) + ' segundos');
+  display('time-label', decimal(elapsed) + ' s');
+
+  drawTrack(canvas, params, run, state, elapsed, {
+    velocity: vectorV.checked, normal: vectorN.checked, weight: vectorW.checked
+  });
+}
+
+function updatePlayback() {
+  const atEnd = elapsed >= run.duration;
+  display('play-label', playing ? 'Pausar' : atEnd && run.duration ? 'Repetir' : elapsed ? 'Continuar' : 'Iniciar');
+  play.disabled = !run.duration;
+  timeSlider.disabled = !run.duration;
+}
+
+function pause() {
+  if (playing) cancelAnimationFrame(animationFrame);
+  playing = false;
+  previousFrame = null;
+  updatePlayback();
+}
+
+function frame(now) {
+  if (previousFrame !== null) {
+    elapsed = Math.min(run.duration, elapsed + (now - previousFrame) * speedFactor / 1000);
+  }
+  previousFrame = now;
+  render();
+  if (elapsed >= run.duration) {
+    pause();
+    return;
+  }
+  animationFrame = requestAnimationFrame(frame);
+}
+
+function seek(seconds) {
+  pause();
+  elapsed = seconds;
+  render();
+  updatePlayback();
+}
+
+function updateSetup() {
+  run = createRun(params);
+  timeSlider.max = run.duration || 1;
+  seek(0);
+
+  const { gravity, radius, height } = params;
+  const ratio = height / radius;
+  const roundedRatio = Math.round(ratio * 100) / 100;
+  const relation = Math.abs(ratio - roundedRatio) < 1e-10 ? ' = ' : ' ≈ ';
+  display('oR', compact.format(radius) + ' m');
+  display('oH', compact.format(height) + ' m (h' + relation + compact.format(roundedRatio) + ' R)');
+  display('oG', compact.format(gravity) + ' m/s²');
+  display('min-height', compact.format(2.5 * radius) + ' m');
+  display('min-speed', decimal(Math.sqrt(gravity * radius)) + ' m/s');
+
+  const cases = {
+    rest: 'Sem velocidade de entrada, o carrinho fica na base.',
+    return: 'O carrinho retorna à altura inicial.',
+    detach: 'O carrinho perde contato antes do topo. Ao atingir a pista, perde energia no impacto e segue até a base.',
+    complete: 'O carrinho completa a volta.'
+  };
+  let message = cases[run.outcome];
+  if (run.outcome === 'complete') {
+    const normal = stateOnTrack(params, Math.PI).normal;
+    message = Math.abs(height - 2.5 * radius) < 1e-10
+      ? 'No limite de contato, a força normal no topo é 0,00 N.'
+      : 'Volta completa. Normal no topo: ' + decimal(normal) + ' N.';
+  }
+  outcome.className = 'rd-msg ' + (run.outcome === 'complete' ? 'good' : 'warn');
+  display('outcome', message);
+  jump.disabled = run.outcome !== 'complete';
+
+  for (const key of Object.keys(params)) sliders[key].value = params[key];
+  for (const button of document.querySelectorAll('[data-height]')) {
+    button.setAttribute('aria-pressed', String(Math.abs(height - radius * Number(button.dataset.height)) <= 0.005000001));
+  }
+  for (const button of document.querySelectorAll('[data-gravity]')) {
+    button.setAttribute('aria-pressed', String(gravity === Number(button.dataset.gravity)));
+  }
+}
+
+for (const [key, slider] of Object.entries(sliders)) {
+  slider.addEventListener('input', () => {
+    params[key] = Number(slider.value);
+    updateSetup();
+  });
+}
+for (const button of document.querySelectorAll('[data-height]')) {
+  button.addEventListener('click', () => {
+    params.height = Number((params.radius * Number(button.dataset.height)).toFixed(2));
+    updateSetup();
+  });
+}
+for (const button of document.querySelectorAll('[data-gravity]')) {
+  button.addEventListener('click', () => {
+    params.gravity = Number(button.dataset.gravity);
+    updateSetup();
+  });
+}
+
+play.addEventListener('click', () => {
+  if (playing) {
+    pause();
+    return;
+  }
+  if (elapsed >= run.duration) seek(0);
+  playing = true;
+  updatePlayback();
+  animationFrame = requestAnimationFrame(frame);
+});
+element('reset').addEventListener('click', () => seek(0));
+timeSlider.addEventListener('input', () => seek(Number(timeSlider.value)));
+jump.addEventListener('click', () => {
+  const topTime = run.timeAtAngle(Math.PI);
+  if (topTime === null) return;
+  seek(topTime);
+  const { top, bottom } = canvas.getBoundingClientRect();
+  if (top < 0 || bottom > window.innerHeight) canvas.scrollIntoView({ block: 'center' });
+});
+slow.addEventListener('click', () => {
+  const slowed = slow.getAttribute('aria-pressed') === 'true';
+  speedFactor = slowed ? 1 : 0.25;
+  slow.setAttribute('aria-pressed', String(!slowed));
+  slow.textContent = slowed ? '1×' : '¼×';
+});
+for (const checkbox of [vectorV, vectorN, vectorW]) checkbox.addEventListener('change', render);
+document.addEventListener('visibilitychange', () => {
+  if (document.hidden && playing) pause();
+});
+
+updateSetup();
+new ResizeObserver(render).observe(canvas);
+})();
+</script>
+<script src="site.js"></script>
+</body>
+</html>
