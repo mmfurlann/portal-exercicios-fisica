@@ -25,6 +25,7 @@
 .fe-gh { font-size: 1.05rem; }
 .fe-gh + p { color: var(--ink-soft); font-size: .92rem; margin-top: 4px; }
 </style>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css">
 </head>
 <body>
 <header class="top">
@@ -174,22 +175,22 @@
   <h2>A explicação de Einstein</h2>
   <div class="rd-eqs">
     <div class="rd-eq"><h3>1. Energia do fóton</h3>
-      <div class="rd-formula">E = h · f = h · c / λ</div>
+      <div class="rd-formula" data-tex="E=h\,f=\dfrac{h\,c}{\lambda}">E = h · f = h · c / λ</div>
       <p>A luz chega em pacotes. A energia de cada um depende só da frequência. Com h = 4,14 × 10⁻¹⁵ eV·s e h·c ≈ 1 240 eV·nm, a luz de 400 nm tem fótons de 3,1 eV.</p></div>
     <div class="rd-eq"><h3>2. Função trabalho</h3>
-      <div class="rd-formula">φ = energia mínima para soltar um elétron</div>
+      <div class="rd-formula" data-tex="\varphi=\text{energia mínima para soltar um elétron}">φ = energia mínima para soltar um elétron</div>
       <p>Cada metal segura seus elétrons com uma energia própria. Um fóton entrega toda a sua energia a um único elétron: ou basta, ou o elétron fica.</p></div>
     <div class="rd-eq"><h3>3. Equação de Einstein</h3>
-      <div class="rd-formula">K<sub>máx</sub> = h · f − φ</div>
+      <div class="rd-formula" data-tex="K_{\text{máx}}=h\,f-\varphi">K<sub>máx</sub> = h · f − φ</div>
       <p>O que sobra depois de pagar φ vira energia cinética. Os elétrons mais presos gastam mais para sair, por isso K<sub>máx</sub> é o limite, não o valor de todos.</p></div>
     <div class="rd-eq"><h3>4. Frequência de corte</h3>
-      <div class="rd-formula">f₀ = φ / h &nbsp;&nbsp; λ₀ = h · c / φ</div>
+      <div class="rd-formula" data-tex="f_0=\dfrac{\varphi}{h}\qquad \lambda_0=\dfrac{h\,c}{\varphi}">f₀ = φ / h &nbsp;&nbsp; λ₀ = h · c / φ</div>
       <p>Abaixo de f₀ não há emissão, seja qual for a intensidade. A física clássica previa o contrário: luz forte, de qualquer cor, acabaria soltando elétrons.</p></div>
     <div class="rd-eq"><h3>5. Tensão de corte</h3>
-      <div class="rd-formula">e · V₀ = K<sub>máx</sub></div>
+      <div class="rd-formula" data-tex="e\,V_0=K_{\text{máx}}">e · V₀ = K<sub>máx</sub></div>
       <p>Uma tensão contrária freia os elétrons. V₀ é a que para até os mais rápidos. É assim que se mede K<sub>máx</sub>: em volts, K<sub>máx</sub> em eV tem o mesmo número.</p></div>
     <div class="rd-eq"><h3>6. Corrente de saturação</h3>
-      <div class="rd-formula">I<sub>sat</sub> = η · e · P / E<sub>fóton</sub></div>
+      <div class="rd-formula" data-tex="I_{\text{sat}}=\dfrac{\eta\,e\,P}{E_{\text{fóton}}}">I<sub>sat</sub> = η · e · P / E<sub>fóton</sub></div>
       <p>Mais potência, mais fótons por segundo, mais elétrons. Com a mesma potência, luz de fóton mais energético traz menos fótons. Aqui η = 1% dos fótons solta um elétron.</p></div>
   </div>
 </div>
@@ -416,6 +417,8 @@ $('strip').style.background='linear-gradient(to right,'+stops.join(',')+')';
 update();requestAnimationFrame(loop);
 })();
 </script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
+<script defer src="tex.js"></script>
 <script src="site.js"></script>
 </body>
 </html>

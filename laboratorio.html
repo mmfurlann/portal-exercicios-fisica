@@ -9,6 +9,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Young+Serif&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400;1,700&family=JetBrains+Mono:wght@400;600&display=swap">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css">
 </head>
 <body>
 <header class="top">
@@ -93,7 +94,7 @@
           <div class="prose">
             <h3>Lançamento oblíquo</h3>
             <p>Na horizontal o movimento é uniforme; na vertical, a gravidade freia a subida e acelera a descida. A combinação dos dois desenha uma parábola.</p>
-            <p class="eq">x = v₀·cos θ·t<br>y = v₀·sen θ·t − ½·g·t²<br>A = v₀²·sen 2θ / g</p>
+            <p class="eq" data-tex="\begin{aligned}x &amp;= v_0\cos\theta\,t \\ y &amp;= v_0\sen\theta\,t-\tfrac{1}{2}g\,t^2 \\ A &amp;= \dfrac{v_0^2\,\sen 2\theta}{g}\end{aligned}">x = v₀·cos θ·t<br>y = v₀·sen θ·t − ½·g·t²<br>A = v₀²·sen 2θ / g</p>
             <ul class="tips">
               <li>Compare 30° e 60°: o alcance é o mesmo, a altura não.</li>
               <li>Na Lua, com a mesma velocidade, a bola vai seis vezes mais longe.</li>
@@ -136,7 +137,7 @@
           <div class="prose">
             <h3>Pêndulo simples</h3>
             <p>Para oscilações pequenas, o período só depende do comprimento do fio e da gravidade. A massa e a amplitude não entram na conta.</p>
-            <p class="eq">T = 2π·√(L/g)</p>
+            <p class="eq" data-tex="T = 2\pi\sqrt{\dfrac{L}{g}}">T = 2π·√(L/g)</p>
             <ul class="tips">
               <li>Quadruplique o comprimento e o período dobra.</li>
               <li>Na Lua o mesmo pêndulo balança quase 2,5 vezes mais devagar.</li>
@@ -169,7 +170,7 @@
           <div class="prose">
             <h3>Plano inclinado com atrito</h3>
             <p>O peso se divide em duas partes: uma empurra o bloco rampa abaixo (P·sen θ) e a outra aperta o bloco contra a rampa (P·cos θ), que responde com a normal. O atrito se opõe ao deslizamento e tem como limite μ·N.</p>
-            <p class="eq">a = g·(sen θ − μ·cos θ)<br>desliza quando tg θ &gt; μ</p>
+            <p class="eq" data-tex="\begin{aligned}a &amp;= g\,(\sen\theta-\mu\cos\theta) \\ &amp;\text{desliza quando } \tg\theta&gt;\mu\end{aligned}">a = g·(sen θ − μ·cos θ)<br>desliza quando tg θ &gt; μ</p>
             <ul class="tips">
               <li>Mude a massa: as forças mudam, a aceleração não.</li>
               <li>Com μ = 0,3, o bloco começa a descer em 16,7°.</li>
@@ -209,7 +210,7 @@
           <div class="prose">
             <h3>Colisões e quantidade de movimento</h3>
             <p>Em qualquer choque sem forças externas, a quantidade de movimento total se conserva. A energia cinética só se conserva no choque perfeitamente elástico. O coeficiente de restituição <span class="mono">e</span> diz o quanto os corpos se afastam depois, comparado com o quanto se aproximavam antes.</p>
-            <p class="eq">m₁·v₁ + m₂·v₂ = m₁·v₁' + m₂·v₂'<br>e = (v₂' − v₁') / (v₁ − v₂)</p>
+            <p class="eq" data-tex="\begin{aligned}m_1v_1+m_2v_2 &amp;= m_1v_1&#x27;+m_2v_2&#x27; \\ e &amp;= \dfrac{v_2&#x27;-v_1&#x27;}{v_1-v_2}\end{aligned}">m₁·v₁ + m₂·v₂ = m₁·v₁' + m₂·v₂'<br>e = (v₂' − v₁') / (v₁ − v₂)</p>
             <ul class="tips">
               <li>Massas iguais e e = 1: os carrinhos trocam de velocidade.</li>
               <li>Com e = 0 eles seguem grudados e a perda de energia é máxima.</li>
@@ -257,7 +258,7 @@
           <div class="prose">
             <h3>Polias de Arquimedes</h3>
             <p>A polia fixa só muda a direção da força. Cada polia móvel divide o peso entre os dois lados da corda, então a força cai pela metade. Na talha de Arquimedes as polias móveis ficam em série, cada uma com a própria corda presa no teto, e a força cai pela metade a cada polia acrescentada.</p>
-            <p class="eq">F = P / 2ⁿ<br>corda puxada = 2ⁿ·h<br>W = F·d = P·h</p>
+            <p class="eq" data-tex="\begin{aligned}F &amp;= \dfrac{P}{2^n} \\ \text{corda puxada} &amp;= 2^n h \\ W &amp;= F\,d = P\,h\end{aligned}">F = P / 2ⁿ<br>corda puxada = 2ⁿ·h<br>W = F·d = P·h</p>
             <ul class="tips">
               <li>Com 4 polias móveis, 80 kg pesam na mão como 5 kg.</li>
               <li>Clique em <strong>Puxar a corda</strong> e compare quanto sobe a carga e quanto desce a mão.</li>
@@ -330,7 +331,7 @@
           <div class="prose">
             <h3>Refração e a lei de Snell</h3>
             <p>Quando a luz muda de meio, sua velocidade muda e o raio se desvia. O índice de refração <span class="mono">n = c/v</span> diz quantas vezes a luz fica mais lenta naquele meio do que no vácuo.</p>
-            <p class="eq">n₁·sen θ₁ = n₂·sen θ₂</p>
+            <p class="eq" data-tex="n_1\sen\theta_1=n_2\sen\theta_2">n₁·sen θ₁ = n₂·sen θ₂</p>
             <ul class="tips">
               <li>Do ar para a água, veja o raio se aproximar da normal.</li>
               <li>Da água para o ar, passe de 48,8° e observe a reflexão total.</li>
@@ -376,7 +377,7 @@
           <div class="prose">
             <h3>Lentes esféricas</h3>
             <p>Três raios bastam para achar a imagem: o que chega paralelo ao eixo e sai pelo foco, o que passa pelo centro óptico sem desviar e o que passa pelo foco e sai paralelo. A equação de Gauss dá a mesma resposta em números.</p>
-            <p class="eq">1/f = 1/p + 1/p'<br>A = −p'/p</p>
+            <p class="eq" data-tex="\begin{aligned}\dfrac{1}{f} &amp;= \dfrac{1}{p}+\dfrac{1}{p&#x27;} \\ A &amp;= -\dfrac{p&#x27;}{p}\end{aligned}">1/f = 1/p + 1/p'<br>A = −p'/p</p>
             <ul class="tips">
               <li>Na convergente, coloque o objeto entre o foco e a lente: a imagem vira virtual e maior, como numa lupa.</li>
               <li>Exatamente no 2F, a imagem tem o mesmo tamanho do objeto.</li>
@@ -416,7 +417,7 @@
           <div class="prose">
             <h3>Espelhos esféricos</h3>
             <p>Os espelhos seguem a mesma equação de Gauss das lentes. No côncavo o foco fica na frente do espelho; no convexo, atrás. O raio que bate no vértice volta simétrico em relação ao eixo.</p>
-            <p class="eq">1/f = 1/p + 1/p'<br>f = R/2</p>
+            <p class="eq" data-tex="\begin{aligned}\dfrac{1}{f} &amp;= \dfrac{1}{p}+\dfrac{1}{p&#x27;} \\ f &amp;= \dfrac{R}{2}\end{aligned}">1/f = 1/p + 1/p'<br>f = R/2</p>
             <ul class="tips">
               <li>Côncavo com o objeto além do centro C: imagem real, invertida e menor.</li>
               <li>Côncavo com o objeto perto do vértice: imagem virtual e maior, como no espelho de maquiagem.</li>
@@ -467,7 +468,7 @@
           <div class="prose">
             <h3>Efeito Doppler e ondas estacionárias</h3>
             <p>Quando a fonte de som se move, as frentes de onda ficam espremidas à frente dela e espaçadas atrás. Quem está à frente ouve um som mais agudo; quem ficou para trás, mais grave. É por isso que a sirene da ambulância muda de tom quando ela passa.</p>
-            <p class="eq">f' = f·v/(v ∓ v<sub>fonte</sub>)<br>v = λ·f</p>
+            <p class="eq" data-tex="\begin{aligned}f&#x27; &amp;= f\,\dfrac{v}{v\mp v_{\text{fonte}}} \\ v &amp;= \lambda f\end{aligned}">f' = f·v/(v ∓ v<sub>fonte</sub>)<br>v = λ·f</p>
             <ul class="tips">
               <li>Comece com a fonte parada: círculos com o mesmo centro e o mesmo tom para todos.</li>
               <li>Passe de 340 m/s e veja as frentes se empilharem num cone, a onda de choque.</li>
@@ -518,7 +519,7 @@
           <div class="prose">
             <h3>Ciclo de Carnot</h3>
             <p>A máquina térmica ideal: duas isotermas e duas adiabáticas. O gás recebe calor da fonte quente, transforma parte dele em trabalho e cede o resto à fonte fria. No diagrama p × V, o trabalho por ciclo é a área dentro da curva.</p>
-            <p class="eq">η = 1 − T<sub>f</sub>/T<sub>q</sub><br>W = Q<sub>q</sub> − Q<sub>f</sub></p>
+            <p class="eq" data-tex="\begin{aligned}\eta &amp;= 1-\dfrac{T_f}{T_q} \\ W &amp;= Q_q-Q_f\end{aligned}">η = 1 − T<sub>f</sub>/T<sub>q</sub><br>W = Q<sub>q</sub> − Q<sub>f</sub></p>
             <ul class="tips">
               <li>O rendimento só depende das temperaturas, sempre em kelvin.</li>
               <li>Aproxime T<sub>f</sub> de T<sub>q</sub>: a área encolhe e o trabalho quase some.</li>
@@ -592,7 +593,7 @@
           <div class="prose">
             <h3>Circuitos e a lei de Ohm</h3>
             <p>A tensão empurra as cargas, a resistência se opõe ao movimento e a corrente é o resultado dessa disputa.</p>
-            <p class="eq">U = R·i<br>Série: R<sub>eq</sub> = R₁ + R₂<br>Paralelo: R<sub>eq</sub> = R₁·R₂ / (R₁ + R₂)</p>
+            <p class="eq" data-tex="\begin{aligned}U &amp;= R\,i \\ \text{Série: } R_{\text{eq}} &amp;= R_1+R_2 \\ \text{Paralelo: } R_{\text{eq}} &amp;= \dfrac{R_1R_2}{R_1+R_2}\end{aligned}">U = R·i<br>Série: R<sub>eq</sub> = R₁ + R₂<br>Paralelo: R<sub>eq</sub> = R₁·R₂ / (R₁ + R₂)</p>
             <ul class="tips">
               <li>Com os mesmos valores, troque de série para paralelo e compare a corrente.</li>
               <li>As bolinhas seguem o sentido convencional da corrente, e a velocidade delas acompanha o valor de i.</li>
@@ -704,6 +705,8 @@
 </footer>
 
 <script src="bancadas.js"></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
+<script defer src="tex.js"></script>
 <script src="site.js"></script>
 </body>
 </html>
