@@ -88,6 +88,7 @@
 .fv-feedback.ok { color: var(--ok); } .fv-feedback.bad { color: var(--bad); }
 @media (prefers-reduced-motion: reduce) { .fv-res summary::before { transition: none; } }
 </style>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css">
 </head>
 <body>
 <header class="top">
@@ -215,14 +216,35 @@
   <details class="fv-res">
     <summary>Ver resolução</summary>
     <div class="fv-text">
-      <p>Um circuito formado apenas por fios e resistores ideais é <b>linear</b>: vale o princípio da superposição. Assim, as tensões medidas (x, y) são combinações lineares das fontes (c₁, c₂). Não é preciso conhecer os resistores.</p>
-      <p>Escrevemos a nova entrada como combinação das duas já conhecidas:</p>
+      <p>Um circuito formado apenas por fios e resistores ideais é <b>linear</b>: vale o princípio da superposição. Então as tensões medidas dependem das fontes por uma <b>matriz constante</b> <span data-tex-i="M">M</span> (2 × 2), que só depende dos resistores. Não é preciso conhecê-los.</p>
+      <p><b>1. Modelo.</b></p>
       <div class="fv-calc">
-        <span>(2, 1) = a·(5, 10) + b·(3, 3)</span>
-        <span>5a + 3b = 2 &nbsp;e&nbsp; 10a + 3b = 1</span>
-        <span>Subtraindo: 5a = −1 ⇒ a = −1/5. Então 3b = 2 + 1 = 3 ⇒ b = 1</span>
-        <span>(x, y) = −1/5·(5, 3) + 1·(1, 2) = (−1; −0,6) + (1; 2) = (0; 1,4) V</span>
-        <span>x + y = 1,4 V ⇒ 5(x + y) = 7 V</span>
+        <span data-tex="\begin{pmatrix}x\\y\end{pmatrix}=M\begin{pmatrix}c_1\\c_2\end{pmatrix}">(x, y) = M · (c₁, c₂)</span>
+      </div>
+      <p><b>2. Cada experimento vira uma coluna.</b> Juntando os dois, com as entradas em <span data-tex-i="C">C</span> e as saídas medidas em <span data-tex-i="X">X</span>:</p>
+      <div class="fv-calc">
+        <span data-tex="M\underbrace{\begin{pmatrix}5&amp;3\\10&amp;3\end{pmatrix}}_{C}=\underbrace{\begin{pmatrix}5&amp;1\\3&amp;2\end{pmatrix}}_{X}">M · C = X</span>
+      </div>
+      <p><b>3. Inversa de C.</b> O determinante é diferente de zero, então <span data-tex-i="C^{-1}">C⁻¹</span> existe:</p>
+      <div class="fv-calc">
+        <span data-tex="\det C=5\cdot3-3\cdot10=-15\qquad C^{-1}=\dfrac{1}{-15}\begin{pmatrix}3&amp;-3\\-10&amp;5\end{pmatrix}">det C = 5·3 − 3·10 = −15</span>
+      </div>
+      <p><b>4. Matriz do circuito.</b> De <span data-tex-i="M C = X">M·C = X</span> segue <span data-tex-i="M = X\,C^{-1}">M = X·C⁻¹</span>:</p>
+      <div class="fv-calc">
+        <span data-tex="M=\begin{pmatrix}5&amp;1\\3&amp;2\end{pmatrix}\dfrac{-1}{15}\begin{pmatrix}3&amp;-3\\-10&amp;5\end{pmatrix}=\dfrac{-1}{15}\begin{pmatrix}5&amp;-10\\-11&amp;1\end{pmatrix}=\begin{pmatrix}-\frac{1}{3}&amp;\frac{2}{3}\\[2pt]\frac{11}{15}&amp;-\frac{1}{15}\end{pmatrix}">M = X · C⁻¹</span>
+      </div>
+      <p><b>5. Conferindo</b> com os dois experimentos:</p>
+      <div class="fv-calc">
+        <span data-tex="M\begin{pmatrix}5\\10\end{pmatrix}=\begin{pmatrix}5\\3\end{pmatrix}\ \checkmark\qquad M\begin{pmatrix}3\\3\end{pmatrix}=\begin{pmatrix}1\\2\end{pmatrix}\ \checkmark">M·(5, 10) = (5, 3) e M·(3, 3) = (1, 2)</span>
+      </div>
+      <p><b>6. Nova entrada</b> <span data-tex-i="(c_1,c_2)=(2,1)">(c₁, c₂) = (2, 1)</span>:</p>
+      <div class="fv-calc">
+        <span data-tex="\begin{pmatrix}x\\y\end{pmatrix}=M\begin{pmatrix}2\\1\end{pmatrix}=\begin{pmatrix}-\frac{2}{3}+\frac{2}{3}\\[2pt]\frac{22}{15}-\frac{1}{15}\end{pmatrix}=\begin{pmatrix}0\\ \frac{7}{5}\end{pmatrix}\ \text{V}">(x, y) = M · (2, 1) = (0; 1,4) V</span>
+        <span data-tex="5(x+y)=5\left(0+\dfrac{7}{5}\right)=7\ \text{V}">5(x + y) = 7 V</span>
+      </div>
+      <p><b>Atalho.</b> Como só interessa a soma, multiplique a linha <span data-tex-i="\begin{pmatrix}1&amp;1\end{pmatrix}">(1 1)</span> pela matriz. O resultado dá o peso de cada fonte direto em <span data-tex-i="5(x+y)">5(x + y)</span>:</p>
+      <div class="fv-calc">
+        <span data-tex="\begin{pmatrix}1&amp;1\end{pmatrix}M=\begin{pmatrix}\frac{2}{5}&amp;\frac{3}{5}\end{pmatrix}\;\Rightarrow\;5(x+y)=2c_1+3c_2=2\cdot2+3\cdot1=7\ \text{V}">5(x + y) = 2c₁ + 3c₂ = 2·2 + 3·1 = 7 V</span>
       </div>
       <p class="fv-ans">Resposta: alternativa A</p>
     </div>
@@ -252,7 +274,7 @@
         <li>(A) Falso: há troca de energia com o ambiente (recarga, dissipação térmica) e o carro não opera “por indução” em circuito isolado.</li>
         <li>(C) Falso: o calor do efeito Joule é desprezível frente ao efeito estufa causado pela queima de combustíveis.</li>
         <li>(D) Falso: baterias contêm metais pesados e reagentes que não se “convertem em energia”; exigem descarte e reciclagem adequados.</li>
-        <li>(E) Falso: para a mesma potência P = V·i, dobrar V reduz i à metade, e a perda Joule (P<sub>d</sub> = R·i²) cai a um quarto. Há relação direta com a eficiência.</li>
+        <li>(E) Falso: para a mesma potência <span data-tex-i="P=V\,i">P = V·i</span>, dobrar V reduz i à metade, e a perda Joule (<span data-tex-i="P_d=R\,i^2">P<sub>d</sub> = R·i²</span>) cai a um quarto. Há relação direta com a eficiência.</li>
       </ul>
       <p class="fv-ans">Resposta: alternativa B</p>
     </div>
@@ -288,12 +310,12 @@
     <summary>Ver resolução</summary>
     <div class="fv-text">
       <div class="fv-calc">
-        <span>Potência: P = V·i = 400 × 80 = 32.000 W = 32 kW</span>
-        <span>Tempo de uso por mês: Δt = 2.000 km ÷ 100 km/h = 20 h</span>
-        <span>Energia por mês: E = 32 kW × 20 h = 640 kWh ⇒ custo = 640 × 0,80 = R$ 512,00/mês</span>
-        <span>Gasolina por mês: 2.000 × 0,50 = R$ 1.000,00/mês</span>
-        <span>Economia em 5 anos (60 meses): (1.000 − 512) × 60 = R$ 29.280,00</span>
-        <span>Diferença de preço de compra: 160.000 − 120.000 = R$ 40.000,00</span>
+        <span data-tex="P=V\,i=400\times80=32\,000\ \text{W}=32\ \text{kW}">Potência: P = V·i = 400 × 80 = 32.000 W = 32 kW</span>
+        <span data-tex="\Delta t=\dfrac{2\,000\ \text{km}}{100\ \text{km/h}}=20\ \text{h}\quad\text{(uso por mês)}">Tempo de uso por mês: Δt = 2.000 km ÷ 100 km/h = 20 h</span>
+        <span data-tex="E=32\ \text{kW}\times20\ \text{h}=640\ \text{kWh}\;\Rightarrow\;\text{custo}=640\times0{,}80=\text{R\$}\,512{,}00\text{ por mês}">Energia por mês: E = 32 kW × 20 h = 640 kWh ⇒ custo = 640 × 0,80 = R$ 512,00/mês</span>
+        <span data-tex="\text{Gasolina: }2\,000\times0{,}50=\text{R\$}\,1\,000{,}00\text{ por mês}">Gasolina por mês: 2.000 × 0,50 = R$ 1.000,00/mês</span>
+        <span data-tex="\text{Economia em 5 anos (60 meses): }(1\,000-512)\times60=\text{R\$}\,29\,280{,}00">Economia em 5 anos (60 meses): (1.000 − 512) × 60 = R$ 29.280,00</span>
+        <span data-tex="\text{Diferença de preço de compra: }160\,000-120\,000=\text{R\$}\,40\,000{,}00">Diferença de preço de compra: 160.000 − 120.000 = R$ 40.000,00</span>
       </div>
       <p>Sem incentivo, o elétrico sai R$ 40.000 − 29.280 = R$ 10.720,00 mais caro. Ele só passa a ser vantajoso com bônus superior a R$ 10.720; entre as opções, apenas “pelo menos R$ 11.000,00” garante isso (R$ 8.000 ou R$ 5.000 não bastam).</p>
       <p class="fv-ans">Resposta: alternativa A</p>
@@ -337,9 +359,9 @@
     <summary>Ver resolução</summary>
     <div class="fv-text">
       <div class="fv-calc">
-        <span>Massa convertida: m = 2% × 4 kg = 0,08 kg</span>
-        <span>Energia: E = mc² = 0,08 × (3 × 10⁸)² = 0,08 × 9 × 10¹⁶ = 7,2 × 10¹⁵ J</span>
-        <span>E / E<sub>ref</sub> = 7,2 × 10¹⁵ / 9 × 10¹⁴ = 8 ⇒ R / R<sub>ref</sub> = ∛8 = 2</span>
+        <span data-tex="m=2\%\times4\ \text{kg}=0{,}08\ \text{kg}">Massa convertida: m = 2% × 4 kg = 0,08 kg</span>
+        <span data-tex="E=mc^2=0{,}08\times(3\times10^{8})^2=0{,}08\times9\times10^{16}=7{,}2\times10^{15}\ \text{J}">E = mc² = 7,2 × 10¹⁵ J</span>
+        <span data-tex="\dfrac{E}{E_{\text{ref}}}=\dfrac{7{,}2\times10^{15}}{9\times10^{14}}=8\;\Rightarrow\;\dfrac{R}{R_{\text{ref}}}=\sqrt[3]{8}=2">E / Eref = 8 ⇒ R / Rref = ∛8 = 2</span>
       </div>
       <p>Todos os raios dobram: bola de fogo 1 km · destruição total 4 km · danos por calor 10 km · danos leves 20 km.</p>
       <ul>
@@ -379,8 +401,8 @@
     <div class="fv-text">
       <p>A diferença não é “pequena” quando comparada às incertezas:</p>
       <div class="fv-calc">
-        <span>73,0 − 67,4 = 5,6 km/s/Mpc</span>
-        <span>Incerteza combinada: √(0,5² + 1,7²) ≈ 1,8 km/s/Mpc</span>
+        <span data-tex="73{,}0-67{,}4=5{,}6\ \text{km/s/Mpc}">73,0 − 67,4 = 5,6 km/s/Mpc</span>
+        <span data-tex="\text{Incerteza combinada: }\sqrt{0{,}5^2+1{,}7^2}\approx1{,}8\ \text{km/s/Mpc}">Incerteza combinada: √(0,5² + 1,7²) ≈ 1,8 km/s/Mpc</span>
       </div>
       <p>A discrepância vale cerca de 3 vezes a incerteza. Por isso não se pode simplesmente tirar a média (A é falsa).</p>
       <p>Teoria e observação são igualmente necessárias: um modelo teórico só é válido se concorda com as medidas, e medidas confiáveis não podem ser descartadas (B, D e E são falsas). Quando dois métodos robustos discordam de forma sistemática, isso pode indicar que o modelo teórico está incompleto. É assim que a ciência avança.</p>
@@ -437,12 +459,15 @@
   <details class="fv-res">
     <summary>Ver resolução</summary>
     <div class="fv-text">
-      <p>Teorema da energia, com perdas: E<sub>p,inicial</sub> = E<sub>c,final</sub> + E<sub>p,final</sub> + |W<sub>dissipativas</sub>|.</p>
+      <p>Teorema da energia, com perdas:</p>
       <div class="fv-calc">
-        <span>Desnível: Δh = 70 − 9,7 = 60,3 m ⇒ m·g·Δh = 70 × 10 × 60,3 = 42.210 J</span>
-        <span>Energia cinética no ponto mais baixo: E<sub>c</sub> = 42.210 − 10.710 = 31.500 J</span>
-        <span>½ · 70 · v² = 31.500 ⇒ v² = 900 ⇒ v = 30 m/s</span>
-        <span>30 m/s × 3,6 = 108 km/h</span>
+        <span data-tex="E_{p,\text{inicial}}=E_{c,\text{final}}+E_{p,\text{final}}+\left|W_{\text{dissipativas}}\right|">Ep,inicial = Ec,final + Ep,final + |Wdissipativas|</span>
+      </div>
+      <div class="fv-calc">
+        <span data-tex="\Delta h=70-9{,}7=60{,}3\ \text{m}\;\Rightarrow\;m\,g\,\Delta h=70\times10\times60{,}3=42\,210\ \text{J}">Δh = 60,3 m ⇒ m·g·Δh = 42.210 J</span>
+        <span data-tex="E_c=42\,210-10\,710=31\,500\ \text{J}">Ec = 42.210 − 10.710 = 31.500 J</span>
+        <span data-tex="\tfrac{1}{2}\cdot70\cdot v^2=31\,500\;\Rightarrow\;v^2=900\;\Rightarrow\;v=30\ \text{m/s}">½ · 70 · v² = 31.500 ⇒ v = 30 m/s</span>
+        <span data-tex="30\ \text{m/s}\times3{,}6=108\ \text{km/h}">30 m/s × 3,6 = 108 km/h</span>
       </div>
       <p class="fv-ans">Resposta: alternativa D</p>
     </div>
@@ -469,7 +494,7 @@
     <div class="fv-text">
       <p>Na transição a trajetória é curva e côncava, com o centro de curvatura acima do skatista. Para que ele descreva essa curva, a resultante na direção radial (apontando para o centro) deve ser a força centrípeta:</p>
       <div class="fv-calc">
-        <span>N − P·cos θ = m·v²/R ⇒ N = P·cos θ + m·v²/R &gt; P·cos θ</span>
+        <span data-tex="N-P\cos\theta=\dfrac{m\,v^2}{R}\;\Rightarrow\;N=P\cos\theta+\dfrac{m\,v^2}{R}&gt;P\cos\theta">N − P·cos θ = m·v²/R ⇒ N > P·cos θ</span>
       </div>
       <p>Aqui P·cos θ é a componente radial do peso. Como v é alta (≈ 30 m/s), a normal é bem maior que essa componente: sensação de “peso aumentado” e sobrecarga nos joelhos.</p>
       <ul>
@@ -501,12 +526,12 @@
     <summary>Ver resolução</summary>
     <div class="fv-text">
       <div class="fv-calc">
-        <span>Água dos copinhos: 15 × 350 mL = 5.250 mL ⇒ 5.250 g</span>
-        <span>Calor que ela pode ceder até 0 °C: 5.250 × 1 × 25 = 131.250 cal</span>
-        <span>Gelo: 1,0 + 0,5 = 1,5 kg = 1.500 g</span>
-        <span>Aquecer de −15 °C a 0 °C: Q₁ = 1.500 × 0,5 × 15 = 11.250 cal</span>
-        <span>Fundir todo o gelo: Q₂ = 1.500 × 80 = 120.000 cal</span>
-        <span>Total para levar todo o gelo a água a 0 °C: Q₁ + Q₂ = 131.250 cal</span>
+        <span data-tex="m_{\text{água}}=15\times350\ \text{mL}=5\,250\ \text{mL}\;\Rightarrow\;5\,250\ \text{g}">Água dos copinhos: 15 × 350 mL = 5.250 g</span>
+        <span data-tex="Q_{\text{água}}=5\,250\times1\times25=131\,250\ \text{cal}\quad\text{(calor cedido até 0 °C)}">Calor que ela pode ceder até 0 °C: 131.250 cal</span>
+        <span data-tex="m_{\text{gelo}}=1{,}0+0{,}5=1{,}5\ \text{kg}=1\,500\ \text{g}">Gelo: 1,5 kg = 1.500 g</span>
+        <span data-tex="Q_1=1\,500\times0{,}5\times15=11\,250\ \text{cal}\quad\text{(de }-15\ ^\circ\text{C a }0\ ^\circ\text{C)}">Q₁ = 1.500 × 0,5 × 15 = 11.250 cal</span>
+        <span data-tex="Q_2=1\,500\times80=120\,000\ \text{cal}\quad\text{(fusão)}">Q₂ = 1.500 × 80 = 120.000 cal</span>
+        <span data-tex="Q_1+Q_2=131\,250\ \text{cal}">Q₁ + Q₂ = 131.250 cal</span>
       </div>
       <p>O calor cedido pela água é exatamente igual ao necessário para aquecer e derreter todo o gelo. Portanto, o equilíbrio ocorre a 0 °C, com todo o gelo derretido e apenas água líquida (6,75 kg) na caixa.</p>
       <p class="fv-ans">Resposta: alternativa C</p>
@@ -574,6 +599,8 @@ document.getElementById('reset').addEventListener('click',()=>{
 updateScore();
 })();
 </script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
+<script defer src="tex.js"></script>
 <script src="site.js"></script>
 </body>
 </html>
