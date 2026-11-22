@@ -78,10 +78,6 @@ function plain(t) {
 }
 
 /* ---------- favoritos ---------- */
-const FKEY = 'tal-da-fisica-formulas-favoritas';
-let favs = new Set();
-try { favs = new Set(JSON.parse(localStorage.getItem(FKEY) || '[]')); } catch (e) {}
-const saveFavs = () => { try { localStorage.setItem(FKEY, JSON.stringify([...favs])); } catch (e) {} $('fav-count').textContent = favs.size; };
 
 /* ---------- índices ---------- */
 const byId = new Map(LIST.map(f => [f.id, f]));
@@ -107,16 +103,10 @@ function card(f) {
   const ver = (f.ver || []).filter(v => !v[1].startsWith('#') || areaById.has(v[1].slice(1).split('/')[0]) || (v[1].startsWith('#f/') && byId.has(v[1].slice(3))));
   const see = ver.length ? `<p class="fb-see">Veja também: ${ver.map(v => v[1].startsWith('#')
     ? `<a href="${esc(v[1])}">${esc(v[0])}</a>` : `<a href="${esc(v[1])}">${esc(v[0])} ↗</a>`).join(' · ')}</p>` : '';
-  const on = favs.has(f.id);
   return `<article class="fb-card" id="f-${f.id}">
   <div class="fb-head">
     <div><h4>${rich(f.nome)}</h4>
       <div class="fb-tags">${f.top ? '<span class="fb-tag top">★ Muito cobrada</span>' : ''}<span class="fb-tag">${esc(area ? area.nome : '')} · ${esc(f.topico || subName(f.area, f.sub))}</span></div></div>
-    <div class="fb-acts">
-      <button class="fb-act" data-act="copy" data-id="${f.id}" title="Copiar a fórmula como texto">Copiar</button>
-      <button class="fb-act" data-act="latex" data-id="${f.id}" title="Copiar o código LaTeX">LaTeX</button>
-      <button class="fb-act fav" data-act="fav" data-id="${f.id}" aria-pressed="${on}" aria-label="${on ? 'Remover das favoritas' : 'Marcar como favorita'}">${on ? '★' : '☆'}</button>
-    </div>
   </div>
   <div class="fb-eq">${tex(f.tex, true)}</div>
   ${alt}${vars}
@@ -221,14 +211,13 @@ function markNav(areaId, subId, chip) {
     const sel = subId ? `[data-sub="${areaId}/${subId}"]` : `[data-area-link="${areaId}"]`;
     const el = document.querySelector('#tree a' + sel); if (el) el.setAttribute('aria-current', 'true');
   }
-  ['chip-fav', 'chip-top', 'chip-idx'].forEach(c => $(c).setAttribute('aria-current', c === chip ? 'true' : 'false'));
+  ['chip-top', 'chip-idx'].forEach(c => $(c).setAttribute('aria-current', c === chip ? 'true' : 'false'));
 }
 function route() {
   const q = $('q').value.trim();
   if (q) return renderSearch(q);
   const h = decodeURIComponent(location.hash.slice(1));
   const [p, s] = h.split('/');
-  if (p === 'favoritas') { renderSet('Filtro', '★ Suas favoritas', LIST.filter(f => favs.has(f.id)), 'Você ainda não marcou nenhuma favorita. Toque na estrela ☆ de uma fórmula para guardá-la aqui. Elas ficam salvas neste navegador.'); markNav(null, null, 'chip-fav'); return; }
   if (p === 'cobradas') { renderSet('Filtro', 'Muito cobradas nos vestibulares', LIST.filter(f => f.top), ''); markNav(null, null, 'chip-top'); return; }
   if (p === 'indice') { renderIndex(); if (s) { const el = $('idx-' + s); if (el) el.scrollIntoView(); } return; }
   if (p === 'f' && byId.has(s)) {
@@ -245,28 +234,7 @@ function route() {
   renderArea(AREAS[0].id);
 }
 
-/* ---------- ações ---------- */
-let toastT;
-function toast(msg) { const t = $('toast'); t.textContent = msg; t.classList.add('on'); clearTimeout(toastT); toastT = setTimeout(() => t.classList.remove('on'), 1600); }
-async function copy(text) {
-  try { await navigator.clipboard.writeText(text); return true; } catch (e) {
-    const ta = document.createElement('textarea'); ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0'; document.body.appendChild(ta); ta.select();
-    let ok = false; try { ok = document.execCommand('copy'); } catch (e2) {} ta.remove(); return ok;
-  }
-}
-content.addEventListener('click', async e => {
-  const b = e.target.closest('[data-act]'); if (!b) return;
-  const f = byId.get(b.dataset.id); if (!f) return;
-  if (b.dataset.act === 'fav') {
-    favs.has(f.id) ? favs.delete(f.id) : favs.add(f.id); saveFavs();
-    const on = favs.has(f.id); b.setAttribute('aria-pressed', on); b.textContent = on ? '★' : '☆'; b.setAttribute('aria-label', on ? 'Remover das favoritas' : 'Marcar como favorita');
-    toast(on ? 'Adicionada às favoritas' : 'Removida das favoritas');
-    return;
-  }
-  const extra = (f.alt || []).map(x => plain(x[1]));
-  const text = b.dataset.act === 'latex' ? f.tex : [f.nome + ': ' + plain(f.tex)].concat(extra).join('\n');
-  toast((await copy(text)) ? (b.dataset.act === 'latex' ? 'Código LaTeX copiado' : 'Fórmula copiada') : 'Não foi possível copiar');
-});
+/* ---------- busca ---------- */
 let qT;
 $('q').addEventListener('input', () => { clearTimeout(qT); qT = setTimeout(() => { route(); }, 140); });
 $('q').addEventListener('keydown', e => { if (e.key === 'Escape') { $('q').value = ''; route(); } });
@@ -280,7 +248,39 @@ window.addEventListener('beforeprint', () => {
   $('print-meta').textContent = [$('view-title').textContent, $('view-count').textContent, 'gerado em ' + hoje].filter(Boolean).join(' · ');
 });
 window.addEventListener('afterprint', () => { opened.forEach(d => d.open = false); opened = []; });
-$('print').addEventListener('click', () => window.print());
+/* PDF só para quem se cadastrou com e-mail. O arquivo pdf/ok.json fica atrás do Cloudflare Access:
+   quem já confirmou o e-mail recebe o JSON; quem não confirmou recebe um redirecionamento para a tela de entrada.
+   No teste local (sem Access) tudo aparece liberado; para ver o estado bloqueado, use ?simular=bloqueado. */
+/* Chave geral do PDF: enquanto o Cloudflare Access de /pdf não estiver configurado, o botão fica escondido e o
+   Ctrl+P imprime só um aviso de "em breve". Para religar, troque para true. */
+const PDF_ATIVO = false;
+let pdfLiberado = false;
+const local = /^(localhost|127\.0\.0\.1|\[::1\])$/.test(location.hostname);
+const checaPdf = local && new URLSearchParams(location.search).get('simular') === 'bloqueado' ? Promise.resolve(false)
+  : fetch('pdf/ok.json', { cache: 'no-store', credentials: 'same-origin', redirect: 'manual' })
+    .then(r => (r.ok ? r.json() : null)).then(d => !!(d && d.liberado)).catch(() => false);
+function setPdf(ok) {
+  pdfLiberado = ok;
+  document.documentElement.classList.toggle('pdf-liberado', ok);
+  $('print').textContent = ok ? 'Imprimir / PDF' : 'Gerar PDF · cadastro grátis';
+}
+function abrirCadastro() {
+  const link = $('pdf-cadastro'), dlg = $('pdf-dlg');
+  link.href = 'pdf/?volta=' + encodeURIComponent(location.hash); // depois do cadastro, volta para esta mesma vista
+  if (dlg.showModal) dlg.showModal(); else location.href = link.href;
+}
+if (!PDF_ATIVO) document.documentElement.classList.add('pdf-desligado');
+else checaPdf.then(ok => {
+  $('print').hidden = false;
+  setPdf(ok);
+  const q = new URLSearchParams(location.search);
+  if (!q.has('pdf')) return;            // chegou de pdf/ depois do cadastro: gera o PDF
+  q.delete('pdf');
+  history.replaceState(null, '', location.pathname + (q.toString() ? '?' + q : '') + location.hash);
+  if (ok) document.fonts.ready.then(() => setTimeout(() => window.print(), 700)); else abrirCadastro();
+});
+$('print').addEventListener('click', () => (pdfLiberado ? window.print() : abrirCadastro()));
+$('pdf-dlg').addEventListener('close', () => $('print').focus()); // ao fechar o aviso, o foco volta ao botão
 
 /* altura do cabeçalho fixo, para a navegação lateral e a rolagem até as âncoras */
 const hdr = document.querySelector('header.top');
@@ -293,6 +293,6 @@ syncTree(); mq.addEventListener('change', syncTree);
 // ao escolher uma área no celular, fecha a árvore
 $('tree').addEventListener('click', e => { if (mq.matches && e.target.closest('a')) $('treebox').open = false; });
 
-buildTree(); saveFavs(); route();
+buildTree(); route();
 window.FORMULAS_PLAIN = plain; // usado nos testes da página
 })();

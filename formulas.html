@@ -76,7 +76,7 @@
 <div class="wrap fb-intro">
   <p class="label">Consulta e estudo · Ensino Médio, ENEM e vestibulares</p>
   <h1>Biblioteca de Fórmulas</h1>
-  <p>Cada fórmula vem com o significado das variáveis, as unidades no SI, quando usar, quando ela vale e um exemplo resolvido. Busque por nome, assunto ou variável, marque suas favoritas e imprima o que precisar.</p>
+  <p>Cada fórmula vem com o significado das variáveis, as unidades no SI, quando usar, quando ela vale e um exemplo resolvido. Busque por nome, assunto ou variável e imprima o que precisar.</p>
 </div>
 
 <div class="wrap fb-layout">
@@ -86,7 +86,6 @@
       <input type="search" id="q" placeholder="Buscar: Torricelli, potência, empuxo…" autocomplete="off" spellcheck="false">
     </div>
     <div class="fb-filters" role="group" aria-label="Filtros">
-      <a href="#favoritas" class="fb-chip" id="chip-fav">★ Favoritas <span id="fav-count">0</span></a>
       <a href="#cobradas" class="fb-chip" id="chip-top">Muito cobradas</a>
       <a href="#indice" class="fb-chip" id="chip-idx">Índice A–Z</a>
     </div>
@@ -103,13 +102,34 @@
         <h2 id="view-title">Carregando…</h2>
         <p class="fb-count" id="view-count" aria-live="polite"></p>
       </div>
-      <button class="btn ghost fb-print" id="print" type="button">Imprimir / PDF</button>
+      <button class="btn ghost fb-print" id="print" type="button" hidden>Imprimir / PDF</button>
     </div>
     <div id="content"></div>
   </main>
 </div>
 
 <div class="fb-toast" id="toast" role="status" aria-live="polite"></div>
+
+<!-- PDF só para quem se cadastrou com e-mail (a pasta pdf/ é protegida pelo Cloudflare Access) -->
+<dialog class="fb-dlg" id="pdf-dlg" aria-labelledby="pdf-dlg-t">
+  <form method="dialog">
+    <p class="label">Biblioteca de Fórmulas</p>
+    <h2 id="pdf-dlg-t">Baixe a Biblioteca em PDF</h2>
+    <p>O PDF é liberado para quem se cadastra com e-mail. É gratuito: você informa o e-mail, recebe um código de confirmação e volta para esta mesma página com o PDF pronto.</p>
+    <div class="fb-dlg-acts">
+      <a class="btn" id="pdf-cadastro" href="pdf/">Cadastrar com e-mail</a>
+      <button class="btn ghost" value="fechar" type="submit">Agora não</button>
+    </div>
+    <p class="fb-dlg-nota">O código de acesso é enviado pelo Cloudflare, o serviço que protege a área de cadastro.</p>
+  </form>
+</dialog>
+
+<!-- impresso no lugar do conteúdo quando o PDF ainda não foi liberado (atalho Ctrl+P do navegador) -->
+<div class="fb-printlock" aria-hidden="true">
+  <p>O PDF da Biblioteca de Fórmulas é liberado para quem se cadastra com e-mail.</p>
+  <p class="fb-pl-ativo">Na página da Biblioteca, toque em <b>Gerar PDF · cadastro grátis</b>, confirme o seu e-mail e o PDF será gerado em seguida.</p>
+  <p class="fb-pl-breve">O download em PDF estará disponível em breve. Enquanto isso, consulte a Biblioteca no site.</p>
+</div>
 
 <footer>
   <div class="wrap">

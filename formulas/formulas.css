@@ -139,12 +139,28 @@
 /* cabeçalho que só aparece na impressão (formulas.html) */
 .fb-printhead { display: none; }
 
+/* PDF para cadastrados: aviso de cadastro (diálogo) e o que sai no papel sem cadastro */
+.fb-dlg { width: min(460px, calc(100vw - 32px)); padding: 0; border: 1.5px solid var(--ink); border-radius: var(--radius); background: var(--card); color: var(--ink); }
+.fb-dlg::backdrop { background: color-mix(in srgb, var(--sky) 62%, transparent); }
+.fb-dlg form { display: grid; gap: 12px; padding: 22px 22px 18px; }
+.fb-dlg h2 { font-size: 1.5rem; }
+.fb-dlg p { color: var(--ink-soft); }
+.fb-dlg-acts { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 4px; }
+.fb-dlg-nota { font-size: var(--fs-xs); }
+.fb-printlock { display: none; }
+.fb-print[hidden] { display: none !important; }
+html.pdf-desligado .fb-pl-ativo, html:not(.pdf-desligado) .fb-pl-breve { display: none; }
+
 /* impressão / PDF: papel branco com a identidade do site (céu com a logo no topo, fontes e cores da marca),
    numeração no rodapé e quebras de página que não separam título, equação e ilustração */
 @page { size: A4; margin: 14mm 13mm 16mm;
   @bottom-left { content: "A Tal da Física · Biblioteca de Fórmulas"; font: 8.5pt "Atkinson Hyperlegible", sans-serif; color: #5a5670; }
   @bottom-right { content: "página " counter(page) " de " counter(pages); font: 8.5pt "JetBrains Mono", monospace; color: #5a5670; } }
 @media print {
+  /* sem cadastro confirmado, o papel recebe só o aviso de cadastro, com a marca */
+  html:not(.pdf-liberado) body > :not(.fb-printhead):not(.fb-printlock) { display: none !important; }
+  html:not(.pdf-liberado) .fb-printlock { display: grid; gap: 8px; font-size: 12pt; max-width: 150mm; }
+  .fb-dlg { display: none !important; }
   :root { --paper: #fff; --paper-2: #f6f1e7; --card: #fff; --grid: #d6ccb8; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
   html, body { background: #fff !important; }
   body { font-size: 10pt; line-height: 1.45; }
