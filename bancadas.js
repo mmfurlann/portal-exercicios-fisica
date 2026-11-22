@@ -723,19 +723,41 @@
   /* ---------- Circuito resistivo ---------- */
   if ($("circ")) {
     const cc = $("circ"), cxx = cc.getContext("2d");
-    const LOOP = 1360; // perímetro do circuito em px: 2·(400 + 280)
-    let dotOff = 0;
+    // Os portadores que se movem são os elétrons: saem do polo negativo e chegam ao positivo, no sentido
+    // oposto ao da corrente convencional (que vai de + a −). Cada trecho tem a sua própria corrente.
+    const SERIE = [{ pts: [[150, 330], [150, 50], [550, 50], [550, 330], [150, 330]], f: "i" }];
+    const PARAL = [
+      { pts: [[150, 330], [150, 50]], f: "i" }, { pts: [[150, 50], [350, 50]], f: "i" },
+      { pts: [[350, 50], [550, 50]], f: "i2" }, { pts: [[550, 50], [550, 330]], f: "i2" },
+      { pts: [[550, 330], [350, 330]], f: "i2" }, { pts: [[350, 330], [150, 330]], f: "i" },
+      { pts: [[350, 50], [350, 330]], f: "i1" }
+    ];
+    for (const g of [SERIE, PARAL]) for (const t of g) {      // comprimento de cada trecho
+      t.len = 0; t.cum = [0];
+      for (let k = 1; k < t.pts.length; k++) { t.len += Math.hypot(t.pts[k][0] - t.pts[k - 1][0], t.pts[k][1] - t.pts[k - 1][1]); t.cum.push(t.len); }
+      t.ph = 0;
+    }
+    const SPACE = 40; // distância entre elétrons, em px
     const circ = () => {
       const u = +$("cu").value, r1 = +$("r1").value, r2 = +$("r2").value, par = $("mode").value === "p";
       const req = par ? r1 * r2 / (r1 + r2) : r1 + r2;
-      return { u, r1, r2, par, req, i: u / req };
+      return { u, r1, r2, par, req, i: u / req, i1: u / r1, i2: u / r2 };
     };
-    function loopPoint(s) {
-      s = ((s % LOOP) + LOOP) % LOOP;
-      if (s < 400) return [150 + s, 50];
-      if (s < 680) return [550, 50 + s - 400];
-      if (s < 1080) return [550 - (s - 680), 330];
-      return [150, 330 - (s - 1080)];
+    function pointOn(t, s) {                                 // ponto a distância s do início do trecho
+      let k = 1; while (k < t.cum.length - 1 && s > t.cum[k]) k++;
+      const f = (s - t.cum[k - 1]) / (t.cum[k] - t.cum[k - 1]);
+      return [t.pts[k - 1][0] + f * (t.pts[k][0] - t.pts[k - 1][0]), t.pts[k - 1][1] + f * (t.pts[k][1] - t.pts[k - 1][1])];
+    }
+    function seta(x, y, dx, dy) {                            // ponta de seta preenchida: sentido convencional
+      cxx.fillStyle = C.ink; cxx.beginPath();
+      cxx.moveTo(x + dx * 9, y + dy * 9);
+      cxx.lineTo(x - dx * 4 - dy * 6, y - dy * 4 + dx * 6);
+      cxx.lineTo(x - dx * 4 + dy * 6, y - dy * 4 - dx * 6);
+      cxx.closePath(); cxx.fill();
+    }
+    function eletron(x, y, r) {                              // carga negativa: círculo azul com sinal de menos
+      cxx.fillStyle = C.blue; cxx.beginPath(); cxx.arc(x, y, r, 0, Math.PI * 2); cxx.fill();
+      cxx.strokeStyle = C.card; cxx.lineWidth = 2; cxx.beginPath(); cxx.moveTo(x - r * 0.55, y); cxx.lineTo(x + r * 0.55, y); cxx.stroke();
     }
     function resistor(x1, y1, x2, y2, label) {
       const vert = x1 === x2, len = vert ? y2 - y1 : x2 - x1;
@@ -753,7 +775,9 @@
     }
     const redraw = animate(cc, dt => {
       const P = circ(), W = cc.width, H = cc.height;
-      dotOff = (dotOff + Math.min(Math.max(P.i * 30, 6), 240) * dt) % LOOP;
+      let k = 30; if (k * P.i > 240) k = 240 / P.i; if (k * P.i < 6) k = 6 / P.i;   // px/s por ampère: velocidades proporcionais à corrente
+      const trechos = P.par ? PARAL : SERIE;
+      for (const t of trechos) t.ph = (t.ph + k * P[t.f] * dt) % SPACE;
       cxx.fillStyle = C.card; cxx.fillRect(0, 0, W, H);
       cxx.strokeStyle = C.ink; cxx.lineWidth = 3; cxx.lineJoin = "round";
       cxx.strokeRect(150, 50, 400, 280);
@@ -771,13 +795,31 @@
       const l1 = "R₁ = " + P.r1 + " Ω", l2 = "R₂ = " + P.r2 + " Ω";
       if (P.par) { resistor(350, 130, 350, 250, l1); resistor(550, 130, 550, 250, l2); }
       else { resistor(290, 50, 410, 50, l1); resistor(550, 130, 550, 250, l2); }
-      // cargas no sentido convencional da corrente
-      cxx.fillStyle = C.accent;
-      for (let s = dotOff; s < dotOff + LOOP; s += 40) {
-        const [x, y] = loopPoint(s);
-        if (x === 150 && y > 164 && y < 216) continue;
-        cxx.beginPath(); cxx.arc(x, y, 5, 0, Math.PI * 2); cxx.fill();
+      // polos da bateria
+      cxx.font = mono(20); cxx.fillStyle = C.ink; cxx.textBaseline = "middle"; cxx.textAlign = "left";
+      cxx.fillText("\u2212", 180, 207);
+      // elétrons: andam contra o sentido convencional, do polo negativo para o positivo
+      for (const t of trechos) {
+        const first = (SPACE - t.ph) % SPACE;
+        for (let sdist = first; sdist <= t.len; sdist += SPACE) {
+          const [x, y] = pointOn(t, sdist);
+          if (x === 150 && y > 164 && y < 216) continue;       // dentro da bateria
+          eletron(x, y, 7);
+        }
       }
+      // sentido convencional da corrente (de + para −), com os valores de cada ramo
+      cxx.font = mono(16); cxx.fillStyle = C.ink; cxx.textBaseline = "middle";
+      seta(215, 50, 1, 0); cxx.textAlign = "center"; cxx.fillText("i", 215, 32);
+      if (P.par) {
+        seta(350, 100, 0, 1); cxx.textAlign = "left"; cxx.fillText("i\u2081", 364, 100);
+        seta(550, 100, 0, 1); cxx.fillText("i\u2082", 564, 100);
+      } else {
+        seta(150, 110, 0, -1); cxx.textAlign = "right"; cxx.fillText("i", 136, 110);
+      }
+      // legenda
+      eletron(26, 354, 7); cxx.font = mono(14); cxx.textAlign = "left"; cxx.fillStyle = C.ink;
+      cxx.fillText("elétrons (carga \u2212): vão do polo \u2212 ao polo +", 42, 354);
+      seta(26, 374, 1, 0); cxx.fillText("i: sentido convencional da corrente (de + a \u2212)", 42, 374);
     });
     const update = () => {
       const P = circ();
