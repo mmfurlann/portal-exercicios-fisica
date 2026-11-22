@@ -69,3 +69,31 @@
 .rd-src { font-size: .85rem; color: var(--ink-soft); margin-top: 14px; }
 .rd-sub { color: var(--ink-soft); max-width: 70ch; margin-top: 6px; }
 @media (prefers-reduced-motion: reduce) { .rd-bar .rd-fill { transition: none; } }
+
+/* Montanha-russa no loop */
+.mr-stage { background: var(--rd-sky); }
+.mr-vectors { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 16px; margin-top: 10px; font-size: .92rem; }
+.mr-vec { display: inline-flex; align-items: center; gap: 6px; cursor: pointer; }
+.mr-vec input { accent-color: var(--accent); margin: 0; }
+.mr-vec i { width: 10px; height: 10px; border-radius: 50%; background: var(--sw); }
+.mr-vec.v { --sw: var(--blue); } .mr-vec.n { --sw: var(--accent-ink); } .mr-vec.w { --sw: #6b4fa8; }
+.mr-model { margin-left: auto; font-family: var(--mono); font-size: .75rem; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-soft); }
+.mr-contact b { color: var(--rd-good); }
+.mr-contact[data-air="yes"] b { color: var(--rd-bad); }
+.mr-timeline { display: flex; align-items: center; gap: 10px; margin-top: 12px; }
+.mr-timeline input { flex: 1; min-width: 0; }
+.mr-timeline output { font-family: var(--mono); font-size: .88rem; font-variant-numeric: tabular-nums; min-width: 6ch; text-align: right; }
+.mr-presets { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; }
+.rd .mr-presets button { padding: 5px 10px; font-size: .85rem; }
+.rd .mr-presets button[aria-pressed="true"], .rd button[aria-pressed="true"] { background: var(--rd-soft); border-color: var(--accent); }
+.mr-cases { display: grid; grid-template-columns: 1fr 1fr; }
+.rd button:disabled { opacity: .5; cursor: default; }
+.mr-ebar { height: 14px; display: flex; border-radius: 3px; overflow: hidden; margin: 12px 0; background: var(--paper); border: 1px solid var(--grid); }
+.mr-ebar span { height: 100%; }
+#kinetic-bar { background: var(--blue); } #potential-bar { background: var(--accent); }
+.mr-evalues { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+.mr-evalues div { border-top: 2px solid var(--grid); padding-top: 6px; }
+.mr-evalues b { display: block; font-family: var(--mono); font-size: 1.05rem; font-weight: 600; font-variant-numeric: tabular-nums; }
+.mr-evalues i { display: inline-block; width: 8px; height: 8px; border-radius: 2px; margin-right: 6px; }
+.mr-evalues i.k { background: var(--blue); } .mr-evalues i.p { background: var(--accent); }
+.rd .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
