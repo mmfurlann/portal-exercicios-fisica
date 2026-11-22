@@ -252,8 +252,9 @@ function bola(F, x, y, r, f = 'fa', o = {}) {
   return F;
 }
 // carro de perfil, virado para a direita (dir = -1 vira para a esquerda); (x, y) = ponto do chão sob a traseira
+// o desenho é espelhado (98 - v): capô comprido e para-brisa inclinado na frente, porta-malas curto atrás
 function carro(F, x, y, o = {}) {
-  const d = o.dir || 1, L = o.L || 96, k = L / 96, X = v => x + d * v * k, Y = v => y - v * k;
+  const d = o.dir || 1, L = o.L || 96, k = L / 96, X = v => x + d * (98 - v) * k, Y = v => y - v * k;
   sombraChao(F, x + d * L / 2, y, L * 0.55);
   const corpo = `M${X(4)},${Y(12)} L${X(4)},${Y(26)} Q${X(5)},${Y(31)} ${X(12)},${Y(32)} L${X(24)},${Y(33)} L${X(36)},${Y(46)} Q${X(39)},${Y(48)} ${X(44)},${Y(48)} L${X(64)},${Y(48)} Q${X(68)},${Y(48)} ${X(71)},${Y(45)} L${X(81)},${Y(33)} L${X(89)},${Y(31)} Q${X(94)},${Y(29)} ${X(94)},${Y(24)} L${X(94)},${Y(15)} Q${X(94)},${Y(12)} ${X(90)},${Y(12)} Z`;
   const b = pa(corpo, 'k', o.f || 'fcar', 1.8);
@@ -262,7 +263,7 @@ function carro(F, x, y, o = {}) {
   for (const wx of [22, 74]) { const r1 = ci(X(wx), Y(10), 10 * k, 'k', 'fk', 1.5), r2 = ci(X(wx), Y(10), 4.6 * k, 's', 'fm', 1.2); F.add(r1 + r2 + F.luz(r2, 'esf')); }
   F.reserva(Math.min(X(4), X(94)), Y(48), L * 0.94, 38 * k);
   if (o.lab) F.add(`<text x="${n1(X(48))}" y="${n1(Y(21))}" class="tk tb7" text-anchor="middle" font-size="${FSS}">${mathTxt(o.lab)}</text>`);
-  return { frente: X(96), tras: X(2), topo: Y(48), meio: Y(24) };
+  return { frente: x + d * 96 * k, tras: x + d * 2 * k, topo: Y(48), meio: Y(24) };
 }
 // pessoa estilizada (silhueta cheia), pés em (x, y)
 function pessoa(F, x, y, o = {}) {

@@ -216,7 +216,7 @@
       o: ["3 V", "10 V", "15 V", "9 V"], a: 3,
       e: "Em série a corrente é a mesma em todos: R<sub>eq</sub> = 2 + 3 + 5 = 10 Ω e i = 30/10 = 3 A. No resistor de 3 Ω: U = R · i = 3 · 3 = 9 V. Conferindo: 6 V + 9 V + 15 V = 30 V." },
     { g: 2, t: "Diferença de potencial",
-      q: "A bateria alimenta dois ramos em paralelo. Qual é a ddp entre os pontos X e Y?",
+      q: "A bateria alimenta dois ramos em paralelo. Qual é o módulo da diferença de potencial entre os pontos X e Y?",
       fig: svg(480, 240,
         W([60, 40], [60, 112]) + B(60, 120, "12 V") + W([60, 128], [60, 200], [400, 200]) + W([60, 40], [400, 40]) +
         R(220, 40, 220, 120, "4 Ω") + R(220, 120, 220, 200, "2 Ω") +
@@ -226,7 +226,7 @@
         N(220, 40) + N(220, 200) + N(220, 120) + N(400, 120),
         "Dois ramos em paralelo numa fonte de 12 volts: 4 e 2 ohms com o ponto X, 3 e 3 ohms com o ponto Y", 30),
       o: ["0 V", "2 V", "4 V", "10 V"], a: 1,
-      e: "Cada ramo recebe os 12 V da bateria. Tomando o fio de baixo como 0 V: no ramo de X, a corrente é 12/6 = 2 A e X está 2 · 2 = 4 V acima do fio de baixo. No ramo de Y, a corrente é 12/6 = 2 A e Y está 2 · 3 = 6 V acima. U<sub>XY</sub> = 6 − 4 = 2 V." }
+      e: "Cada ramo recebe os 12 V da bateria. Tomando o fio de baixo como 0 V: no ramo de X, a corrente é 12/6 = 2 A e X está 2 · 2 = 4 V acima do fio de baixo. No ramo de Y, a corrente é 12/6 = 2 A e Y está 2 · 3 = 6 V acima. V<sub>X</sub> − V<sub>Y</sub> = 4 − 6 = −2 V. Logo, o módulo é 2 V." }
   ];
   const CHEERS = [
     "Mandou bem! Circuito resolvido.",
