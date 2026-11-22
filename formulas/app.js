@@ -248,7 +248,34 @@ window.addEventListener('beforeprint', () => {
   $('print-meta').textContent = [$('view-title').textContent, $('view-count').textContent, 'gerado em ' + hoje].filter(Boolean).join(' · ');
 });
 window.addEventListener('afterprint', () => { opened.forEach(d => d.open = false); opened = []; });
-$('print').addEventListener('click', () => window.print());
+/* PDF só para quem se cadastrou com e-mail. O arquivo pdf/ok.json fica atrás do Cloudflare Access:
+   quem já confirmou o e-mail recebe o JSON; quem não confirmou recebe um redirecionamento para a tela de entrada.
+   No teste local (sem Access) tudo aparece liberado; para ver o estado bloqueado, use ?simular=bloqueado. */
+let pdfLiberado = false;
+const local = /^(localhost|127\.0\.0\.1|\[::1\])$/.test(location.hostname);
+const checaPdf = local && new URLSearchParams(location.search).get('simular') === 'bloqueado' ? Promise.resolve(false)
+  : fetch('pdf/ok.json', { cache: 'no-store', credentials: 'same-origin', redirect: 'manual' })
+    .then(r => (r.ok ? r.json() : null)).then(d => !!(d && d.liberado)).catch(() => false);
+function setPdf(ok) {
+  pdfLiberado = ok;
+  document.documentElement.classList.toggle('pdf-liberado', ok);
+  $('print').textContent = ok ? 'Imprimir / PDF' : 'Gerar PDF · cadastro grátis';
+}
+function abrirCadastro() {
+  const link = $('pdf-cadastro'), dlg = $('pdf-dlg');
+  link.href = 'pdf/?volta=' + encodeURIComponent(location.hash); // depois do cadastro, volta para esta mesma vista
+  if (dlg.showModal) dlg.showModal(); else location.href = link.href;
+}
+checaPdf.then(ok => {
+  setPdf(ok);
+  const q = new URLSearchParams(location.search);
+  if (!q.has('pdf')) return;            // chegou de pdf/ depois do cadastro: gera o PDF
+  q.delete('pdf');
+  history.replaceState(null, '', location.pathname + (q.toString() ? '?' + q : '') + location.hash);
+  if (ok) document.fonts.ready.then(() => setTimeout(() => window.print(), 700)); else abrirCadastro();
+});
+$('print').addEventListener('click', () => (pdfLiberado ? window.print() : abrirCadastro()));
+$('pdf-dlg').addEventListener('close', () => $('print').focus()); // ao fechar o aviso, o foco volta ao botão
 
 /* altura do cabeçalho fixo, para a navegação lateral e a rolagem até as âncoras */
 const hdr = document.querySelector('header.top');

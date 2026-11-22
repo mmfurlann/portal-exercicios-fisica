@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<title>PDF liberado · A Tal da Física</title>
+<link rel="stylesheet" href="../estilo.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Young+Serif&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400;1,700&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+/* Cadastro para o PDF da Biblioteca de Fórmulas.
+   A pasta /pdf é protegida pelo Cloudflare Access (aplicação "PDF da Biblioteca", política: qualquer e-mail,
+   entrada por código enviado ao e-mail). Quem chega aqui já confirmou o e-mail; a página só devolve a pessoa à
+   Biblioteca, na mesma vista, e o PDF é gerado. O arquivo ok.json, também protegido, é o que a Biblioteca consulta
+   para saber se o PDF está liberado. */
+.pdf-ok { min-height: 60vh; display: grid; place-content: center; gap: 14px; padding-block: 48px; text-align: center; }
+.pdf-ok h1 { font-size: clamp(1.8rem, 4vw, 2.4rem); }
+.pdf-ok p { color: var(--ink-soft); max-width: 52ch; margin-inline: auto; }
+.pdf-ok b { color: var(--ink); }
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="wrap">
+    <a class="brand" href="../index.html"><img src="../marca/logo-180.jpg" width="58" height="46" alt=""><span>A Tal da Física</span></a>
+  </div>
+</header>
+
+<main class="wrap pdf-ok">
+  <p class="label">Biblioteca de Fórmulas</p>
+  <h1>Cadastro confirmado</h1>
+  <p id="who">O PDF está liberado neste navegador.</p>
+  <p>Voltando para a Biblioteca para gerar o seu PDF…</p>
+  <p><a class="btn" id="volta" href="../formulas.html?pdf=1">Gerar o PDF agora</a></p>
+</main>
+
+<footer>
+  <div class="wrap">
+    <span>A Tal da Física</span>
+    <p class="autor">Marcelo Furlan</p>
+  </div>
+</footer>
+
+<script>
+// volta para a mesma vista da Biblioteca (só aceita âncoras simples, como #mecanica ou #f/torricelli)
+(function () {
+  const q = new URLSearchParams(location.search).get('volta') || '';
+  const ancora = /^#[\w\/-]{1,80}$/.test(q) ? q : '';
+  const destino = '../formulas.html?pdf=1' + ancora;
+  document.getElementById('volta').href = destino;
+  fetch('/cdn-cgi/access/get-identity', { credentials: 'same-origin' })
+    .then(r => r.ok ? r.json() : null)
+    .then(d => { if (d && d.email) { const w = document.getElementById('who'); w.textContent = 'O PDF está liberado para '; const b = document.createElement('b'); b.textContent = d.email; w.append(b, '.'); } })
+    .catch(() => {});
+  setTimeout(() => location.replace(destino), 1800);
+})();
+</script>
+<script src="../site.js"></script>
+</body>
+</html>
