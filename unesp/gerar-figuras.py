@@ -188,7 +188,7 @@ def q80():
     ax.text((xL + xS) / 2, yc - 5, "$p' = 480$ cm", ha="center", va="top", fontsize=11, weight="bold")
     ax.annotate("", xy=(xS, yc - 34), xytext=(0, yc - 34), arrowprops=dict(arrowstyle="<->", color=INK))
     ax.text(xS / 2, yc - 39, "slide até a tela: $p + p' = 5$ m", ha="center", va="top", fontsize=10)
-    ax.text(300, 70, "$A = \\frac{i}{o}=24 \\Rightarrow p' = 24\\,p \\Rightarrow f=\\dfrac{p\\,p'}{p+p'}=19{,}2$ cm", ha="center", fontsize=12,
+    ax.text(310, 70, r"$A=\dfrac{i}{o}=-\dfrac{p'}{p}=-24\ \Rightarrow\ p'=24\,p\ \Rightarrow\ f=\dfrac{p\,p'}{p+p'}=19{,}2$ cm", ha="center", fontsize=12,
             bbox=dict(boxstyle="round,pad=0.4", fc="#fbf6ec", ec=GREY))
     ax.text(615, -150, "fora de escala", fontsize=9, color=GREY, style="italic", ha="right")
     ax.set_xlim(-25, 620); ax.set_ylim(-190, 130)
