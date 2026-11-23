@@ -356,24 +356,30 @@
   <details class="fv-res">
     <summary>Ver resolução</summary>
     <div class="fv-text">
-      <p>Para aparecer numa tela a imagem tem de ser <b>real</b> (e, numa lente convergente, invertida). Chame de <i>p</i> a distância slide–lente e de <i>p′</i> a distância lente–tela.</p>
-      <p><b>1. Aumento linear.</b> Imagem e tela são quadrados de mesma área, então o lado da imagem é <span data-tex-i="120\ \text{cm}">120 cm</span>:</p>
+      <p>Para aparecer numa tela, a imagem tem de ser <b>real</b>, e numa lente convergente ela é <b>invertida</b>. Chame de <i>p</i> a distância slide–lente e de <i>p′</i> a distância lente–tela, e adote a convenção: altura do objeto <i>o</i> positiva e da imagem <i>i</i> negativa quando ela é invertida.</p>
+      <p><b>1. Aumento linear transversal.</b> Ele relaciona as alturas e as distâncias. O sinal negativo indica imagem invertida:</p>
       <div class="fv-calc">
-        <span data-tex="A=\dfrac{i}{o}=\dfrac{120}{5}=24\;\Rightarrow\;p'=24\,p">A = i/o = 120/5 = 24  ⇒  p′ = 24·p</span>
+        <span data-tex="A=\dfrac{i}{o}=-\dfrac{p'}{p}">A = i/o = −p′/p</span>
       </div>
+      <p>Imagem e tela são quadrados de mesma área, então o lado da imagem é <span data-tex-i="120\ \text{cm}">120 cm</span>. Como ela é invertida, <span data-tex-i="i=-120\ \text{cm}">i = −120 cm</span>, e o slide tem <span data-tex-i="o=5\ \text{cm}">o = 5 cm</span>:</p>
+      <div class="fv-calc">
+        <span data-tex="A=\dfrac{i}{o}=\dfrac{-120}{5}=-24">A = i/o = −120/5 = −24</span>
+        <span data-tex="-\dfrac{p'}{p}=-24\;\Rightarrow\;p'=24\,p">−p′/p = −24  ⇒  p′ = 24·p</span>
+      </div>
+      <p>O sinal negativo só informa que a imagem é invertida. O que importa para as distâncias é que a imagem é 24 vezes maior que o slide.</p>
       <p><b>2. Distâncias.</b> O slide está a <span data-tex-i="5\ \text{m}">5 m</span> da tela (desprezando a espessura da lente delgada):</p>
       <div class="fv-calc">
-        <span data-tex="p+p'=500\ \text{cm}\;\Rightarrow\;25\,p=500\;\Rightarrow\;p=20\ \text{cm},\quad p'=480\ \text{cm}">p + p′ = 500 cm  ⇒  p = 20 cm e p′ = 480 cm</span>
+        <span data-tex="p+p'=500\ \text{cm}\;\Rightarrow\;p+24\,p=500\;\Rightarrow\;25\,p=500\;\Rightarrow\;p=20\ \text{cm},\quad p'=480\ \text{cm}">p + p′ = 500 cm  ⇒  p = 20 cm e p′ = 480 cm</span>
       </div>
       <p><b>3. Equação de Gauss.</b></p>
       <div class="fv-calc">
-        <span data-tex="\dfrac{1}{f}=\dfrac{1}{p}+\dfrac{1}{p'}=\dfrac{1}{20}+\dfrac{1}{480}=\dfrac{25}{480}\;\Rightarrow\;f=\dfrac{480}{25}=19{,}2\ \text{cm}">1/f = 1/20 + 1/480 = 25/480  ⇒  f = 19,2 cm</span>
+        <span data-tex="\dfrac{1}{f}=\dfrac{1}{p}+\dfrac{1}{p'}=\dfrac{1}{20}+\dfrac{1}{480}=\dfrac{24+1}{480}=\dfrac{25}{480}\;\Rightarrow\;f=\dfrac{480}{25}=19{,}2\ \text{cm}">1/f = 1/20 + 1/480 = 25/480  ⇒  f = 19,2 cm</span>
       </div>
   <figure class="fv-fig" style="max-width:760px;justify-self:center">
     <img src="unesp/q80-lente.png" width="1900" height="790" alt="Diagrama com o slide (objeto) a 20 centímetros da lente convergente e a tela (anteparo) a 480 centímetros da lente. Três raios saem do topo do slide e se cruzam na base da tela, formando a imagem invertida." loading="lazy">
-    <figcaption>Resolução: o raio paralelo ao eixo passa por F′, o raio central não desvia e o raio que passa por F sai paralelo. Os três se encontram na imagem, invertida e ampliada 24 vezes. Desenho esquemático: as distâncias reais (20 cm e 480 cm) estão nas cotas.</figcaption>
+    <figcaption>Resolução: o raio paralelo ao eixo passa por F′, o raio central não desvia e o raio que passa por F sai paralelo. Os três se encontram na imagem, invertida (<i>A</i> = −24) e ampliada 24 vezes. Desenho esquemático: as distâncias reais (20 cm e 480 cm) estão nas cotas.</figcaption>
   </figure>
-      <p><b>Atalho.</b> Para uma distância total <span data-tex-i="D=p+p'">D = p + p′</span> e aumento <span data-tex-i="A">A</span>: <span data-tex-i="f=\dfrac{A\,D}{(A+1)^{2}}=\dfrac{24\cdot500}{25^{2}}=19{,}2\ \text{cm}">f = A·D/(A+1)² = 24·500/625 = 19,2 cm</span>.</p>
+      <p><b>Atalho.</b> Para uma distância total <span data-tex-i="D=p+p'">D = p + p′</span> e aumento em módulo <span data-tex-i="|A|">|A|</span>: <span data-tex-i="f=\dfrac{|A|\,D}{(|A|+1)^{2}}=\dfrac{24\cdot500}{25^{2}}=19{,}2\ \text{cm}">f = |A|·D/(|A|+1)² = 24·500/625 = 19,2 cm</span>.</p>
       <p><b>Coerência.</b> O slide fica entre <span data-tex-i="f">f</span> e <span data-tex-i="2f">2f</span> (<span data-tex-i="19{,}2\ \text{cm}">19,2 cm</span> &lt; <span data-tex-i="20\ \text{cm}">20 cm</span> &lt; <span data-tex-i="38{,}4\ \text{cm}">38,4 cm</span>), exatamente a posição que dá imagem real, invertida e ampliada, como num projetor.</p>
       <p class="fv-ans">Resposta: alternativa B</p>
     </div>
